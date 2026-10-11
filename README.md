@@ -4,6 +4,23 @@ Run the game with `npm start`, then choose **Start game**. Three waves of unicor
 turn into rainbow glitter when hit. Escape or the Pause button suspends play;
 the Resume button continues it. Losing focus also pauses the game.
 
+The menus explain scoring, contact damage, and all controls. The pause menu also
+offers **Restart game**; victory and defeat show final scores and **Play again**.
+Keyboard focus moves to the primary menu action when a panel opens, and returns
+to the canvas on Start/Resume. Tab, Enter, and Space work on all menu buttons.
+The HUD shows score, best score, magic, wave, living unicorns, and active combo.
+Best score persists under `unicornhunt:bestScore` when local storage is available,
+and otherwise lasts for the current visit. Muted and unavailable audio have
+explicit sound status; unavailable audio displays **Silent mode**.
+
+`createHUD(root, { onStart, onResume, onRestart, onPause, onMute })` in
+`src/hud.js` owns presentation only. Call `update({ state, score, bestScore,
+magic, wave, remaining, combo, muted, audioUnavailable })` with app snapshots.
+The overlay keeps its DOM nodes between updates, focuses menu actions only on
+state changes, and announces wave, pause/resume, and result transitions through
+a separate live region. Score changes are not live announcements. Call
+`destroy()` to detach action listeners and remove the overlay.
+
 The focusable game canvas supports these controls through `src/input.js`:
 
 - Up/Down or W/S: forward/backward. Left/Right: turn.
