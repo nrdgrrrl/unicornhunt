@@ -84,6 +84,9 @@ function. `main.js` invokes it once and exports the shared game instance.
 The boot browser suite checks import identity and animation callback ownership;
 the app browser suite checks lifecycle behavior.
 
+See [geometry contracts and distance-field freshness](docs/geometry.md) for the
+shared collision, visibility, navigation, and rendering query boundary.
+
 From a clean checkout:
 
 ```sh

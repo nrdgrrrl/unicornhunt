@@ -1,7 +1,7 @@
 // @ts-check
 
 import { clamp } from './math.js';
-import { moveCircle } from './world.js';
+import { moveCircle } from './geometry.js';
 import { DEFAULT_RADIUS, WALK_SPEED, RUN_MULTIPLIER, TURN_SPEED, MAX_MAGIC } from './config.js';
 
 // Preserve existing consumers while config.js becomes the tuning authority.

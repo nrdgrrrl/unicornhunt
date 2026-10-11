@@ -4,7 +4,7 @@ import {
   CAMERA_HEIGHT, HORIZONTAL_FOV, createCameraFrame, columnRay,
   perpendicularDepth, floorRow, position as projectPosition, project as projectPoint,
 } from './projection.js';
-import { raycast } from './world.js';
+import { raycast } from './geometry.js';
 
 export { CAMERA_HEIGHT, HORIZONTAL_FOV };
 const RECOIL_TIME = 0.16;
