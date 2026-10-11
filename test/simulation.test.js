@@ -4,7 +4,8 @@ import { EMPTY, HEDGE, createWorld, hasLineOfSight } from '../src/world.js';
 import { createPlayer, updatePlayer } from '../src/player.js';
 import { updateCombat } from '../src/combat.js';
 import { GameSession } from '../src/session.js';
-import { STEP_SECONDS as STEP, snapshot } from './helpers/simulation.js';
+import { COMBO_WINDOW, STEP_SECONDS as STEP } from '../src/config.js';
+import { snapshot } from './helpers/simulation.js';
 
 const near = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-9, `${actual} should be near ${expected}`);
 const target = (id, x, y = 12.5, radius = 0.25) => ({ id, x, y, radius, alive: true });
@@ -143,11 +144,16 @@ function verifyScoring(history) {
   let score = 0;
   for (const frame of history) {
     elapsed += STEP;
-    if (lastHitAt !== null && elapsed - lastHitAt > 2) combo = 0;
+    const roundingAllowance = lastHitAt === null ? 0 : Math.min(
+      STEP / 2,
+      Number.EPSILON * Math.max(1, Math.abs(elapsed), Math.abs(lastHitAt)) * Math.ceil(COMBO_WINDOW / STEP),
+    );
+    const withinComboWindow = lastHitAt !== null && elapsed - lastHitAt <= COMBO_WINDOW + roundingAllowance;
+    if (lastHitAt !== null && !withinComboWindow) combo = 0;
     for (const [index, event] of frame.events.entries()) {
       if (event.type !== 'glitter') continue;
       assert.equal(frame.events[index - 1]?.type, 'shot');
-      combo = lastHitAt !== null && elapsed - lastHitAt <= 2 ? Math.min(combo + 1, 5) : 1;
+      combo = withinComboWindow ? Math.min(combo + 1, 5) : 1;
       score += combo * 100;
       assert.equal(event.combo, combo);
       assert.equal(event.points, combo * 100);
