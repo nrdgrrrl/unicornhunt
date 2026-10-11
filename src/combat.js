@@ -1,10 +1,12 @@
 // @ts-check
 
 import { raycast, rayCircleDistance } from './geometry.js';
-import { FIRE_COOLDOWN, COMBO_WINDOW, MAX_COMBO, HIT_POINTS } from './config.js';
+import { FIRE_COOLDOWN, COMBO_WINDOW, MAX_COMBO, HIT_POINTS, STEP_SECONDS } from './config.js';
 
 // Compatibility exports keep this ownership change separate from API changes.
 export { FIRE_COOLDOWN, COMBO_WINDOW, MAX_COMBO, HIT_POINTS } from './config.js';
+
+const COMBO_WINDOW_STEPS = Math.ceil(COMBO_WINDOW / STEP_SECONDS);
 
 /**
  * Process at most one instantaneous rainbow shot per simulation tick, after
@@ -20,7 +22,18 @@ export { FIRE_COOLDOWN, COMBO_WINDOW, MAX_COMBO, HIT_POINTS } from './config.js'
  */
 export function updateCombat(session) {
   const { world, player, unicorns, elapsed, events } = session;
-  if (session.lastHitAt != null && elapsed - session.lastHitAt > COMBO_WINDOW) {
+  const lastHitAt = session.lastHitAt;
+  const hasPreviousHit = lastHitAt !== null;
+  const comboElapsed = lastHitAt !== null ? elapsed - lastHitAt : Infinity;
+  // Account for timestamp rounding across the additions in one production window.
+  const roundingAllowance = lastHitAt !== null
+    ? Math.min(
+      STEP_SECONDS / 2,
+      Number.EPSILON * Math.max(1, Math.abs(elapsed), Math.abs(lastHitAt)) * COMBO_WINDOW_STEPS,
+    )
+    : 0;
+  const withinComboWindow = hasPreviousHit && comboElapsed <= COMBO_WINDOW + roundingAllowance;
+  if (hasPreviousHit && !withinComboWindow) {
     session.combo = 0;
   }
   if (!player.firing || player.fireCooldown > 0) return session;
@@ -45,7 +58,7 @@ export function updateCombat(session) {
   events.push({ type: 'shot', x: player.x, y: player.y, angle: player.angle, distance });
   if (target) {
     target.alive = false;
-    session.combo = session.lastHitAt != null && elapsed - session.lastHitAt <= COMBO_WINDOW
+    session.combo = withinComboWindow
       ? Math.min(MAX_COMBO, session.combo + 1) : 1;
     const points = HIT_POINTS * session.combo;
     session.score += points;
