@@ -1,4 +1,4 @@
-import { test, expect, origin, attachJSON } from './fixtures.js';
+import { test, expect, origin, attachJSON, controlledClock, stepFrames as frames } from './fixtures.js';
 
 async function load(page, query = '') {
   await page.goto(origin + query);
@@ -52,7 +52,7 @@ test('startup renders a playable scene; conversion, pause, sound, restart, and d
   await expect(page.getByRole('button', { name: 'Restart game' })).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.locator('#score')).toHaveText('0');
-  await expect(page.locator('#magic')).toHaveText('100 / 100');
+  await expect(page.locator('#health')).toHaveText('5 / 5');
   await expect(page.locator('#mute')).toHaveAttribute('aria-pressed', 'true');
   await page.reload();
   await page.evaluate(async () => { window.game = (await import('/main.js')).game; });
@@ -72,29 +72,6 @@ test('startup renders a playable scene; conversion, pause, sound, restart, and d
   await page.keyboard.up('KeyW');
   await expect(page.getByRole('alert')).toHaveCount(0);
 });
-
-// Control only the frame clock. Gameplay still runs through the app's loop,
-// native keyboard/mouse events, collision, combat, renderer, and audio consumers.
-// These automated runs are separate from the required human playtests.
-async function controlledClock(page) {
-  await page.addInitScript(() => {
-    const frames = new Map();
-    let id = 0;
-    let now = 0;
-    window.requestAnimationFrame = callback => { frames.set(++id, callback); return id; };
-    window.cancelAnimationFrame = id => frames.delete(id);
-    window.smokeFrames = (count = 1) => {
-      for (let i = 0; i < count; i++) {
-        now += 1000 / 60;
-        const pending = [...frames.values()];
-        frames.clear();
-        for (const callback of pending) callback(now);
-      }
-    };
-  });
-}
-
-const frames = (page, count = 1) => page.evaluate(count => smokeFrames(count), count);
 
 test('keyboard movement slides along a hedge, shots stop there, and a detour reaches its far side', async ({ page }, testInfo) => {
   await controlledClock(page);
@@ -148,7 +125,7 @@ test('keyboard movement slides along a hedge, shots stop there, and a detour rea
 });
 
 for (const controls of ['keyboard', 'mouse']) {
-  test(`three generated waves are winnable through ${controls} input without changing game state`, async ({ page }, testInfo) => {
+  test(`three generated waves are winnable through ${controls} input without changing game state`, async ({ page, browser }, testInfo) => {
     test.setTimeout(120_000);
     await controlledClock(page);
     await load(page);
@@ -205,16 +182,25 @@ for (const controls of ['keyboard', 'mouse']) {
     else await page.mouse.up();
     await expect(page.getByRole('heading', { name: 'Victory!' })).toBeVisible();
     const result = await page.evaluate(() => ({
-      state: game.state, score: game.session.score, magic: game.session.player.magic,
+      state: game.state, seed: game.session.seed, score: game.session.score,
+      health: game.session.player.health, armor: game.session.player.armor,
       elapsed: game.session.elapsed,
       conversions: observedEvents.filter(e => e.type === 'glitter').map(e => e.source),
       waves: observedEvents.filter(e => e.type === 'wave').map(e => e.wave),
+      damage: observedEvents.filter(e => e.type === 'damage'),
+      pickups: observedEvents.filter(e => e.type === 'pickup'),
+      rosesFired: observedEvents.filter(e => e.type === 'rose-fired').length,
     }));
     expect(result.waves).toEqual([1, 2, 3]);
     expect(result.conversions).toHaveLength(24);
     expect(new Set(result.conversions).size).toBe(24);
-    expect(result.magic).toBeGreaterThan(0);
-    await attachJSON(testInfo, 'playthrough-result', result);
+    expect(result.health).toBeGreaterThan(0);
+    expect(result.armor).toBeGreaterThanOrEqual(0);
+    expect(result.armor).toBeLessThanOrEqual(5);
+    await attachJSON(testInfo, 'playthrough-result', {
+      ...result, controls, browser: browser.version(), clock: 'controlled 60 Hz',
+      humanPlaytest: false,
+    });
     await capture(page, testInfo, `${controls}-victory`);
   });
 }
@@ -226,49 +212,98 @@ test('generated unicorn contact causes defeat and keyboard Play again resets the
   await frames(page);
   for (let batch = 0; batch < 60 && await page.evaluate(() => game.state === 'playing'); batch++) await frames(page, 60);
   await expect(page.getByRole('heading', { name: 'Defeat', exact: true })).toBeVisible();
-  await expect(page.locator('#magic')).toHaveText('0 / 100');
+  await expect(page.locator('#health')).toHaveText('0 / 5');
   await expect(page.getByRole('button', { name: 'Play again' })).toBeFocused();
   await capture(page, testInfo, 'defeat');
   await page.keyboard.press('Enter');
   await expect(page.locator('#game')).toBeFocused();
   expect(await page.evaluate(() => game.state)).toBe('playing');
-  await expect(page.locator('#magic')).toHaveText('100 / 100');
+  await expect(page.locator('#health')).toHaveText('5 / 5');
 });
 
-test('busy glitter burst records frame times and reduced-motion presentation', async ({ page }, testInfo) => {
+test('combined roses, supplies, and maximum glitter record frame times and reduced-motion presentation', async ({ page, browser }, testInfo) => {
   await load(page);
   await page.keyboard.press('Enter');
-  // Replenish the cosmetic cap every frame for a sustained worst-case burst.
-  // Keep the real clock, renderer, simulation, and native browser scheduling.
-  const result = await page.evaluate(() => new Promise(resolve => {
-    const intervals = [];
-    const particles = [];
-    let previous;
-    function measure(now) {
-      if (previous !== undefined) intervals.push(now - previous);
-      previous = now;
-      const { x, y, angle } = game.session.player;
-      game.effects.consume(Array.from({ length: 6 }, () => ({ type: 'glitter', x: x + 2 * Math.cos(angle), y: y + 2 * Math.sin(angle) })));
-      particles.push(game.effects.particleCount);
-      if (intervals.length < 180) requestAnimationFrame(measure);
-      else {
-        const sorted = [...intervals].sort((a, b) => a - b);
-        let streak = 0;
-        let maxStreak = 0;
-        for (const ms of intervals) { streak = ms > 33 ? streak + 1 : 0; maxStreak = Math.max(maxStreak, streak); }
-        resolve({ samples: intervals.length, medianMs: sorted[90], p95Ms: sorted[171], maxMs: sorted.at(-1),
-          over33Ms: intervals.filter(ms => ms > 33).length, maxConsecutiveOver33Ms: maxStreak,
-          minParticles: Math.min(...particles), maxParticles: Math.max(...particles),
-          userAgent: navigator.userAgent, hardwareConcurrency: navigator.hardwareConcurrency });
-      }
+  // Synthetic stress fixture, never used for balance/playthrough claims. Keep
+  // the generated world and production clock, simulation, renderer, and RAF.
+  const result = await page.evaluate(async () => {
+    const { spawnRose } = await import('/src/projectiles.js');
+    const { MAX_ROSES, HEALTH_PICKUPS_PER_WAVE, ARMOR_PICKUPS_PER_WAVE } = await import('/src/config.js');
+    const session = game.session;
+    // Stop the generated herd from ending the sample. The protected spawn
+    // corridor already provides hedge-free space for all eight real supplies.
+    for (const unicorn of session.unicorns) {
+      unicorn.speed = 0;
+      unicorn.attack.cooldownFor = 600;
     }
-    requestAnimationFrame(measure);
-  }));
-  expect(result.minParticles).toBe(144);
-  expect(result.maxParticles).toBe(144);
-  await attachJSON(testInfo, 'busy-burst-performance', result);
+    session.pickups.forEach((pickup, i) => {
+      pickup.x = 5 + (i % 4) * 0.6;
+      pickup.y = 11.65 + Math.floor(i / 4) * 1.7;
+    });
+    const consume = game.effects.consume;
+    const replenish = () => {
+      while (session.roses.length < MAX_ROSES) {
+        const i = session.nextRoseId % MAX_ROSES;
+        spawnRose(session, { id: 'stress-fixture', x: 4.75 + (i % 8) * 0.45,
+          y: 11.65 + Math.floor(i / 8) * 0.5 }, { x: 1, y: 0 });
+      }
+      const { x, y, angle } = session.player;
+      consume.call(game.effects, Array.from({ length: 6 }, () => ({
+        type: 'glitter', x: x + 2 * Math.cos(angle), y: y + 2 * Math.sin(angle),
+      })));
+    };
+    // App event consumption runs after simulation and before drawing. Refill
+    // there so every measured render has moving roses and the full star cap.
+    game.effects.consume = events => { consume.call(game.effects, events); replenish(); };
+    window.finishBusySample = () => { game.effects.consume = consume; };
+    replenish();
+    return new Promise(resolve => {
+      const intervals = [];
+      const counts = [];
+      let previous;
+      let warmup = 30;
+      function measure(now) {
+        if (previous !== undefined && warmup === 0) {
+          intervals.push(now - previous);
+          counts.push({ roses: session.roses.length, particles: game.effects.particleCount,
+            healthSupplies: session.pickups.filter(item => item.kind === 'health').length,
+            armorSupplies: session.pickups.filter(item => item.kind === 'armor').length });
+        }
+        if (warmup > 0) warmup--;
+        previous = now;
+        if (intervals.length < 180) requestAnimationFrame(measure);
+        else {
+          const sorted = [...intervals].sort((a, b) => a - b);
+          const percentile = fraction => sorted[Math.ceil(sorted.length * fraction) - 1];
+          const range = key => ({ min: Math.min(...counts.map(sample => sample[key])),
+            max: Math.max(...counts.map(sample => sample[key])) });
+          let streak = 0;
+          let maxStreak = 0;
+          for (const ms of intervals) { streak = ms > 33 ? streak + 1 : 0; maxStreak = Math.max(maxStreak, streak); }
+          resolve({ seed: session.seed, clock: 'native requestAnimationFrame', fixture: 'synthetic combined stress',
+            warmupFrames: 30, samples: intervals.length, medianMs: percentile(0.5),
+            p95Ms: percentile(0.95), p99Ms: percentile(0.99), maxMs: sorted.at(-1),
+            over33Ms: intervals.filter(ms => ms > 33).length, maxConsecutiveOver33Ms: maxStreak,
+            activeRoses: range('roses'), particles: range('particles'),
+            healthSupplies: range('healthSupplies'), armorSupplies: range('armorSupplies'),
+            expectedRoses: MAX_ROSES, expectedHealthSupplies: HEALTH_PICKUPS_PER_WAVE,
+            expectedArmorSupplies: ARMOR_PICKUPS_PER_WAVE,
+            state: game.state, intervalsMs: intervals,
+            userAgent: navigator.userAgent, hardwareConcurrency: navigator.hardwareConcurrency });
+        }
+      }
+      requestAnimationFrame(measure);
+    });
+  });
+  expect(result.state).toBe('playing');
+  expect(result.activeRoses).toEqual({ min: result.expectedRoses, max: result.expectedRoses });
+  expect(result.particles).toEqual({ min: 144, max: 144 });
+  expect(result.healthSupplies).toEqual({ min: result.expectedHealthSupplies, max: result.expectedHealthSupplies });
+  expect(result.armorSupplies).toEqual({ min: result.expectedArmorSupplies, max: result.expectedArmorSupplies });
+  await attachJSON(testInfo, 'combined-busy-performance', { ...result, browser: browser.version() });
   // Host performance varies; report slow streaks for investigation, not a flaky CI gate.
-  await capture(page, testInfo, 'busy-burst');
+  await capture(page, testInfo, 'combined-busy-scene');
+  await page.evaluate(() => window.finishBusySample());
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await expect.poll(() => page.evaluate(() => game.effects.reducedMotion)).toBe(true);
   await page.keyboard.press('Escape');

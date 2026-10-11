@@ -1,29 +1,13 @@
-import { test, expect, origin } from './fixtures.js';
+import { test, expect, origin, controlledClock, stepFrames as step, attachJSON } from './fixtures.js';
 
 test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => {
-    // Drive real app frames deterministically, including the two-second intermission.
-    const frames = new Map();
-    let id = 0;
-    let now = 0;
-    window.requestAnimationFrame = callback => { frames.set(++id, callback); return id; };
-    window.cancelAnimationFrame = id => frames.delete(id);
-    window.stepFrames = (count = 1) => {
-      for (let i = 0; i < count; i++) {
-        now += 50;
-        const pending = [...frames.values()];
-        frames.clear();
-        for (const callback of pending) callback(now);
-      }
-    };
-  });
+  // Three simulation ticks per frame, including the two-second intermission.
+  await controlledClock(page, 50);
   await page.goto(origin);
   await page.evaluate(async () => { window.game = (await import('/main.js')).game; });
 });
 
-const step = (page, count = 1) => page.evaluate(count => stepFrames(count), count);
-
-test('the focused primary action stays inside the scrollable panel on a narrow screen', async ({ page }) => {
+test('the focused primary action stays inside the scrollable panel on a narrow screen', async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 320, height: 720 });
   await page.reload();
   await expect(page.getByRole('button', { name: 'Start game', exact: true })).toBeFocused();
@@ -34,6 +18,24 @@ test('the focused primary action stays inside the scrollable panel on a narrow s
   });
   expect(visible).toBe(true);
   await page.keyboard.press('Enter');
+  await expect(page.locator('#health')).toHaveText('5 / 5');
+  await expect(page.locator('#armor')).toHaveText('0 / 5');
+  const badgesFit = await page.evaluate(() => {
+    const stage = document.querySelector('#stage').getBoundingClientRect();
+    return [...document.querySelectorAll('.badge')].every(badge => {
+      const bounds = badge.getBoundingClientRect();
+      return bounds.left >= stage.left && bounds.right <= stage.right
+        && bounds.top >= stage.top && bounds.bottom <= stage.bottom;
+    });
+  });
+  expect(badgesFit).toBe(true);
+  const path = testInfo.outputPath('narrow-survival-hud.png');
+  await page.screenshot({ path });
+  await testInfo.attach('narrow-survival-hud', { path, contentType: 'image/png' });
+  await attachJSON(testInfo, 'narrow-hud-layout', {
+    viewport: page.viewportSize(), seed: 1, primaryActionVisible: visible, badgesFit,
+    humanReadabilityReview: 'pending',
+  });
   await page.keyboard.press('Escape');
   await expect(page.getByRole('button', { name: 'Resume game' })).toBeFocused();
 });
@@ -43,7 +45,10 @@ test('all menu actions work with keyboard focus and no pointer lock', async ({ p
   await expect(start).toBeFocused();
   await expect(page.locator('#instructions')).toContainText('Clear three waves: 6, 8, then 10');
   await expect(page.locator('#instructions')).toContainText('unlimited rainbows');
-  await expect(page.locator('#instructions')).toContainText('Contact with a unicorn costs 20 magic');
+  await expect(page.locator('#instructions')).toContainText('Armor absorbs');
+  await expect(page.locator('#instructions')).toContainText("unicorn's rear");
+  await expect(page.locator('#instructions')).toContainText('Rainbow cakes restore one health point');
+  await expect(page.locator('#instructions')).toContainText('star-shield charms add one armor point');
   await expect(page.locator('.controls')).toContainText('Alt + ← / →');
   await page.keyboard.press('Tab');
   await expect(page.getByRole('button', { name: 'Mute sound', exact: true })).toBeFocused();
@@ -78,7 +83,8 @@ test('all menu actions work with keyboard focus and no pointer lock', async ({ p
   await page.keyboard.press('Enter');
   await expect(page.locator('#game')).toBeFocused();
   await expect(page.locator('#score')).toHaveText('0');
-  await expect(page.locator('#magic')).toHaveText('100 / 100');
+  await expect(page.locator('#health')).toHaveText('5 / 5');
+  await expect(page.locator('#armor')).toHaveText('0 / 5');
   await expect(page.locator('#best-score')).toHaveText('100');
   await page.reload();
   await expect(start).toBeFocused();
@@ -92,17 +98,24 @@ test('frame updates preserve controls and focus and announce only meaningful tra
   await page.evaluate(() => {
     window.primaryNode = document.querySelector('#start');
     window.soundNode = document.querySelector('#mute');
+    window.healthNode = document.querySelector('#health');
+    window.armorNode = document.querySelector('#armor');
     window.announcements = [];
     const status = document.querySelector('#announcement');
     window.observer = new MutationObserver(() => announcements.push(status.textContent));
     observer.observe(status, { childList: true, subtree: true, characterData: true });
     game.session.score = 250;
     game.session.combo = 2;
+    game.session.player.health = 3;
+    game.session.player.armor = 2;
   });
   await step(page, 10);
   await expect(page.locator('#score')).toHaveText('250');
+  await expect(page.locator('#health')).toHaveText('3 / 5');
+  await expect(page.locator('#armor')).toHaveText('2 / 5');
   await expect(page.locator('#mute')).toBeFocused();
   expect(await page.evaluate(() => primaryNode === document.querySelector('#start') && soundNode === document.querySelector('#mute'))).toBe(true);
+  expect(await page.evaluate(() => healthNode === document.querySelector('#health') && armorNode === document.querySelector('#armor'))).toBe(true);
   expect(await page.evaluate(() => announcements)).toEqual([]);
   expect(await page.locator('.hud').getAttribute('aria-live')).toBeNull();
   await page.evaluate(() => { game.session.unicorns.forEach(unicorn => { unicorn.alive = false; }); });
@@ -128,13 +141,15 @@ test('victory and defeat announce final scores, focus restart, and begin a fresh
   await expect(page.getByRole('button', { name: 'Play again' })).toBeFocused();
   await page.keyboard.press('Space');
   await page.evaluate(() => {
-    game.session.player.magic = 20;
+    game.session.player.health = 1;
     game.session.unicorns[0].x = game.session.player.x;
     game.session.unicorns[0].y = game.session.player.y;
   });
   await step(page, 2);
   await expect(page.getByRole('heading', { name: 'Defeat', exact: true })).toBeVisible();
-  await expect(page.locator('#magic')).toHaveText('0 / 100');
+  await expect(page.locator('#health')).toHaveText('0 / 5');
+  await expect(page.locator('#armor')).toHaveText('0 / 5');
+  await expect(page.locator('#message')).toContainText('Your health ran out.');
   await expect(page.locator('#message')).toContainText('Final score: 0. Best score: 400.');
   await expect(page.locator('#announcement')).toContainText('Defeat');
   await expect(page.getByRole('button', { name: 'Play again' })).toBeFocused();
@@ -142,6 +157,8 @@ test('victory and defeat announce final scores, focus restart, and begin a fresh
   expect(await page.evaluate(() => game.state)).toBe('playing');
   await expect(page.locator('#game')).toBeFocused();
   await expect(page.locator('#wave')).toHaveText('1 / 3');
+  await expect(page.locator('#health')).toHaveText('5 / 5');
+  await expect(page.locator('#armor')).toHaveText('0 / 5');
 });
 
 for (const failure of ['unsupported', 'activation failure']) {

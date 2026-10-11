@@ -1,0 +1,1026 @@
+{
+  "issue": 92,
+  "generatedAtUTC": "2026-10-11T21:14:40.382419+00:00",
+  "source": {
+    "parentCommit": "14e298abc58405ef8782c7df8aa1f145591a7b79",
+    "branch": "92/gpt-6.1-sol-12-document-the-new-rules-20261011-2106-7np",
+    "testedState": "Uncommitted issue 92 worktree atop the parent commit; runtime and verification source hashes identify the tested content.",
+    "sha256": {
+      "index.html": "a28c31b9edc3e01b75a78b71670d53f1da4efc6363e8a1623115e6f1ca71b186",
+      "styles.css": "e5a6c4f7ba65693023ff32bb0ff618061f283eb715ffa822d2d6557f38fd7b21",
+      "main.js": "e7ff3775c2f6815c4c1527df7c9a4e671c59f22f70724fd1ad374649e1bc131f",
+      "package.json": "f133b2470d5a6763789cacb72476e4bde5bcd9889d5d138b129ee8b16c17b0dd",
+      "package-lock.json": "55486e47d5529c497af48fb25cc9a409c8cc48e02959ef4e3f762c0772ae9286",
+      "jsconfig.json": "7aba35105eb7166ffbb52dff1ffba70ef6ebc68264c08272a694d3a49bba4ba3",
+      "playwright.config.js": "036c3cf928c97b426693787e36040fa95f34671194dbfe91e263b3b67a6ee49b",
+      "src/app.js": "69cc369ffd0f1f285cba778c7a8ac8896bf12877b9fa0dc7bc46883ab0bce21a",
+      "src/art.js": "32e1ce416af96d42aa757c79b84399c8eb39c586c739f6b31a3e508c096cb887",
+      "src/audio-platform.js": "1e72881aa5f5e8bcc99741ee27dcef10e41156097949c8e854568c55e5f950fa",
+      "src/audio.js": "7a8b9385bb0f13f3e3d57fb55e87ac42cf42e599d239d32644eb8eb820c2a1eb",
+      "src/bootstrap.js": "51900571b0129d813390b5bb5dc96b742f2425232fb8a48caa085c24f96adfa5",
+      "src/clock.js": "0b44936735f17630c00e13d870cbca847178910b828b80e21d46e0a16904c6c0",
+      "src/combat.js": "95acd0181baa9976cf4d0673403f8c9412db86ec1ceb7c79b536319081598cfc",
+      "src/config.js": "f10a74b25c818abe0fc9e0525647617dce50b85c67fe0492ce930544e554e1f1",
+      "src/contracts.js": "91c4e69aec2d33cc9ca796e66e165241e017102fa7f7cc55f1a0a191ad47cd44",
+      "src/effects-renderer.js": "0ad1efd08800c4014a8b8c2a3a8aa134377db06c03f9fa9e2ef3f72651ff4d5c",
+      "src/effects-state.js": "f3de4b43ada6da14882ff52d6174026c1df220170a41234296051dcb80149126",
+      "src/effects.js": "3412d7c8044c25a0325055ad3c3c8e547171e8a2ac2027301ec3777e7be513d4",
+      "src/geometry.js": "57de26952dde39fa9fa75dc880055a84d463ddd72c7f53afd3831574cf0506c0",
+      "src/hud.js": "2be782e8d334c9c782c932849e89c28b20ab51fffd2753d97abcab3ac317af46",
+      "src/input.js": "add35c3612d239a37f8d624c86234a33b668bad3f7ac817fe2d59f8a86e7cdcc",
+      "src/math.js": "4c527b63921ea9e841f84b5544324e6364e53361a72a3f684f45c90c59751cb5",
+      "src/pickups.js": "9c3f006854be126bc561b2b561aca8884665995d028422f64c66ff3325d3dda2",
+      "src/player.js": "fa8e887b2a7c3fe4884052cacb35b7e96b8f52693814ee7cb4b194ec0c7449c2",
+      "src/projectiles.js": "9e520313caaa29b8bb0d04c9af84f3ba3dfbe2053a9fe325d2edcf4676f8652e",
+      "src/projection.js": "4fe8e8669f25694b2de1ded176459e54e2f3e144e42748882932d012a9793108",
+      "src/ranged-attacks.js": "c01b4c5e42b9915fb79f51c83c5d0c4bf23696e34156261314fc27f31ce3b132",
+      "src/renderer.js": "1447d944cdcb3e68975154c0d13ac87e1a8867d746f09d4fe523ed296589bb88",
+      "src/session.js": "8bdd895bd1ccc4f2a33681271b963e7bed493e956c8e792e42e004bd2a4d356a",
+      "src/snapshot.js": "7f4566a30085c4f05c466eb193fc6f364ec6197d44b1d7299d956d146ca6be21",
+      "src/sprite-presentation.js": "4f6558c9519519867036ace4bb865fc40cfec6343cfb58a15f3414c239d6bf20",
+      "src/survival.js": "1501afca8a4e8bb15e36fe0d82d80b402a304d17253baf43ac9486b480766c01",
+      "src/unicorn.js": "2e824cfe86d1b3a4be21bf08cc0fc3c7e9e63776769f4a30022f32dc0cf04317",
+      "src/world.js": "5d33da7901abbd36717536fb92b5161ded9ba9e00cd7c395ad1071973ddeec7d",
+      "browser/app.spec.js": "18a77ae3882096c8acb164deda819352718bde66e9f29a34ae911db28c4e88c2",
+      "browser/art.spec.js": "e0ac55162bfe12832e0a09133bf8518a88ea1b7de7330e40f3b016ebdd3770c3",
+      "browser/audio.spec.js": "ff6fd678709dcc4f52c5246fbf49c14b2a28d41b01674a44fa8896724fb91818",
+      "browser/boot.spec.js": "12cd5785ef265d38c191ba9cd14141a3f274be68e1597ca0256a8bba8f878084",
+      "browser/effects.spec.js": "2110a7713d3025d7afcf486484818250382a929e2adf570170a124dac438da70",
+      "browser/fixtures.js": "79087cc4f9dd20f5a795b9dbb0011875329476c378f820c97a4dca7edb453146",
+      "browser/hud.spec.js": "396751221a1988af3e4bccb212c0f86bfdb28bb4b8b91878e66da6d231e68f5b",
+      "browser/input.spec.js": "d081052aac102176b20997c1e0cc7c56f12cd7228d34ed3fa24c2908f84bf91e",
+      "browser/renderer.spec.js": "dbce81fb58812a94bb85392684527e90df6eddf20849a50d3e55f9029170e0eb",
+      "browser/smoke.spec.js": "a19cb643a0446ad0a1bf368e451cc838f7a07261cc28a14ed4a72995f5c7964f",
+      "browser/survival.spec.js": "faa3cc6f47d0efc64b4a6860396eec003a92ff13d5f8b2bea0f34fa24c6a525d",
+      "test/audio-races.test.js": "9685f83f71898b55b950d139bc4c522f5f811fa1af072f262efef9b80a1777fb",
+      "test/audio.test.js": "3bd558003ae92b3b20a2df0fbb6883163174d58305d8353e7d86c6c5bd5aaba0",
+      "test/clock.test.js": "6181eac39ae87857362bf782a7d05cfd06707c8ffc4049a2a01b49ca7a20a493",
+      "test/combat-timing.test.js": "87c4772856e838b099fbc67ce64ce011a851663dc70916da5f93343d2b802941",
+      "test/combat.test.js": "4b2c3e6a64a0d8e84c453e233497f19238e6754eb64033ccf4ed4be26b723364",
+      "test/effects-state.test.js": "18d8ae79835c1b5db58aa40e4271628f75fc97c86ed57f9c1efa0f1c72b3538b",
+      "test/effects.test.js": "6249e29a4c2e4969cf22f83363075e4442088b57aeedeafb588d7a6516a83268",
+      "test/geometry.test.js": "b89ed79205c69a9ba8e68437fd3a7ffc886af75b2a7cd6f311c3cbe1e2158b1c",
+      "test/helpers/simulation.js": "0ab90ab0f12145d0cb8b18d55f169b9ff2068856733f9693c163ea44802c5a66",
+      "test/helpers/world.js": "8017a9969ec33e397ad7d3c66afa0d5695e281f3fc0e68c646a8728fd79dc545",
+      "test/input.test.js": "689fe47db45ba9a9adb5656588b243b9196325b9b0a34c417eda902dfe79d8c4",
+      "test/pickups.test.js": "e076b7b23bd7b3a663074b45785190128fe26caeab73b289b4bb5bfb4f572ef4",
+      "test/player.test.js": "06656ddaf3cd8ca2293ba9588889b42eeaa123d1c1bb8934274a7efd883532df",
+      "test/projectiles.test.js": "8f8fc052a05a2428fcb8251a511f922c2117383c9e2bf0c683927d3f86366775",
+      "test/projection.test.js": "86cbcb5536a0e23083fa238843c0686b28383e4546d70fb53f5e98befa30c87c",
+      "test/ranged-attacks.test.js": "f0a754f6773b03baee7987857d7072b4d4bc6c6f224376ea12ef1415622cebf3",
+      "test/session.test.js": "a5965d545f1d29fa029973208872fef74373ba94324c0069fe220cffc72ef2b8",
+      "test/simulation.test.js": "5ba23b4a45343a99916753bc98c7afaf9a3f1ad680b6604881983f3ba60d3d02",
+      "test/snapshot.test.js": "3b2131b2be2487f2d54be047304ab148601856f6c9a1021926c980c8585d0b8d",
+      "test/sprite-presentation.test.js": "e77edab072768ffba144af596fb811090b2b2514a2e477513b468c5651d0363a",
+      "test/survival.test.js": "a8600dfb6ceaedb6298cfdf9280fa8064ef7b36a1e37ecabc3ba79fbd5a41ee5",
+      "test/unicorn.test.js": "3383ae63bb36abeaea459e786a984ded9aa40d1920e0c92e4e1b30db4f1ad7c0",
+      "test/world.test.js": "bd0850f1f58f46518cec1fcd50f7537ef8f8179f47442d736af01fb27626ba89",
+      "tools/serve.mjs": "04992d7fdec99bd4f01d68310a317367c4ca9431a59f38e1a0e21d7bd3c1d1e6"
+    }
+  },
+  "environment": {
+    "node": "v22.23.2",
+    "npm": "10.9.8",
+    "playwright": "1.64.0",
+    "typescript": "7.0.2",
+    "browser": [
+      "154.0.8037.92"
+    ],
+    "executable": "/usr/bin/chromium",
+    "headless": true,
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "kernel": "7.0.0-38-generic",
+    "architecture": "x86_64",
+    "cpu": "AMD Ryzen 7 8745HS w/ Radeon 780M Graphics (KVM, 9 exposed virtual CPUs)",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "narrowViewport": {
+      "width": 320,
+      "height": 720
+    },
+    "canvas": {
+      "width": 640,
+      "height": 360
+    },
+    "workers": 1
+  },
+  "scenarioSeed": 1,
+  "commands": [
+    {
+      "command": "npm ci",
+      "exitCode": 0,
+      "result": "5 packages installed; audit reports 0 vulnerabilities"
+    },
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "log": "typecheck.txt"
+    },
+    {
+      "command": "npm test",
+      "exitCode": 0,
+      "result": {
+        "tests": 256,
+        "pass": 256,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "log": "node-tests.txt"
+    },
+    {
+      "command": "PLAYWRIGHT_JSON_OUTPUT_NAME=/tmp/unicorn-issue92-verification/final-browser-results.json npm run test:browser -- --reporter=list,json,html",
+      "exitCode": 0,
+      "result": {
+        "startTime": "2026-10-11T21:11:59.135Z",
+        "duration": 126783.51800000001,
+        "expected": 75,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "log": "browser-tests.txt"
+    }
+  ],
+  "browserHealth": {
+    "tests": 75,
+    "failures": 0
+  },
+  "browserTests": [
+    {
+      "file": "app.spec.js",
+      "title": "simulation uses 60 Hz steps, bounds delayed frames, and consumes mouse motion once",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 688
+        }
+      ]
+    },
+    {
+      "file": "app.spec.js",
+      "title": "a movement tick drains pickup-before-damage feedback once to effects and audio and updates the HUD",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 530
+        }
+      ]
+    },
+    {
+      "file": "app.spec.js",
+      "title": "Escape freezes play until explicit Resume and discards held input and elapsed time",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 646
+        }
+      ]
+    },
+    {
+      "file": "app.spec.js",
+      "title": "hidden tab freezes play until explicit Resume and discards held input and elapsed time",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 650
+        }
+      ]
+    },
+    {
+      "file": "app.spec.js",
+      "title": "focus loss freezes play until explicit Resume and discards held input and elapsed time",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 636
+        }
+      ]
+    },
+    {
+      "file": "app.spec.js",
+      "title": "pointer-lock loss freezes play until explicit Resume and discards held input and elapsed time",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 671
+        }
+      ]
+    },
+    {
+      "file": "app.spec.js",
+      "title": "ten restarts retain one loop and audio context, clear cosmetics, and preserve firing rate",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 6251
+        }
+      ]
+    },
+    {
+      "file": "app.spec.js",
+      "title": "both results stop simulation, persist each new record once, and support another run",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 2263
+        }
+      ]
+    },
+    {
+      "file": "app.spec.js",
+      "title": "access denied, rejected audio, and rejected pointer capture preserve keyboard play",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 701
+        }
+      ]
+    },
+    {
+      "file": "app.spec.js",
+      "title": "write denied, rejected audio, and rejected pointer capture preserve keyboard play",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 701
+        }
+      ]
+    },
+    {
+      "file": "app.spec.js",
+      "title": "numeric seed ?seed=0 produces a reproducible run",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 666
+        }
+      ]
+    },
+    {
+      "file": "app.spec.js",
+      "title": "numeric seed ?seed=-12.5 produces a reproducible run",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 640
+        }
+      ]
+    },
+    {
+      "file": "app.spec.js",
+      "title": "numeric seed ?seed=1e3 produces a reproducible run",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 668
+        }
+      ]
+    },
+    {
+      "file": "app.spec.js",
+      "title": "numeric seed ?seed=invalid produces a reproducible run",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 679
+        }
+      ]
+    },
+    {
+      "file": "app.spec.js",
+      "title": "numeric seed ?seed= produces a reproducible run",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 751
+        }
+      ]
+    },
+    {
+      "file": "app.spec.js",
+      "title": "numeric seed ?seed=Infinity produces a reproducible run",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 674
+        }
+      ]
+    },
+    {
+      "file": "app.spec.js",
+      "title": "startup reports missing canvas without uncaught errors or a leftover loop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 350
+        }
+      ]
+    },
+    {
+      "file": "app.spec.js",
+      "title": "startup reports missing menus without uncaught errors or a leftover loop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 392
+        }
+      ]
+    },
+    {
+      "file": "app.spec.js",
+      "title": "startup reports unavailable canvas without uncaught errors or a leftover loop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 389
+        }
+      ]
+    },
+    {
+      "file": "app.spec.js",
+      "title": "startup reports failed initial render without uncaught errors or a leftover loop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 390
+        }
+      ]
+    },
+    {
+      "file": "art.spec.js",
+      "title": "artwork is cached, local, and uses transparent sprite surfaces",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 435
+        }
+      ]
+    },
+    {
+      "file": "art.spec.js",
+      "title": "survival sprites keep their identifying colors and a visible rear attack anchor",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 443
+        }
+      ]
+    },
+    {
+      "file": "art.spec.js",
+      "title": "fresh loads produce identical pixels for every asset",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 588
+        }
+      ]
+    },
+    {
+      "file": "art.spec.js",
+      "title": "the small unicorn keeps four separate legs and rainbow accents",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 391
+        }
+      ]
+    },
+    {
+      "file": "audio.spec.js",
+      "title": "all eight effects render non-silent, unclipped audio and produce audition clips",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 565
+        }
+      ]
+    },
+    {
+      "file": "boot.spec.js",
+      "title": "both boot paths export the same function without scheduling another loop",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 383
+        }
+      ]
+    },
+    {
+      "file": "boot.spec.js",
+      "title": "importing /src/app.js before main does not create a game",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 395
+        }
+      ]
+    },
+    {
+      "file": "boot.spec.js",
+      "title": "importing /src/bootstrap.js before main does not create a game",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 435
+        }
+      ]
+    },
+    {
+      "file": "boot.spec.js",
+      "title": "repeated main imports share one game and destroy cancels its only callback",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 440
+        }
+      ]
+    },
+    {
+      "file": "effects.spec.js",
+      "title": "the game gates audio on Start, drains a conversion, and freezes/silences on pause",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 912
+        }
+      ]
+    },
+    {
+      "file": "effects.spec.js",
+      "title": "muting stops current sources, persists on reload, and bounds real audio sources",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 749
+        }
+      ]
+    },
+    {
+      "file": "effects.spec.js",
+      "title": "live reduced-motion preference keeps conversions visible with six stars",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 842
+        }
+      ]
+    },
+    {
+      "file": "effects.spec.js",
+      "title": "real canvas stars expand, stay multicolored, and are fully clipped behind a hedge",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 477
+        }
+      ]
+    },
+    {
+      "file": "effects.spec.js",
+      "title": "unavailable Web Audio leaves a playable, silent game",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 840
+        }
+      ]
+    },
+    {
+      "file": "effects.spec.js",
+      "title": "wave, damage, victory, and defeat transitions reach both feedback consumers",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 6610
+        }
+      ]
+    },
+    {
+      "file": "hud.spec.js",
+      "title": "the focused primary action stays inside the scrollable panel on a narrow screen",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 558
+        }
+      ]
+    },
+    {
+      "file": "hud.spec.js",
+      "title": "all menu actions work with keyboard focus and no pointer lock",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 1028
+        }
+      ]
+    },
+    {
+      "file": "hud.spec.js",
+      "title": "frame updates preserve controls and focus and announce only meaningful transitions",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 933
+        }
+      ]
+    },
+    {
+      "file": "hud.spec.js",
+      "title": "victory and defeat announce final scores, focus restart, and begin a fresh game",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 1435
+        }
+      ]
+    },
+    {
+      "file": "hud.spec.js",
+      "title": "silent mode reports unsupported audio and preserves mute preference",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 633
+        }
+      ]
+    },
+    {
+      "file": "hud.spec.js",
+      "title": "silent mode reports activation failure audio and preserves mute preference",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 585
+        }
+      ]
+    },
+    {
+      "file": "hud.spec.js",
+      "title": "blocked storage still supports best score and restart during this visit",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 579
+        }
+      ]
+    },
+    {
+      "file": "input.spec.js",
+      "title": "real keyboard input moves, normalizes diagonals, runs, strafes, fires, and invokes commands",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 479
+        }
+      ]
+    },
+    {
+      "file": "input.spec.js",
+      "title": "focus loss clears held keys and firing; auto-repeat cannot restore them",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 513
+        }
+      ]
+    },
+    {
+      "file": "input.spec.js",
+      "title": "rejected mouse capture never rejects globally and leaves keyboard play usable",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 491
+        }
+      ]
+    },
+    {
+      "file": "input.spec.js",
+      "title": "locked mouse movement consumes horizontal aim once, and lock loss pauses without keydown",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 504
+        }
+      ]
+    },
+    {
+      "file": "input.spec.js",
+      "title": "Escape pauses after a real pointer lock request",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 507
+        }
+      ]
+    },
+    {
+      "file": "renderer.spec.js",
+      "title": "perpendicular wall depth keeps planar hedges straight while turning",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 470
+        }
+      ]
+    },
+    {
+      "file": "renderer.spec.js",
+      "title": "70 degree projection and 0.65 tile eye height survive odd sizes and aspect changes",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 448
+        }
+      ]
+    },
+    {
+      "file": "renderer.spec.js",
+      "title": "hedges hide unicorns and clip partially visible billboard columns",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 520
+        }
+      ]
+    },
+    {
+      "file": "renderer.spec.js",
+      "title": "near unicorns and decorative props draw over farther billboards regardless of input order",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 480
+        }
+      ]
+    },
+    {
+      "file": "renderer.spec.js",
+      "title": "hedges fully hide cakes, charms, rear poses, and roses and clip their visible edge without leaks",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 741
+        }
+      ]
+    },
+    {
+      "file": "renderer.spec.js",
+      "title": "all entity arrays have stable pixels including coincident depth ties",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 478
+        }
+      ]
+    },
+    {
+      "file": "renderer.spec.js",
+      "title": "emitted rose aligns visibly with the rear rump at 640\u00d7360, camera 0",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 506
+        }
+      ]
+    },
+    {
+      "file": "renderer.spec.js",
+      "title": "emitted rose aligns visibly with the rear rump at 640\u00d7360, camera 0.25",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 507
+        }
+      ]
+    },
+    {
+      "file": "renderer.spec.js",
+      "title": "emitted rose aligns visibly with the rear rump at 640\u00d7360, camera -0.25",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 500
+        }
+      ]
+    },
+    {
+      "file": "renderer.spec.js",
+      "title": "emitted rose aligns visibly with the rear rump at 1001\u00d7563, camera 0",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 574
+        }
+      ]
+    },
+    {
+      "file": "renderer.spec.js",
+      "title": "emitted rose aligns visibly with the rear rump at 1001\u00d7563, camera 0.25",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 567
+        }
+      ]
+    },
+    {
+      "file": "renderer.spec.js",
+      "title": "emitted rose aligns visibly with the rear rump at 1001\u00d7563, camera -0.25",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 633
+        }
+      ]
+    },
+    {
+      "file": "renderer.spec.js",
+      "title": "emitted rose aligns visibly with the rear rump at 401\u00d7601, camera 0",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 566
+        }
+      ]
+    },
+    {
+      "file": "renderer.spec.js",
+      "title": "emitted rose aligns visibly with the rear rump at 401\u00d7601, camera 0.25",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 474
+        }
+      ]
+    },
+    {
+      "file": "renderer.spec.js",
+      "title": "emitted rose aligns visibly with the rear rump at 401\u00d7601, camera -0.25",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 566
+        }
+      ]
+    },
+    {
+      "file": "renderer.spec.js",
+      "title": "cached paper, trees, grass, and sprites stay still; walking and recoil change only the weapon",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 674
+        }
+      ]
+    },
+    {
+      "file": "renderer.spec.js",
+      "title": "the running game freezes walking on pause and observes live reduced motion",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 1193
+        }
+      ]
+    },
+    {
+      "file": "smoke.spec.js",
+      "title": "startup renders a playable scene; conversion, pause, sound, restart, and denied capture work",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 1839
+        }
+      ]
+    },
+    {
+      "file": "smoke.spec.js",
+      "title": "keyboard movement slides along a hedge, shots stop there, and a detour reaches its far side",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 3578
+        }
+      ]
+    },
+    {
+      "file": "smoke.spec.js",
+      "title": "three generated waves are winnable through keyboard input without changing game state",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 24420
+        }
+      ]
+    },
+    {
+      "file": "smoke.spec.js",
+      "title": "three generated waves are winnable through mouse input without changing game state",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 23779
+        }
+      ]
+    },
+    {
+      "file": "smoke.spec.js",
+      "title": "generated unicorn contact causes defeat and keyboard Play again resets the round",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 2873
+        }
+      ]
+    },
+    {
+      "file": "smoke.spec.js",
+      "title": "combined roses, supplies, and maximum glitter record frame times and reduced-motion presentation",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 4588
+        }
+      ]
+    },
+    {
+      "file": "survival.spec.js",
+      "title": "walking over the visible cake and armor charm collects each once and updates the HUD",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 1324
+        }
+      ]
+    },
+    {
+      "file": "survival.spec.js",
+      "title": "a complete rear windup emits a real rose; impacts consume armor before health and remove the rose",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 3670
+        }
+      ]
+    },
+    {
+      "file": "survival.spec.js",
+      "title": "keyboard strafing after emission dodges the locked rose trajectory",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 1345
+        }
+      ]
+    },
+    {
+      "file": "survival.spec.js",
+      "title": "pause freezes windup, recovery, cooldown, and airborne roses; keyboard restart clears the attack",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 2952
+        }
+      ]
+    },
+    {
+      "file": "survival.spec.js",
+      "title": "reduced motion changes the canvas presentation while rose trajectories and impact ticks stay identical",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 2219
+        }
+      ]
+    }
+  ],
+  "hostedCIObserved": false,
+  "humanReview": {
+    "status": "pending",
+    "results": [],
+    "remaining": [
+      "cake/rose/charm recognition and hand-drawn theme",
+      "rear emission and readable real-time telegraph",
+      "human dodging",
+      "pickup usefulness on generated maps",
+      "keyboard and mouse human playthroughs including final health and armor",
+      "narrow-screen HUD readability",
+      "headed desktop combined stress",
+      "eight-cue audition and lifecycle"
+    ]
+  },
+  "tuningChanged": false,
+  "evidenceSHA256": {
+    "attack-and-impact-events.json": "8de4b2e61442a25535f854ca4b7f39c5995a2ddcc73f47583ae1c5d3218b65ea",
+    "audio/damage.wav": "d3769072b8d906e05533dd0519fb91282e76eb3489acbeb3749f7dee25c164b4",
+    "audio/defeat.wav": "3e1cf6d9b0ba9cd37861865420372a2d440284a0635f88730f3ccedbc2c218de",
+    "audio/glitter.wav": "63cd5375111a1bd7b91d47674c9e1866941886438e3ea25423de657b95b458f9",
+    "audio/pickup.wav": "efcd0af922589b3685b4b33465459c55cf5205c022a399e09dd8babc8b56e19f",
+    "audio/rose-fired.wav": "4c89e741ae128eb72d43e60c7ada81d1069ddf5489a1339291d302b64dc9601c",
+    "audio/shot.wav": "9a8af98bae51319f50ce03c8aaba0adb666907914b1f2d3b528597c0c946e9ce",
+    "audio/victory.wav": "c7fb6cd71f78bb0c01993e2e09dd55923354e55f2b6d6fc635d00a674a4532bb",
+    "audio/wave.wav": "33858d5fcecee215d32ad234c4686fab7f25608c6b23f6f33fc5e4e1aba2af6a",
+    "audio-samples.json": "ed952b3964598ffc1132c9cb18170402c076ab9cef3fddc8945aca697bf64dbf",
+    "browser-tests.txt": "7ad90043c3f30f20c0f3f8424278a5a87fbac1c1e086eb8b26698461770e206c",
+    "cake-and-armor-charm.png": "a35065157a1be2642732188f96d1af5aec516246c014c86937cb38aec7f3f774",
+    "collected-supplies-hud.png": "147ad5e3ba93ee2f4caf87290ff3590e5e7b0605c96df649462b1bbbe7bc30f9",
+    "collection-events.json": "9ccfbe61a555f9bbb9d2c6d997b340de8fb527b3d050220d7830ff0b6ea669f3",
+    "combined-busy-performance.json": "76eb8fc917653c9cb1c3d6bd8d96d1c07dd9de1723320dfe1da2c14863b3c18a",
+    "combined-busy-scene.png": "eda44db716f9ef186c226813e12c278a0b0bfeb18f8a956789a1a272b1858abe",
+    "dodged-rose.png": "72eca61450ac7ea20e2166be6d7fc525010a1fe84c47e3406e704e2a19ce4a6d",
+    "keyboard-dodge.json": "b108b6f194ba9624cd7503bc432c8b5ea405d4c66026b65abd07d9021683ce01",
+    "keyboard-playthrough.json": "46503127845704d4fa112f79cbf13058e501f820bcaab2b57fc909af4eace68a",
+    "keyboard-victory.png": "1d27c313191d0f6a8b8fad20cd202e18b2ffb9e75174af4b882dfbd06cc33753",
+    "mouse-playthrough.json": "e13f89ec04606130e84eb7a984be593cdf0a92ef15a2057d22f41bc28fc10847",
+    "mouse-victory.png": "92c6c5b5fb681ac662bbb16da04285d79143567199f785a5bfe688ef8c2ce90e",
+    "narrow-hud-layout.json": "5dc91b0946042d7adb075a2bfd258d39636e5e55fc1b3dcacf7b7a634b4e418c",
+    "narrow-survival-hud.png": "a73cd9f17b710a69a0603fa5ba5d34b5bad7cb6b9e5948918d9e2f9c55a73e41",
+    "node-tests.txt": "c4f8310c54e24c16dda900f9f2ad69eff9012d8cdb66364fb386522b87ae55de",
+    "rear-origin-rose.png": "49318a3549fd47a9cc6eee24583dbbe746e0e2561bfa30e98e67e73b589d9db0",
+    "rear-windup.png": "6dc730c8cba89c911dcfc3d2b8a2e367806634c7bcaff70a2cdccf260a10306b",
+    "rose-in-flight.png": "d131e42bab3df1c32908dd69b970321eeaddcc0087ed4d2a96a92bdfa39677be",
+    "typecheck.txt": "c1508689a3b5d9b67f36bb754661fa85f5b61145c531d69d2778df56a1072e98"
+  }
+}

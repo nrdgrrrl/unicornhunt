@@ -6,7 +6,8 @@ test('artwork is cached, local, and uses transparent sprite surfaces', async ({ 
   page.on('pageerror', error => errors.push(error.message));
   page.on('request', request => requests.push(request.url()));
   await page.goto(origin);
-  await page.evaluate(async () => { window.artModule = await import('/src/art.js'); });
+  // A separate module instance ensures generation is still lazy after app boot.
+  await page.evaluate(async () => { window.artModule = await import('/src/art.js?cache-test'); });
   const before = requests.length;
   const result = await page.evaluate(() => {
     // Fail if generation uses ambient randomness or creates more surfaces on reuse.
@@ -40,7 +41,8 @@ test('artwork is cached, local, and uses transparent sprite surfaces', async ({ 
   expect(result.reused).toBe(true);
   expect(result.alias).toBe(true);
   expect(result.assets.map(asset => asset.name).sort()).toEqual(
-    ['flower', 'grass', 'hedge', 'mushroom', 'paper', 'rock', 'stone', 'tree', 'unicorn', 'weapon']);
+    ['armorCharm', 'flower', 'grass', 'healthCake', 'hedge', 'mushroom', 'paper',
+      'rock', 'rose', 'stone', 'tree', 'unicorn', 'unicornRear', 'weapon']);
   for (const asset of result.assets) {
     expect(asset.drawn, asset.name).toBeGreaterThan(1000);
     if (['hedge', 'paper', 'grass'].includes(asset.name)) {
@@ -55,6 +57,59 @@ test('artwork is cached, local, and uses transparent sprite surfaces', async ({ 
   expect(requests).toHaveLength(before);
   expect(requests.every(url => url.startsWith(origin))).toBe(true);
   expect(errors).toEqual([]);
+});
+
+test('survival sprites keep their identifying colors and a visible rear attack anchor', async ({ page }) => {
+  await page.goto(origin);
+  const result = await page.evaluate(async () => {
+    const { createArt, RAINBOW, UNICORN_REAR_RUMP_ANCHOR } = await import('/src/art.js');
+    const art = createArt();
+    const colors = RAINBOW.map(color => [1, 3, 5].map(index => parseInt(color.slice(index, index + 2), 16)));
+    const inspect = (name, width = 128, height = 160) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(art[name], 0, 0, width, height);
+      const pixels = ctx.getImageData(0, 0, width, height).data;
+      const count = predicate => {
+        let total = 0;
+        for (let i = 0; i < pixels.length; i += 4) {
+          if (pixels[i + 3] > 100 && predicate(pixels[i], pixels[i + 1], pixels[i + 2])) total++;
+        }
+        return total;
+      };
+      return {
+        rainbow: colors.map(color => count((r, g, b) =>
+          [r, g, b].every((value, channel) => Math.abs(value - color[channel]) < 15))),
+        pink: count((r, g, b) => r > 200 && r > g * 1.2 && b > g),
+        green: count((r, g, b) => g > r * 1.1 && g > b),
+        yellow: count((r, g, b) => r > 220 && g > 190 && b < 180),
+      };
+    };
+    const anchor = UNICORN_REAR_RUMP_ANCHOR;
+    const rump = art.unicornRear.getContext('2d').getImageData(anchor.x - 3, anchor.y - 3, 7, 7).data;
+    return {
+      cake: inspect('healthCake'), charm: inspect('armorCharm'), rose: inspect('rose'),
+      smallCake: inspect('healthCake', 32, 40), smallCharm: inspect('armorCharm', 32, 40),
+      smallRose: inspect('rose', 32, 40), rear: inspect('unicornRear'),
+      anchor, frozenAnchor: Object.isFrozen(anchor), rump: Array.from(rump),
+    };
+  });
+  // Every cake layer and shield rainbow stripe survives drawing in the atlas.
+  for (const asset of [result.cake, result.charm, result.rear]) {
+    for (const count of asset.rainbow) expect(count).toBeGreaterThan(10);
+  }
+  expect(result.smallCake.rainbow.filter(count => count > 0)).toHaveLength(6);
+  expect(result.smallCharm.yellow).toBeGreaterThan(20);
+  expect(result.smallRose.pink).toBeGreaterThan(20);
+  expect(result.smallRose.green).toBeGreaterThan(5);
+  expect(result.anchor).toEqual({ x: 64, y: 100 });
+  expect(result.frozenAnchor).toBe(true);
+  // The exposed socket is on the cream rump, away from the mane and tail.
+  for (let i = 0; i < result.rump.length; i += 4) {
+    expect(result.rump.slice(i, i + 4)).toEqual([255, 248, 232, 255]);
+  }
 });
 
 test('fresh loads produce identical pixels for every asset', async ({ page }) => {

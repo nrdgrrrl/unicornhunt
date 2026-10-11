@@ -1,18 +1,26 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { EMPTY, HEDGE, createWorld, hasLineOfSight } from '../src/world.js';
-import { createPlayer, updatePlayer } from '../src/player.js';
+import { updatePlayer } from '../src/player.js';
 import { updateCombat } from '../src/combat.js';
 import { GameSession } from '../src/session.js';
 import { COMBO_WINDOW, STEP_SECONDS as STEP } from '../src/config.js';
-import { snapshot } from './helpers/simulation.js';
+import { snapshot, enemy, combatSession } from './helpers/simulation.js';
 
 const near = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-9, `${actual} should be near ${expected}`);
-const target = (id, x, y = 12.5, radius = 0.25) => ({ id, x, y, radius, alive: true });
+const target = (id, x, y = 12.5, radius = 0.25) => enemy(id, x, y, { radius });
 
 function combat(unicorns) {
   const world = createWorld(0);
-  return { world, player: createPlayer(world.spawn), unicorns, score: 0, combo: 0, elapsed: 0, lastHitAt: null, events: [] };
+  return combatSession(unicorns, world, world.spawn);
+}
+
+// Copy all survival entities, including nested aim samples, for per-tick replay.
+function survivalSnapshot(session) {
+  return structuredClone({
+    player: session.player, unicorns: session.unicorns, pickups: session.pickups,
+    roses: session.roses, nextRoseId: session.nextRoseId,
+  });
 }
 
 function shoot(session, seconds = 0, fire = true) {
@@ -127,8 +135,9 @@ function play(session, done = game => game.state !== 'playing') {
       }
     }
     events.push(...batch);
-    history.push({ input, events: batch, state: session.state, wave: session.wave, score: session.score, combo: session.combo });
-    assert.ok(session.player.magic > 0, `controller survived tick ${tick}`);
+    history.push({ input, events: batch, state: session.state, wave: session.wave, score: session.score, combo: session.combo,
+      survival: survivalSnapshot(session) });
+    assert.ok(session.player.health > 0, `controller survived tick ${tick}`);
   }
   assert.ok(done(session), 'session must finish within 60 simulated seconds');
   return { events, history, breaks };
@@ -207,6 +216,7 @@ test('three generated waves reach victory through 24 real conversions and replay
       assert.equal(session.wave, frame.wave);
       assert.equal(session.score, frame.score);
       assert.equal(session.combo, frame.combo);
+      assert.deepEqual(survivalSnapshot(session), frame.survival);
     }
     assert.deepEqual(snapshot(session), won);
   }
@@ -250,12 +260,12 @@ test('generated enemies cause defeat without firing; restart discards damage, ti
   const session = new GameSession(0).start();
   for (let tick = 0; tick < 3600 && session.state === 'playing'; tick++) session.update(STEP);
   assert.equal(session.state, 'lost');
-  assert.equal(session.player.magic, 0);
+  assert.equal(session.player.health, 0);
   assert.equal(session.score, 0);
   assert.equal(session.wave, 1);
   const lost = snapshot(session);
-  assert.deepEqual(lost.events.map(event => event.type), ['wave', 'damage', 'damage', 'damage', 'damage', 'damage', 'defeat']);
-  assert.deepEqual(lost.events.filter(event => event.type === 'damage').map(event => event.magic), [80, 60, 40, 20, 0]);
+  assert.deepEqual(lost.events.filter(event => event.type !== 'rose-fired').map(event => event.type), ['wave', 'damage', 'damage', 'damage', 'damage', 'damage', 'defeat']);
+  assert.deepEqual(lost.events.filter(event => event.type === 'damage').map(event => event.health), [4, 3, 2, 1, 0]);
   session.resume().update(10, { fire: true });
   assert.deepEqual(snapshot(session), lost);
   const { world, player, unicorns, events } = session;

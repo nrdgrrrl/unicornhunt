@@ -2,10 +2,11 @@
 
 import { clamp } from './math.js';
 import { moveCircle } from './geometry.js';
-import { DEFAULT_RADIUS, WALK_SPEED, RUN_MULTIPLIER, TURN_SPEED, MAX_MAGIC } from './config.js';
+import { DEFAULT_RADIUS, WALK_SPEED, RUN_MULTIPLIER, TURN_SPEED } from './config.js';
+import { createSurvivalState, updateInvulnerability, applyDamage } from './survival.js';
 
 // Preserve existing consumers while config.js becomes the tuning authority.
-export { WALK_SPEED, RUN_MULTIPLIER, TURN_SPEED, MAX_MAGIC } from './config.js';
+export { WALK_SPEED, RUN_MULTIPLIER, TURN_SPEED, MAX_HEALTH, MAX_ARMOR } from './config.js';
 
 const TAU = Math.PI * 2;
 
@@ -29,7 +30,7 @@ export function createPlayer(spawn, radius = DEFAULT_RADIUS) {
   }
   return {
     x: spawn.x, y: spawn.y, angle: wrapAngle(spawn.angle), radius, firing: false,
-    magic: MAX_MAGIC, invulnerableFor: 0, fireCooldown: 0,
+    ...createSurvivalState(), fireCooldown: 0,
   };
 }
 
@@ -52,6 +53,7 @@ export function updatePlayer(player, world, input, seconds) {
   if (![forward, strafe, turn, look].every(Number.isFinite)) {
     throw new TypeError('Player input axes must be finite numbers.');
   }
+  Object.assign(player, updateInvulnerability(player, seconds));
   player.angle = wrapAngle(player.angle + clamp(turn, -1, 1) * TURN_SPEED * seconds + look);
   player.firing = Boolean(input.fire);
   const remaining = player.fireCooldown - seconds;
@@ -78,4 +80,17 @@ export function updatePlayer(player, world, input, seconds) {
   player.x = position.x;
   player.y = position.y;
   return player;
+}
+
+/**
+ * Apply shared survival rules to the mutable player and locate the feedback.
+ * Damage sources never advance the shared invulnerability timer.
+ * @param {import('./contracts.js').Player} player
+ * @param {import('./contracts.js').SurvivalHit} hit
+ * @returns {import('./contracts.js').DamageEvent | null}
+ */
+export function damagePlayer(player, hit) {
+  const result = applyDamage(player, hit);
+  Object.assign(player, result.state);
+  return result.event ? { ...result.event, x: player.x, y: player.y } : null;
 }

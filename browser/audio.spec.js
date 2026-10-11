@@ -1,10 +1,10 @@
 import { writeFile } from 'node:fs/promises';
 import { test, expect, origin, attachJSON } from './fixtures.js';
 
-test('all six effects render non-silent, unclipped audio and produce audition clips', async ({ page }, testInfo) => {
+test('all eight effects render non-silent, unclipped audio and produce audition clips', async ({ page }, testInfo) => {
   await page.goto(origin);
   const observations = [];
-  for (const type of ['shot', 'glitter', 'damage', 'wave', 'victory', 'defeat']) {
+  for (const type of ['shot', 'glitter', 'damage', 'wave', 'victory', 'defeat', 'pickup', 'rose-fired']) {
     const rendered = await page.evaluate(async type => {
       const { createAudio } = await import('/src/audio.js');
       const sampleRate = 24000;

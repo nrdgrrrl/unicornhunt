@@ -11,7 +11,8 @@ export function createHUD(root, { onStart, onResume, onRestart, onPause, onMute 
     <dl class="hud" aria-label="Game statistics">
       <div class="badge"><dt>Score</dt><dd id="score">0</dd></div>
       <div class="badge"><dt>Best score</dt><dd id="best-score">0</dd></div>
-      <div class="badge"><dt>Magic</dt><dd id="magic">100 / 100</dd></div>
+      <div class="badge"><dt>Health</dt><dd id="health">5 / 5</dd></div>
+      <div class="badge"><dt>Armor</dt><dd id="armor">0 / 5</dd></div>
       <div class="badge"><dt>Wave</dt><dd id="wave">1 / 3</dd></div>
       <div class="badge"><dt>Unicorns remaining</dt><dd id="remaining">6</dd></div>
       <div class="badge"><dt>Combo</dt><dd id="combo">None</dd></div>
@@ -28,10 +29,13 @@ export function createHUD(root, { onStart, onResume, onRestart, onPause, onMute 
         <p>Clear three waves: 6, 8, then 10 unicorns. Fire unlimited rainbows;
           there is no ammunition limit. Each hit earns 100 points × your combo.
           Hits within two seconds build a combo up to ×5.</p>
-        <p>You start with 100 magic. Contact with a unicorn costs 20 magic,
-          with a brief grace period between hits. Zero magic ends the game.
+        <p>You start with five health and no armor. Unicorn contact and roses
+          fired from a unicorn's rear deal one point of damage. Armor absorbs
+          hits first, with a brief shared grace period between hits.
+          Zero health ends the game. Rainbow cakes restore one health point;
+          star-shield charms add one armor point, each capped at five.
           Cleared waves give you a two-second break; the next wave restores
-          20 magic, up to 100.</p>
+          one health point, up to five.</p>
         <h2>Keyboard and mouse controls</h2>
         <dl class="controls">
           <dt>Move forward / backward</dt><dd>W / S or ↑ / ↓</dd>
@@ -68,7 +72,7 @@ export function createHUD(root, { onStart, onResume, onRestart, onPause, onMute 
   const instructions = find('#instructions');
   const announcement = find('#announcement');
   const audioStatus = find('#audio-status');
-  const counters = Object.fromEntries(['score', 'best-score', 'magic', 'wave', 'remaining', 'combo']
+  const counters = Object.fromEntries(['score', 'best-score', 'health', 'armor', 'wave', 'remaining', 'combo']
     .map(id => [id, find(`#${id}`)]));
   /** @type {import('./contracts.js').HUDState | undefined} */
   let state;
@@ -101,7 +105,8 @@ export function createHUD(root, { onStart, onResume, onRestart, onPause, onMute 
       state = snapshot.state;
       setText(counters.score, snapshot.score);
       setText(counters['best-score'], snapshot.bestScore);
-      setText(counters.magic, `${snapshot.magic} / 100`);
+      setText(counters.health, `${snapshot.health} / ${snapshot.maxHealth}`);
+      setText(counters.armor, `${snapshot.armor} / ${snapshot.maxArmor}`);
       setText(counters.wave, `${snapshot.wave} / 3`);
       setText(counters.remaining, snapshot.remaining);
       setText(counters.combo, snapshot.combo > 0 ? `×${snapshot.combo}` : 'None');
@@ -131,7 +136,7 @@ export function createHUD(root, { onStart, onResume, onRestart, onPause, onMute 
           setText(announcement, 'Game paused');
         } else if (state === 'victory' || state === 'defeat') {
           setText(title, state === 'victory' ? 'Victory!' : 'Defeat');
-          setText(message, `${state === 'victory' ? 'All unicorns glittered!' : 'Your magic ran out.'} Final score: ${snapshot.score}. Best score: ${snapshot.bestScore}.`);
+          setText(message, `${state === 'victory' ? 'All unicorns glittered!' : 'Your health ran out.'} Final score: ${snapshot.score}. Best score: ${snapshot.bestScore}.`);
           setText(primary, 'Play again');
           setText(announcement, `${title.textContent} ${message.textContent}`);
         }

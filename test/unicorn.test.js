@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createPlayer } from '../src/player.js';
+import { createPlayer, updatePlayer } from '../src/player.js';
 import { createWorld, HEDGE, circleCollides, buildDistanceField, hasLineOfSight } from '../src/world.js';
 import {
   spawnUnicorns, updateUnicorns, UNICORN_RADIUS, UNICORN_SPEED, WAVE_SPEED_INCREMENT,
@@ -18,6 +18,10 @@ function arena(hedges = []) {
 function enemy(x, y, overrides = {}) {
   return { id: 'test', x, y, radius: UNICORN_RADIUS, speed: UNICORN_SPEED, angle: 0, alive: true, ...overrides };
 }
+
+// These tests advance navigation/contact through updateUnicorns alone. Natural
+// pathfinding must not depend on ranged windup/recovery pauses; ranged timing
+// lives in ranged-attacks.test.js and the complete ordering in session.test.js.
 
 test('waves spawn their full counts safely and reproducibly over generated forests', () => {
   for (let seed = 0; seed < 200; seed++) {
@@ -140,23 +144,26 @@ test('later waves move modestly faster and movement is consistent across time st
   near(first.x - later.x, WAVE_SPEED_INCREMENT * 0.5);
 });
 
-test('a group emits one damage event, shares invulnerability, and never drives magic negative', () => {
+test('a group emits one damage event, shares invulnerability, and never drives health negative', () => {
   const world = arena();
   const player = createPlayer({ x: 4.5, y: 4.5, angle: 0 });
   const unicorns = Array.from({ length: 20 }, (_, i) => enemy(4.5, 4.5, { id: `contact:${i}` }));
   const events = updateUnicorns(unicorns, world, player, 0.01);
-  assert.deepEqual(events, [{ type: 'damage', source: 'contact:0', amount: CONTACT_DAMAGE, magic: 100 - CONTACT_DAMAGE, x: 4.5, y: 4.5 }]);
+  assert.deepEqual(events, [{ type: 'damage', cause: 'contact', source: 'contact:0', amount: CONTACT_DAMAGE, resource: 'health', health: 4, armor: 0, x: 4.5, y: 4.5 }]);
   assert.equal(player.invulnerableFor, CONTACT_INVULNERABILITY);
   assert.deepEqual(updateUnicorns(unicorns, world, player, CONTACT_INVULNERABILITY / 2), []);
-  near(player.invulnerableFor, CONTACT_INVULNERABILITY / 2);
+  near(player.invulnerableFor, CONTACT_INVULNERABILITY);
+  updatePlayer(player, world, {}, CONTACT_INVULNERABILITY);
   assert.equal(updateUnicorns(unicorns, world, player, CONTACT_INVULNERABILITY / 2).length, 1);
-  assert.equal(player.magic, 100 - 2 * CONTACT_DAMAGE);
+  assert.equal(player.health, 5 - 2 * CONTACT_DAMAGE);
   // Even a frame longer than the cooldown emits at most one hit.
+  updatePlayer(player, world, {}, 10);
   assert.equal(updateUnicorns(unicorns, world, player, 10).length, 1);
-  assert.equal(player.magic, 100 - 3 * CONTACT_DAMAGE);
-  player.magic = 3;
-  assert.equal(updateUnicorns(unicorns, world, player, 10)[0].amount, 3);
-  assert.equal(player.magic, 0);
+  assert.equal(player.health, 5 - 3 * CONTACT_DAMAGE);
+  player.health = 1;
+  updatePlayer(player, world, {}, 10);
+  assert.equal(updateUnicorns(unicorns, world, player, 10)[0].amount, 1);
+  assert.equal(player.health, 0);
   assert.deepEqual(updateUnicorns(unicorns, world, player, 10), []);
 });
 
@@ -167,7 +174,7 @@ test('dead unicorns cannot move or damage, and contact before movement still cou
   const before = { ...dead };
   assert.deepEqual(updateUnicorns([dead], world, player, 10), []);
   assert.deepEqual(dead, before);
-  assert.equal(player.magic, 100);
+  assert.equal(player.health, 5);
   // Exact circle tangency is contact, even at the start of a zero-duration tick.
   const live = enemy(player.x + player.radius + UNICORN_RADIUS, player.y);
   assert.equal(updateUnicorns([dead, live], world, player, 0).length, 1);

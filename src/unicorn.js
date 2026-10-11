@@ -1,4 +1,6 @@
 import { createRng } from './math.js';
+import { createRangedAttackState } from './ranged-attacks.js';
+import { damagePlayer } from './player.js';
 import {
   buildDistanceField, circleCollides, hasLineOfSight, moveCircle,
   distanceAt, nextDistanceCell, assertDistanceField,
@@ -74,6 +76,7 @@ export function spawnUnicorns(world, player, count, wave = 1, seed = `${world.se
     id: `${wave}:${index}`, ...position, radius: UNICORN_RADIUS,
     speed: UNICORN_SPEED + (wave - 1) * WAVE_SPEED_INCREMENT,
     angle: Math.atan2(player.y - position.y, player.x - position.x), alive: true,
+    attack: createRangedAttackState(seed, `${wave}:${index}`),
   }));
 }
 
@@ -114,7 +117,7 @@ function navigate(unicorn, world, player, field, seconds) {
 }
 
 /**
- * Mutate living unicorns and the player's magic/cooldown; return damage events
+ * Mutate living unicorns and the player's survival state; return damage events
  * for later sound and visuals. Call once for the entire group per simulation
  * tick, after updatePlayer. A caller may supply this tick's shared distance
  * field, built for UNICORN_RADIUS; otherwise it is built once for the group.
@@ -132,19 +135,18 @@ export function updateUnicorns(unicorns, world, player, seconds, field) {
   }
   field ??= buildDistanceField(world, player, UNICORN_RADIUS);
   assertDistanceField(field, world, player, UNICORN_RADIUS);
-  player.invulnerableFor = Math.max(0, player.invulnerableFor - seconds);
   const events = [];
   for (const unicorn of unicorns) {
     if (!unicorn.alive) continue;
     const touching = () => distance(unicorn, player) <= unicorn.radius + player.radius + EPSILON
       && hasLineOfSight(world, unicorn, player);
     const contacted = touching();
-    navigate(unicorn, world, player, field, seconds);
-    if ((contacted || touching()) && player.invulnerableFor === 0 && player.magic > 0 && events.length === 0) {
-      const amount = Math.min(CONTACT_DAMAGE, player.magic);
-      player.magic -= amount;
-      player.invulnerableFor = CONTACT_INVULNERABILITY;
-      events.push({ type: 'damage', source: unicorn.id, amount, magic: player.magic, x: player.x, y: player.y });
+    if (!unicorn.attack || unicorn.attack.phase === 'idle') {
+      navigate(unicorn, world, player, field, seconds);
+    }
+    if (contacted || touching()) {
+      const event = damagePlayer(player, { cause: 'contact', source: unicorn.id });
+      if (event) events.push(event);
     }
   }
   return events;
