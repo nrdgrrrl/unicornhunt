@@ -1,29 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createPlayer, updatePlayer } from '../src/player.js';
 import { createWorld } from '../src/world.js';
-import { spawnUnicorns, updateUnicorns, UNICORN_RADIUS } from '../src/unicorn.js';
-import { updateCombat, FIRE_COOLDOWN, COMBO_WINDOW, MAX_COMBO, HIT_POINTS } from '../src/combat.js';
+import { spawnUnicorns, updateUnicorns } from '../src/unicorn.js';
+import { FIRE_COOLDOWN, COMBO_WINDOW, MAX_COMBO, HIT_POINTS } from '../src/combat.js';
 import { arena } from './helpers/world.js';
-
-function enemy(id, x = 4.5, y = 5.5, overrides = {}) {
-  return { id, x, y, radius: UNICORN_RADIUS, speed: 1.2, angle: 0, alive: true, ...overrides };
-}
-
-function session(unicorns = [], world = arena(), spawn = { x: 2.5, y: 5.5, angle: 0 }) {
-  return {
-    world, player: createPlayer(spawn), unicorns,
-    score: 0, combo: 0, elapsed: 0, lastHitAt: null, events: [],
-  };
-}
-
-// This is the session's tick order: it owns the clock, player advances the
-// cooldown, and combat consumes firing and appends events for future consumers.
-function step(state, seconds = 0, fire = true) {
-  state.elapsed += seconds;
-  updatePlayer(state.player, state.world, { fire }, seconds);
-  return updateCombat(state);
-}
+import { enemy, combatSession as session, combatStep as step } from './helpers/simulation.js';
 
 const near = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-9, `${actual} should be near ${expected}`);
 const shots = state => state.events.filter(event => event.type === 'shot');
