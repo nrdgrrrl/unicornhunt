@@ -22,7 +22,7 @@ export function createPlayer(spawn, radius = DEFAULT_RADIUS) {
   }
   return {
     x: spawn.x, y: spawn.y, angle: wrapAngle(spawn.angle), radius, firing: false,
-    magic: MAX_MAGIC, invulnerableFor: 0,
+    magic: MAX_MAGIC, invulnerableFor: 0, fireCooldown: 0,
   };
 }
 
@@ -42,6 +42,11 @@ export function updatePlayer(player, world, input, seconds) {
   }
   player.angle = wrapAngle(player.angle + clamp(turn, -1, 1) * TURN_SPEED * seconds + look);
   player.firing = Boolean(input.fire);
+  const remaining = player.fireCooldown - seconds;
+  // Round away subtraction noise so subdividing 0.22 seconds does not delay
+  // the next shot by an extra simulation tick.
+  const tolerance = 8 * Number.EPSILON * Math.max(1, player.fireCooldown, seconds);
+  player.fireCooldown = remaining <= tolerance ? 0 : remaining;
 
   let ahead = clamp(forward, -1, 1);
   let sideways = clamp(strafe, -1, 1);

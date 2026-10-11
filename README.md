@@ -1,7 +1,7 @@
 # unicornhunt
 
 Run the local game shell with `npm start`. The bootstrap currently draws the
-placeholder; world, art, player, input, and unicorn modules are ready for game integration.
+placeholder; world, art, player, input, unicorn, and combat modules are ready for game integration.
 
 The focusable game canvas supports these controls through `src/input.js`:
 
@@ -40,6 +40,29 @@ an array of `{ type: 'damage', source, amount, magic, x, y }` events for future
 audio and visual feedback; `source` is the contacting unicorn's ID, and `magic`
 is the player's remaining magic. Walking bob and sprite facing belong to the
 renderer.
+
+`src/combat.js` exposes `updateCombat(session)`. Initialize the session with
+`world`, `player`, `unicorns`, `score: 0`, `combo: 0`, `elapsed: 0`,
+`lastHitAt: null`, and `events: []`. Each tick advances `session.elapsed` in
+seconds, calls `updatePlayer`, then `updateCombat`, then `updateUnicorns` (append
+its returned damage events to `session.events`). Firing before unicorn movement
+makes a hit immediate and prevents a converted unicorn from dealing damage.
+
+Held fire shoots immediately when ready and repeats with a 0.22-second cooldown;
+`updatePlayer` decrements `player.fireCooldown` even when fire is released.
+There is no ammunition limit. Each shot hits only the nearest living unicorn's
+circle along the aim ray before the first hedge. A hit sets `alive = false` and
+awards 100 points times the combo. Successful hits within two seconds (inclusive)
+continue the combo up to five; misses neither score nor refresh its timer, and
+idle combat ticks expire it after two seconds.
+
+Combat appends `{ type: 'shot', x, y, angle, distance }` for every shot, including
+misses. The rainbow starts at `(x, y)` and ends `distance` tiles along `angle`,
+at the target's surface or the first hedge. A hit also appends
+`{ type: 'glitter', source, x, y, points, combo, score }`, where `source` is the
+converted unicorn's ID. A future renderer/audio consumer handles rainbow,
+shot sound, and glitter feedback, then drains the events; combat calls no
+graphics or sound APIs.
 
 `onPause` runs after input has been cleared and suspended. The UI can also call
 `input.setPaused(true)` when opening a menu, then `input.setPaused(false)` when
