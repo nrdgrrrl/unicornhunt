@@ -1,11 +1,11 @@
 import { createWorld } from './world.js';
-import { createPlayer, updatePlayer, MAX_MAGIC } from './player.js';
+import { createPlayer, updatePlayer } from './player.js';
 import { spawnUnicorns, updateUnicorns } from './unicorn.js';
 import { updateCombat } from './combat.js';
+import { MAX_MAGIC, WAVE_COUNTS, INTERMISSION_SECONDS, WAVE_MAGIC_BONUS } from './config.js';
 
-export const WAVE_COUNTS = Object.freeze([6, 8, 10]);
-export const INTERMISSION_SECONDS = 2;
-export const WAVE_MAGIC_BONUS = 20;
+// Existing session imports remain valid while configuration owns the values.
+export { WAVE_COUNTS, INTERMISSION_SECONDS, WAVE_MAGIC_BONUS } from './config.js';
 
 /**
  * Authoritative, browser-independent simulation. Time is in seconds; callers

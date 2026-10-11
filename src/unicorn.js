@@ -1,14 +1,15 @@
 import { createRng } from './math.js';
 import { buildDistanceField, circleCollides, hasLineOfSight, moveCircle } from './world.js';
+import {
+  UNICORN_RADIUS, UNICORN_SPEED, WAVE_SPEED_INCREMENT, PLAYER_SPAWN_DISTANCE,
+  UNICORN_SPAWN_DISTANCE, CONTACT_DAMAGE, CONTACT_INVULNERABILITY,
+} from './config.js';
 
-// Distances are tiles and time is seconds, as in the player and world modules.
-export const UNICORN_RADIUS = 0.25;
-export const UNICORN_SPEED = 1.2;
-export const WAVE_SPEED_INCREMENT = 0.08;
-export const PLAYER_SPAWN_DISTANCE = 3;
-export const UNICORN_SPAWN_DISTANCE = 1;
-export const CONTACT_DAMAGE = 20;
-export const CONTACT_INVULNERABILITY = 0.75;
+// Keep historical imports working without retaining duplicate declarations.
+export {
+  UNICORN_RADIUS, UNICORN_SPEED, WAVE_SPEED_INCREMENT, PLAYER_SPAWN_DISTANCE,
+  UNICORN_SPAWN_DISTANCE, CONTACT_DAMAGE, CONTACT_INVULNERABILITY,
+} from './config.js';
 const NEIGHBORS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
 const EPSILON = 1e-9;
 const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);

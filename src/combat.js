@@ -1,10 +1,9 @@
 import { normalize } from './math.js';
 import { raycast } from './world.js';
+import { FIRE_COOLDOWN, COMBO_WINDOW, MAX_COMBO, HIT_POINTS } from './config.js';
 
-export const FIRE_COOLDOWN = 0.22;
-export const COMBO_WINDOW = 2;
-export const MAX_COMBO = 5;
-export const HIT_POINTS = 100;
+// Compatibility exports keep this ownership change separate from API changes.
+export { FIRE_COOLDOWN, COMBO_WINDOW, MAX_COMBO, HIT_POINTS } from './config.js';
 
 // Return the first intersection with a unicorn's circle on the forward ray.
 // A circle containing the muzzle is hit at zero; circles behind it are ignored.

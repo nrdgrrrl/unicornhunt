@@ -1,9 +1,11 @@
 import { clamp, createRng, normalize } from './math.js';
+import { DEFAULT_RADIUS } from './config.js';
 
 export const MAP_SIZE = 24;
 export const EMPTY = 0;
 export const HEDGE = 1;
-export const DEFAULT_RADIUS = 0.2;
+// Preserve the world API used by existing geometry consumers.
+export { DEFAULT_RADIUS } from './config.js';
 
 const MOVE_STEP = 0.125;
 export const MAX_MOVE_STEPS = 512;
