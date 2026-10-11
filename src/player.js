@@ -1,11 +1,10 @@
 import { clamp } from './math.js';
-import { DEFAULT_RADIUS, moveCircle } from './world.js';
+import { moveCircle } from './world.js';
+import { DEFAULT_RADIUS, WALK_SPEED, RUN_MULTIPLIER, TURN_SPEED, MAX_MAGIC } from './config.js';
 
-// World distances are tiles, time is seconds, and angles are radians.
-export const WALK_SPEED = 2.5;
-export const RUN_MULTIPLIER = 2;
-export const TURN_SPEED = Math.PI;
-export const MAX_MAGIC = 100;
+// Preserve existing consumers while config.js becomes the tuning authority.
+export { WALK_SPEED, RUN_MULTIPLIER, TURN_SPEED, MAX_MAGIC } from './config.js';
+
 const TAU = Math.PI * 2;
 
 function wrapAngle(angle) {
