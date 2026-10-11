@@ -4,6 +4,14 @@ Turn unicorns into rainbow glitter in a hand-drawn forest. Clear three waves
 before your magic runs out. The game runs locally in a desktop browser; artwork
 is generated on canvas and all six sound effects are synthesized with Web Audio.
 
+## Play
+
+Unicorn Hunt is a desktop-browser game.
+
+[Play Unicorn Hunt](https://nrdgrrrl.github.io/unicornhunt/)
+
+See [Controls](#controls) below.
+
 ## Install and play
 
 Install **Node.js 22 or newer**, which includes npm, then open a terminal in
