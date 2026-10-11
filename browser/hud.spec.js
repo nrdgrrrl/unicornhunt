@@ -1,27 +1,4 @@
-import { test, expect } from '@playwright/test';
-import { spawn } from 'node:child_process';
-import { existsSync } from 'node:fs';
-
-const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
-  || (existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : undefined);
-test.use({ launchOptions: { executablePath } });
-let server;
-let origin;
-test.beforeAll(async () => {
-  server = spawn(process.execPath, ['tools/serve.mjs'], {
-    cwd: new URL('../', import.meta.url), env: { ...process.env, PORT: '0' }, stdio: ['ignore', 'pipe', 'pipe'],
-  });
-  origin = await new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => reject(new Error('HUD test server did not start.')), 10000);
-    server.once('error', error => { clearTimeout(timeout); reject(error); });
-    server.once('exit', code => { clearTimeout(timeout); reject(new Error(`Test server exited: ${code}`)); });
-    server.stdout.on('data', data => {
-      const url = data.toString().match(/http:\/\/127\.0\.0\.1:\d+/);
-      if (url) { clearTimeout(timeout); resolve(url[0]); }
-    });
-  });
-});
-test.afterAll(() => { server?.kill(); });
+import { test, expect, origin } from './fixtures.js';
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {

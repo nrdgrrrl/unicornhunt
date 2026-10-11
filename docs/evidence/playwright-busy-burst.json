@@ -1,0 +1,12 @@
+{
+  "samples": 180,
+  "medianMs": 16.699999999999818,
+  "p95Ms": 16.799999999999727,
+  "maxMs": 16.800000000000182,
+  "over33Ms": 0,
+  "maxConsecutiveOver33Ms": 0,
+  "minParticles": 144,
+  "maxParticles": 144,
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "hardwareConcurrency": 9
+}

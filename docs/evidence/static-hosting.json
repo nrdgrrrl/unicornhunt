@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-11",
+  "browser": "154.0.8037.92",
+  "files": [
+    "index.html",
+    "styles.css",
+    "main.js",
+    "src/"
+  ],
+  "host": "Python static HTTP server",
+  "path": "/sketchbook/unicorn/?seed=42",
+  "start": "passed",
+  "conversionScore": 100,
+  "seed": 42,
+  "failures": [],
+  "allRequestsInsideSubdirectory": true
+}

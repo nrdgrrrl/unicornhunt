@@ -1,0 +1,21 @@
+{
+  "command": "npx playwright test browser/health-probe.spec.js --reporter=json",
+  "expectedExitCode": 1,
+  "results": [
+    {
+      "probe": "negative probe: uncaught startup error",
+      "status": "failed",
+      "guardRejected": true
+    },
+    {
+      "probe": "negative probe: local HTTP failure",
+      "status": "failed",
+      "guardRejected": true
+    },
+    {
+      "probe": "negative probe: failed local request",
+      "status": "failed",
+      "guardRejected": true
+    }
+  ]
+}
