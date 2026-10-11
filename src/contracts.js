@@ -31,6 +31,16 @@
  *   health: number, armor: number }} SurvivalDamageEvent
  * @typedef {{ state: SurvivalState, event: SurvivalDamageEvent | null }} DamageResult
  *
+ * Session-owned point projectiles. z is decorative height, not a collision
+ * radius; source identifies the firing unicorn and id identifies this rose.
+ * nextRoseId is monotonic within a run and resets only on session restart.
+ * @typedef {Position & { id: string, source: string, vx: number, vy: number,
+ *   z: number, remaining: number }} RoseProjectile
+ * @typedef {{ roses: RoseProjectile[], nextRoseId: number }} RoseState
+ * @typedef {Position & SurvivalDamageEvent} RoseDamageEvent
+ * @typedef {{ roses: RoseProjectile[], state: SurvivalState,
+ *   events: RoseDamageEvent[] }} RoseResult
+ *
  * Staged collectibles: health is a rainbow cake; armor is a pastel star-shield
  * charm. The session replaces the pickup array each wave and on restart.
  * @typedef {SurvivalResource} PickupKind
@@ -66,7 +76,7 @@
  * @typedef {'ready' | 'playing' | 'paused' | 'won' | 'lost'} SessionState
  *
  * SessionData is a structural data contract, not a second session class.
- * @typedef {CombatState & { seed: Seed, state: SessionState, world: GeneratedWorld,
+ * @typedef {CombatState & RoseState & { seed: Seed, state: SessionState, world: GeneratedWorld,
  *   wave: number, intermissionRemaining: number, readonly remaining: number }} SessionData
  *
  * @typedef {'title' | 'playing' | 'paused' | 'victory' | 'defeat'} HUDState

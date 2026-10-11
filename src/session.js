@@ -39,6 +39,12 @@ export class GameSession {
     this.player = player;
     /** @type {import('./contracts.js').Unicorn[]} */
     this.unicorns = unicorns;
+    // Return-fire creation and fixed-step advancement are wired separately.
+    // Neither cosmetic effects nor reduced-motion settings own these values.
+    /** @type {import('./contracts.js').RoseProjectile[]} */
+    this.roses = [];
+    /** @type {number} */
+    this.nextRoseId = 0;
     /** @type {number} */
     this.wave = 1;
     /** @type {number} */
