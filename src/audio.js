@@ -52,7 +52,10 @@ export function createAudio({
     invokePromise(() => context?.close()).catch(() => { /* Remain in silent mode. */ });
   }
   function suspend() {
-    invokePromise(() => context?.suspend()).catch(fail);
+    const suspension = generation;
+    invokePromise(() => context?.suspend()).catch(() => {
+      if (suspension === generation && paused && !destroyed) fail();
+    });
   }
 
   return {
@@ -82,7 +85,11 @@ export function createAudio({
           ready = context.state === 'running';
           master.gain.value = muted ? 0 : 0.18;
           return ready;
-        }).catch(() => { fail(); return false; });
+        }).catch(() => {
+          if (destroyed || activation !== generation) return false;
+          fail();
+          return false;
+        });
       } catch { fail(); return Promise.resolve(false); }
     },
     pause() {
