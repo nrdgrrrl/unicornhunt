@@ -1,5 +1,10 @@
+// @ts-check
+
 /** Stable, presentation-only overlay. The app supplies snapshots and actions;
  * updating counters never replaces controls, moves focus, or announces scores.
+ * @param {HTMLElement} root
+ * @param {import('./contracts.js').HUDActions} actions
+ * @returns {import('./contracts.js').HUD}
  */
 export function createHUD(root, { onStart, onResume, onRestart, onPause, onMute }) {
   root.innerHTML = `
@@ -50,12 +55,14 @@ export function createHUD(root, { onStart, onResume, onRestart, onPause, onMute 
     </div>
     <span class="sr-only" id="announcement" role="status" aria-live="polite" aria-atomic="true"></span>`;
 
-  const find = selector => root.querySelector(selector);
+  // Every selector refers to markup created immediately above.
+  /** @param {string} selector */
+  const find = selector => /** @type {HTMLElement} */ (root.querySelector(selector));
   const panel = find('.panel');
-  const primary = find('#start');
-  const restart = find('#restart');
-  const pause = find('#pause');
-  const mute = find('#mute');
+  const primary = /** @type {HTMLButtonElement} */ (find('#start'));
+  const restart = /** @type {HTMLButtonElement} */ (find('#restart'));
+  const pause = /** @type {HTMLButtonElement} */ (find('#pause'));
+  const mute = /** @type {HTMLButtonElement} */ (find('#mute'));
   const title = find('#panel-title');
   const message = find('#message');
   const instructions = find('#instructions');
@@ -63,9 +70,15 @@ export function createHUD(root, { onStart, onResume, onRestart, onPause, onMute 
   const audioStatus = find('#audio-status');
   const counters = Object.fromEntries(['score', 'best-score', 'magic', 'wave', 'remaining', 'combo']
     .map(id => [id, find(`#${id}`)]));
+  /** @type {import('./contracts.js').HUDState | undefined} */
   let state;
+  /** @type {number | undefined} */
   let wave;
   let destroyed = false;
+  /**
+   * @param {HTMLElement} element
+   * @param {string | number} value
+   */
   const setText = (element, value) => {
     const text = String(value);
     if (element.textContent !== text) element.textContent = text;
@@ -75,10 +88,12 @@ export function createHUD(root, { onStart, onResume, onRestart, onPause, onMute 
     else if (state === 'paused') onResume();
     else if (state === 'victory' || state === 'defeat') onRestart();
   };
+  /** @type {Array<[HTMLButtonElement, () => void]>} */
   const listeners = [[primary, activatePrimary], [restart, onRestart], [pause, onPause], [mute, onMute]];
   for (const [button, callback] of listeners) button.addEventListener('click', callback);
 
   return {
+    /** @param {import('./contracts.js').HUDSnapshot} snapshot */
     update(snapshot) {
       if (destroyed) return;
       const changed = state !== snapshot.state;

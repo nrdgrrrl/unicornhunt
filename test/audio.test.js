@@ -120,6 +120,41 @@ test('the latest resume wins when earlier activation promises resolve out of ord
   assert.equal(audio.activeSourceCount, 1);
 });
 
+test('a synchronous void resume runs before activate returns its promise', async () => {
+  const { audio, context } = harness();
+  let resumed = false;
+  context.resume = function () { resumed = true; this.state = 'running'; };
+  const activation = audio.activate();
+  assert.equal(resumed, true);
+  assert.ok(activation instanceof Promise);
+  // Events during activation still vanish, even with a synchronous resume.
+  audio.consume([{ type: 'shot' }]);
+  assert.equal(context.oscillators.length, 0);
+  assert.equal(await activation, true);
+  audio.consume([{ type: 'shot' }]);
+  assert.equal(audio.activeSourceCount, 1);
+});
+
+test('blocked storage access or methods preserve activation and mute behavior', async () => {
+  const denied = () => { throw new Error('Storage denied'); };
+  for (const storage of [denied, () => ({ getItem: denied, setItem: denied })]) {
+    const h = harness();
+    const audio = createAudio({ contextFactory: () => h.context, storage });
+    assert.equal(audio.muted, false);
+    assert.equal(audio.setMuted(true), true);
+    assert.equal(await audio.activate(), true);
+    assert.equal(h.context.gains[0].gain.value, 0);
+    audio.consume([{ type: 'shot' }]);
+    assert.equal(audio.activeSourceCount, 0);
+    assert.equal(audio.setMuted(false), false);
+    assert.equal(h.context.gains[0].gain.value, 0.18);
+    audio.consume([{ type: 'shot' }]);
+    assert.equal(audio.activeSourceCount, 1);
+    assert.equal(audio.unavailable, false);
+    audio.destroy();
+  }
+});
+
 test('unavailable context, rejected resume, and inaccessible storage fail silently', async () => {
   const inaccessible = () => { throw new Error('Storage denied'); };
   for (const contextFactory of [() => null, () => { throw new Error('Unavailable'); },
@@ -135,6 +170,42 @@ test('unavailable context, rejected resume, and inaccessible storage fail silent
   }
 });
 
+test('a synchronous throwing resume enters silent mode even when close fails', async () => {
+  for (const close of [() => {}, () => { throw new Error('Close failed'); }, () => Promise.reject(new Error('Close failed'))]) {
+    const { audio, context } = harness();
+    let resumed = false;
+    let closes = 0;
+    context.resume = () => { resumed = true; throw new Error('Resume failed'); };
+    context.close = () => { closes++; return close(); };
+    const activation = audio.activate();
+    assert.equal(resumed, true);
+    assert.ok(activation instanceof Promise);
+    assert.equal(await activation, false);
+    assert.equal(audio.unavailable, true);
+    assert.equal(context.gains[0].gain.value, 0);
+    assert.equal(closes, 1);
+    assert.equal(await audio.activate(), false);
+    audio.consume([{ type: 'shot' }]);
+    assert.equal(context.oscillators.length, 0);
+    // Allow unhandled rejections to surface in the test runner.
+    await new Promise(resolve => setImmediate(resolve));
+  }
+});
+
+test('throwing or rejected suspend enters silent mode and attempts close', async () => {
+  for (const suspend of [() => { throw new Error('Suspend failed'); }, () => Promise.reject(new Error('Suspend failed'))]) {
+    const { audio, context } = harness();
+    await audio.activate();
+    audio.consume([{ type: 'shot' }]);
+    context.suspend = suspend;
+    audio.pause();
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(audio.unavailable, true);
+    assert.equal(audio.activeSourceCount, 0);
+    assert.equal(context.state, 'closed');
+  }
+});
+
 test('partial synthesis allocation failure releases the oscillator and enters silent mode', async () => {
   const { audio, context } = harness();
   await audio.activate();
@@ -142,7 +213,9 @@ test('partial synthesis allocation failure releases the oscillator and enters si
   audio.consume([{ type: 'shot' }]);
   assert.equal(audio.unavailable, true);
   assert.equal(audio.activeSourceCount, 0);
-  assert.equal(context.oscillators[0].stops.at(-1), undefined);
+  assert.deepEqual(context.oscillators[0].stops, [undefined]);
+  assert.equal(context.oscillators[0].onended, null);
+  assert.equal(context.oscillators[0].connected, false);
 });
 
 test('destroy stops and disconnects active audio and prevents reactivation', async () => {
@@ -155,4 +228,34 @@ test('destroy stops and disconnects active audio and prevents reactivation', asy
   assert.ok(context.gains.every(gain => !gain.connected));
   assert.equal(await audio.activate(), false);
   audio.destroy();
+});
+
+test('destroy attempts every cleanup and close despite throwing disconnects', async () => {
+  for (const close of [() => {}, () => { throw new Error('Close failed'); }, () => Promise.reject(new Error('Close failed'))]) {
+    const { audio, context } = harness();
+    await audio.activate();
+    audio.consume([{ type: 'victory' }, { type: 'shot' }]);
+    const [first, second] = context.oscillators;
+    first.stop = () => { throw new Error('Stop failed'); };
+    let sourceDisconnects = 0;
+    first.disconnect = () => { sourceDisconnects++; throw new Error('Disconnect failed'); };
+    let masterDisconnects = 0;
+    context.gains[0].disconnect = () => { masterDisconnects++; throw new Error('Disconnect failed'); };
+    let closes = 0;
+    context.close = () => { closes++; return close(); };
+    audio.destroy();
+    assert.equal(audio.activeSourceCount, 0);
+    assert.equal(first.onended, null);
+    assert.equal(sourceDisconnects, 1);
+    assert.equal(context.gains[1].connected, false);
+    assert.equal(second.stops.at(-1), undefined);
+    assert.equal(second.connected, false);
+    assert.equal(context.gains[2].connected, false);
+    assert.equal(masterDisconnects, 1);
+    assert.equal(closes, 1);
+    assert.equal(await audio.activate(), false);
+    audio.destroy();
+    assert.equal(closes, 1);
+    await new Promise(resolve => setImmediate(resolve));
+  }
 });

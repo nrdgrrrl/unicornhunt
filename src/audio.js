@@ -1,3 +1,5 @@
+import { safeCreateContext, readStorage, writeStorage, attempt, invokePromise } from './audio-platform.js';
+
 export const MAX_AUDIO_SOURCES = 12;
 export const MUTE_STORAGE_KEY = 'unicornhunt:muted';
 
@@ -30,27 +32,27 @@ export function createAudio({
   let destroyed = false;
   let generation = 0;
   const sources = new Set();
-  try { muted = storage()?.getItem(MUTE_STORAGE_KEY) === 'true'; } catch { /* Private storage may be unavailable. */ }
+  muted = readStorage(storage, MUTE_STORAGE_KEY) === 'true';
 
   function release(voice, stop = false) {
     if (!sources.delete(voice)) return;
     voice.source.onended = null;
-    if (stop) { try { voice.source.stop(); } catch { /* Already ended. */ } }
-    try { voice.source.disconnect(); } catch { /* Closed context. */ }
-    try { voice.gain?.disconnect(); } catch { /* Closed context. */ }
+    if (stop) attempt(() => voice.source.stop());
+    attempt(() => voice.source.disconnect());
+    attempt(() => voice.gain?.disconnect());
   }
   function silence() {
-    if (master) { try { master.gain.value = 0; } catch { /* Closed context. */ } }
+    if (master) attempt(() => { master.gain.value = 0; });
     for (const voice of sources) release(voice, true);
   }
   function fail() {
     unavailable = true;
     ready = false;
     silence();
-    try { Promise.resolve(context?.close()).catch(() => {}); } catch { /* Silent mode. */ }
+    invokePromise(() => context?.close()).catch(() => { /* Remain in silent mode. */ });
   }
   function suspend() {
-    try { Promise.resolve(context?.suspend()).catch(fail); } catch { fail(); }
+    invokePromise(() => context?.suspend()).catch(fail);
   }
 
   return {
@@ -65,14 +67,14 @@ export function createAudio({
       const activation = ++generation;
       try {
         if (!context) {
-          context = contextFactory();
+          context = safeCreateContext(contextFactory);
           if (!context) { fail(); return Promise.resolve(false); }
           master = context.createGain();
           master.gain.value = 0;
           master.connect(context.destination);
         }
         // Invoke synchronously here, while the browser's user activation lives.
-        return Promise.resolve(context.resume()).then(() => {
+        return invokePromise(() => context.resume()).then(() => {
           if (destroyed || unavailable || activation !== generation || paused) {
             if (paused && !destroyed) suspend();
             return false;
@@ -92,7 +94,7 @@ export function createAudio({
     },
     setMuted(value) {
       muted = Boolean(value);
-      try { storage()?.setItem(MUTE_STORAGE_KEY, String(muted)); } catch { /* Sound still toggles without persistence. */ }
+      writeStorage(storage, MUTE_STORAGE_KEY, String(muted));
       if (muted) silence();
       else if (master && ready && !paused && !unavailable) master.gain.value = 0.18;
       return muted;
@@ -138,7 +140,8 @@ export function createAudio({
       ready = false;
       generation++;
       silence();
-      try { master?.disconnect(); Promise.resolve(context?.close()).catch(() => {}); } catch { /* Already closed. */ }
+      attempt(() => master?.disconnect());
+      invokePromise(() => context?.close()).catch(() => { /* Already destroyed. */ });
     },
   };
 }

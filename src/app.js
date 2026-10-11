@@ -4,6 +4,7 @@ import { createRenderer } from './renderer.js';
 import { createEffects } from './effects.js';
 import { createAudio } from './audio.js';
 import { createHUD } from './hud.js';
+import { createHUDSnapshot } from './snapshot.js';
 import { createClock } from './clock.js';
 
 const BEST_SCORE_STORAGE_KEY = 'unicornhunt:bestScore';
@@ -80,18 +81,18 @@ export function boot(canvas) {
     cleanup.push(() => input.destroy());
     input.setPaused(true);
 
-    const presentationState = () => ({ ready: 'title', won: 'victory', lost: 'defeat' })[session.state] ?? session.state;
-
-    function syncHUD() {
-      const state = presentationState();
-      hud.update({
-        state, score: session.score, bestScore,
-        magic: session.player.magic, wave: session.wave,
-        remaining: session.remaining, combo: session.combo,
+    function hudSnapshot() {
+      return createHUDSnapshot(session, {
+        bestScore,
         muted: audio.muted,
         audioUnavailable: audio.unavailable || !(window.AudioContext || window.webkitAudioContext),
       });
-      const tabIndex = state === 'playing' ? 0 : -1;
+    }
+
+    function syncHUD() {
+      const snapshot = hudSnapshot();
+      hud.update(snapshot);
+      const tabIndex = snapshot.state === 'playing' ? 0 : -1;
       if (canvas.tabIndex !== tabIndex) canvas.tabIndex = tabIndex;
     }
 
@@ -218,7 +219,7 @@ export function boot(canvas) {
     frame = window.requestAnimationFrame(draw);
 
     return {
-      get state() { return failure ? 'error' : presentationState(); },
+      get state() { return failure ? 'error' : hudSnapshot().state; },
       get error() { return failure; },
       get session() { return session; },
       effects, audio, destroy,

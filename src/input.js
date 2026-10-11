@@ -1,3 +1,5 @@
+// @ts-check
+
 const CONTROL_CODES = new Set([
   'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
   'KeyW', 'KeyS', 'KeyA', 'KeyD', 'Comma', 'Period',
@@ -5,6 +7,7 @@ const CONTROL_CODES = new Set([
   'ShiftLeft', 'ShiftRight', 'Space', 'Escape', 'KeyM',
 ]);
 
+/** @returns {import('./contracts.js').InputFrame} */
 const idleFrame = () => ({ forward: 0, strafe: 0, turn: 0, look: 0, fire: false, run: false });
 
 /**
@@ -12,6 +15,9 @@ const idleFrame = () => ({ forward: 0, strafe: 0, turn: 0, look: 0, fire: false,
  * for keyboard play. sample() consumes mouse turning, but retains held keys.
  * The UI supplies onPause/onMute; onPause runs after clearing and suspending
  * input. Resume with setPaused(false). Dispose listeners with destroy().
+ * @param {HTMLCanvasElement} canvas
+ * @param {import('./contracts.js').InputOptions} [options]
+ * @returns {import('./contracts.js').InputAdapter}
  */
 export function createInput(canvas, {
   onPause = () => {},
@@ -22,8 +28,10 @@ export function createInput(canvas, {
     throw new RangeError('Mouse sensitivity must be finite and nonnegative.');
   }
   const document = canvas.ownerDocument;
-  const window = document.defaultView;
+  const window = /** @type {Window} */ (document.defaultView);
+  /** @type {Set<string>} */
   const keys = new Set();
+  /** @type {Array<() => void>} */
   const listeners = [];
   let paused = false;
   let focused = document.hasFocus();
@@ -31,12 +39,23 @@ export function createInput(canvas, {
   let mouseFire = false;
   let look = 0;
   let locked = document.pointerLockElement === canvas;
+  /** @type {Promise<boolean> | null} */
   let lockRequest = null;
+  /** @type {((success: boolean) => void) | null} */
   let finishLockRequest = null;
 
+  /**
+   * @template {keyof (WindowEventMap & DocumentEventMap)} K
+   * @param {EventTarget} target
+   * @param {K} type
+   * @param {(event: (WindowEventMap & DocumentEventMap)[K]) => void} handler
+   */
   const listen = (target, type, handler) => {
-    target.addEventListener(type, handler);
-    listeners.push(() => target.removeEventListener(type, handler));
+    // The event name above determines the callback type. EventTarget's generic
+    // registration API erases it, so retain the same listener for removal.
+    const listener = /** @type {EventListener} */ (handler);
+    target.addEventListener(type, listener);
+    listeners.push(() => target.removeEventListener(type, listener));
   };
   const clear = () => {
     keys.clear();
@@ -45,12 +64,16 @@ export function createInput(canvas, {
     finishLockRequest?.(false);
   };
   const active = () => !destroyed && focused && !document.hidden && !paused;
+  /** @param {KeyboardEvent} event */
   const ownsKeyboard = event => {
-    if (event.target?.closest?.('input, textarea, select, button, [contenteditable]:not([contenteditable="false"])')) return false;
+    const target = /** @type {(EventTarget & Partial<Pick<Element, 'closest'>>) | null} */ (event.target);
+    if (target?.closest?.('input, textarea, select, button, [contenteditable]:not([contenteditable="false"])')) return false;
     return document.activeElement === canvas || document.pointerLockElement === canvas;
   };
+  /** @param {...string} codes */
   const down = (...codes) => codes.some(code => keys.has(code));
 
+  /** @param {boolean} value */
   function setPaused(value) {
     const nextPaused = Boolean(value);
     if (nextPaused || nextPaused !== paused) clear();
@@ -65,11 +88,14 @@ export function createInput(canvas, {
 
   // Both the legacy void-returning API and the newer rejecting Promise API
   // are supported. Failure leaves keyboard input available to the game.
+  /** @returns {Promise<boolean>} */
   function requestPointerLock() {
     if (!active() || typeof canvas.requestPointerLock !== 'function') return Promise.resolve(false);
     if (document.pointerLockElement === canvas) return Promise.resolve(true);
     if (lockRequest) return lockRequest;
-    let finish;
+    /** @type {(success: boolean) => void} */
+    let finish = () => {};
+    /** @type {Promise<boolean>} */
     const request = new Promise(resolve => {
       finish = success => {
         if (finishLockRequest !== finish) return;
@@ -81,7 +107,8 @@ export function createInput(canvas, {
     finishLockRequest = finish;
     lockRequest = request;
     try {
-      const result = canvas.requestPointerLock();
+      // Older browsers return void despite the current DOM declaration.
+      const result = /** @type {Promise<void> | undefined} */ (canvas.requestPointerLock());
       if (result?.then) {
         Promise.resolve(result).then(
           () => finish(document.pointerLockElement === canvas),
@@ -148,6 +175,7 @@ export function createInput(canvas, {
     clear,
     setPaused,
     requestPointerLock,
+    /** @returns {import('./contracts.js').InputFrame} */
     sample() {
       if (!active()) return idleFrame();
       const arrows = Number(down('ArrowRight')) - Number(down('ArrowLeft'));

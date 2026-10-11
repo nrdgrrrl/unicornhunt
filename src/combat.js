@@ -1,24 +1,10 @@
-import { normalize } from './math.js';
-import { raycast } from './world.js';
+// @ts-check
+
+import { raycast, rayCircleDistance } from './geometry.js';
 import { FIRE_COOLDOWN, COMBO_WINDOW, MAX_COMBO, HIT_POINTS } from './config.js';
 
 // Compatibility exports keep this ownership change separate from API changes.
 export { FIRE_COOLDOWN, COMBO_WINDOW, MAX_COMBO, HIT_POINTS } from './config.js';
-
-// Return the first intersection with a unicorn's circle on the forward ray.
-// A circle containing the muzzle is hit at zero; circles behind it are ignored.
-function hitDistance(origin, direction, unicorn) {
-  const dx = unicorn.x - origin.x;
-  const dy = unicorn.y - origin.y;
-  const along = dx * direction.x + dy * direction.y;
-  const across = dx * direction.y - dy * direction.x;
-  const discriminant = unicorn.radius ** 2 - across ** 2;
-  const tolerance = 8 * Number.EPSILON * Math.max(1, unicorn.radius ** 2, across ** 2);
-  if (discriminant < -tolerance) return Infinity;
-  const halfChord = Math.sqrt(Math.max(0, discriminant));
-  if (along + halfChord < 0) return Infinity;
-  return Math.max(0, along - halfChord);
-}
 
 /**
  * Process at most one instantaneous rainbow shot per simulation tick, after
@@ -28,6 +14,9 @@ function hitDistance(origin, direction, unicorn) {
  * Every shot appends a shot event, including misses, for rainbow/sound feedback.
  * A conversion appends a separate glitter event and sets alive=false, preventing
  * further scoring, movement, or contact damage. No rendering/audio APIs are used.
+ * @template {import('./contracts.js').CombatState} T
+ * @param {T} session
+ * @returns {T}
  */
 export function updateCombat(session) {
   const { world, player, unicorns, elapsed, events } = session;
@@ -36,14 +25,15 @@ export function updateCombat(session) {
   }
   if (!player.firing || player.fireCooldown > 0) return session;
 
-  const direction = normalize({ x: Math.cos(player.angle), y: Math.sin(player.angle) });
+  const direction = { x: Math.cos(player.angle), y: Math.sin(player.angle) };
   const wall = raycast(world, player, direction);
   let distance = wall.distance;
+  /** @type {import('./contracts.js').Unicorn | null} */
   let target = null;
   const wallTolerance = 8 * Number.EPSILON * Math.max(1, wall.distance);
   for (const unicorn of unicorns) {
     if (!unicorn.alive) continue;
-    const candidate = hitDistance(player, direction, unicorn);
+    const candidate = rayCircleDistance(player, direction, unicorn);
     // Hedges win ties, including tiny rounding differences at their surface.
     if (candidate < distance && candidate < wall.distance - wallTolerance) {
       distance = candidate;

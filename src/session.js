@@ -1,8 +1,12 @@
+// @ts-check
+
 import { createWorld } from './world.js';
 import { createPlayer, updatePlayer } from './player.js';
 import { spawnUnicorns, updateUnicorns } from './unicorn.js';
 import { updateCombat } from './combat.js';
 import { MAX_MAGIC, WAVE_COUNTS, INTERMISSION_SECONDS, WAVE_MAGIC_BONUS } from './config.js';
+
+/** @typedef {import('./contracts.js').SessionData} SessionData */
 
 // Existing session imports remain valid while configuration owns the values.
 export { WAVE_COUNTS, INTERMISSION_SECONDS, WAVE_MAGIC_BONUS } from './config.js';
@@ -12,27 +16,42 @@ export { WAVE_COUNTS, INTERMISSION_SECONDS, WAVE_MAGIC_BONUS } from './config.js
  * supply one fresh input frame per fixed step and drain events for feedback.
  * Construction prepares a ready world. Restart begins a clean run with the
  * same seed by default, so identical inputs reproduce the map and gameplay.
+ * @implements {SessionData}
  */
 export class GameSession {
+  /** @param {import('./contracts.js').Seed} [seed] */
   constructor(seed = 1) {
     this.#reset(seed);
   }
 
+  /** @param {import('./contracts.js').Seed} seed */
   #reset(seed) {
     const world = createWorld(seed);
     const player = createPlayer(world.spawn);
     const unicorns = spawnUnicorns(world, player, WAVE_COUNTS[0], 1);
+    /** @type {import('./contracts.js').Seed} */
     this.seed = seed;
+    /** @type {import('./contracts.js').SessionState} */
     this.state = 'ready';
+    /** @type {import('./contracts.js').GeneratedWorld} */
     this.world = world;
+    /** @type {import('./contracts.js').Player} */
     this.player = player;
+    /** @type {import('./contracts.js').Unicorn[]} */
     this.unicorns = unicorns;
+    /** @type {number} */
     this.wave = 1;
+    /** @type {number} */
     this.intermissionRemaining = 0;
+    /** @type {number} */
     this.elapsed = 0;
+    /** @type {number} */
     this.score = 0;
+    /** @type {number} */
     this.combo = 0;
+    /** @type {number | null} */
     this.lastHitAt = null;
+    /** @type {import('./contracts.js').GameEvent[]} */
     this.events = [];
   }
 
@@ -58,17 +77,27 @@ export class GameSession {
     return this;
   }
 
+  /**
+   * @param {import('./contracts.js').Seed} [seed]
+   * @returns {this}
+   */
   restart(seed = this.seed) {
     this.#reset(seed);
     return this.start();
   }
 
+  /** @param {'won' | 'lost'} state */
   #finish(state) {
     this.state = state;
     this.intermissionRemaining = 0;
     this.events.push({ type: state === 'won' ? 'victory' : 'defeat' });
   }
 
+  /**
+   * @param {number} seconds
+   * @param {Partial<import('./contracts.js').InputFrame>} [input]
+   * @returns {this}
+   */
   update(seconds, input = {}) {
     if (!Number.isFinite(seconds) || seconds < 0) {
       throw new RangeError('Session update time must be finite and nonnegative.');
@@ -110,7 +139,10 @@ export class GameSession {
     return this;
   }
 
-  /** Return each queued event once; all consumers can share the returned batch. */
+  /**
+   * Return each queued event once; all consumers can share the returned batch.
+   * @returns {import('./contracts.js').GameEvent[]}
+   */
   drainEvents() {
     return this.events.splice(0);
   }
