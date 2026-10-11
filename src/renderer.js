@@ -1,10 +1,12 @@
 import { createArt, INK } from './art.js';
 import { createRng } from './math.js';
+import {
+  CAMERA_HEIGHT, HORIZONTAL_FOV, createCameraFrame, columnRay,
+  perpendicularDepth, floorRow, position as projectPosition, project as projectPoint,
+} from './projection.js';
 import { raycast } from './world.js';
 
-export const CAMERA_HEIGHT = 0.65;
-export const HORIZONTAL_FOV = 70 * Math.PI / 180;
-const NEAR = 0.08;
+export { CAMERA_HEIGHT, HORIZONTAL_FOV };
 const RECOIL_TIME = 0.16;
 const PAPER_RGB = [255, 248, 232];
 
@@ -21,12 +23,9 @@ export function createRenderer(canvas, { reducedMotion = false } = {}) {
   const forests = new WeakMap();
   let width = 0;
   let height = 0;
-  let focal;
   let wallDepth;
   let floorPixels;
-  let camera;
-  let cosine;
-  let sine;
+  let view;
   let walkPhase = 0;
   let walking = 0;
   let recoil = 0;
@@ -35,7 +34,6 @@ export function createRenderer(canvas, { reducedMotion = false } = {}) {
     if (width === canvas.width && height === canvas.height) return;
     width = canvas.width;
     height = canvas.height;
-    focal = width / (2 * Math.tan(HORIZONTAL_FOV / 2));
     wallDepth = new Float64Array(width);
     // A bounded paper raster keeps floor casting inexpensive on large canvases.
     floor.width = Math.min(320, Math.ceil(width / 2));
@@ -43,51 +41,21 @@ export function createRenderer(canvas, { reducedMotion = false } = {}) {
     floorPixels = floorCtx.createImageData(floor.width, floor.height);
   }
 
-  function position({ x, y, z = 0.5 }) {
-    if (!camera) return null;
-    const dx = x - camera.x;
-    const dy = y - camera.y;
-    const depth = dx * cosine + dy * sine;
-    if (depth < NEAR) return null;
-    const scale = focal / depth;
-    return {
-      x: width / 2 + (-dx * sine + dy * cosine) * scale,
-      y: height / 2 + (CAMERA_HEIGHT - z) * scale,
-      depth, scale,
-    };
+  function position(point) {
+    return projectPosition(view, point);
   }
 
-  // size is a horizontal world-space radius, including transparent sprite
-  // margins. Spans cover the entire footprint, not just the center ray.
-  function project({ size = 0.1, ...point }) {
-    const screen = position(point);
-    if (!screen) return null;
-    const left = Math.max(0, Math.floor(screen.x - size * screen.scale - 2));
-    const right = Math.min(width, Math.ceil(screen.x + size * screen.scale + 2));
-    const visibleSpans = [];
-    let start = null;
-    for (let column = left; column < right; column++) {
-      const visible = screen.depth < wallDepth[column];
-      if (visible && start === null) start = column;
-      if (!visible && start !== null) {
-        visibleSpans.push({ x: start, width: column - start });
-        start = null;
-      }
-    }
-    if (start !== null) visibleSpans.push({ x: start, width: right - start });
-    return visibleSpans.length ? { ...screen, visibleSpans } : null;
+  function project(point) {
+    return projectPoint(view, point, wallDepth);
   }
 
   function drawFloor() {
     const data = floorPixels.data;
     for (let row = 0; row < floor.height; row++) {
-      const screenY = (row + 0.5) * height / (2 * floor.height);
-      const depth = focal * CAMERA_HEIGHT / screenY;
+      const samples = floorRow(view, row, floor.width, floor.height);
+      const { depth, stepX, stepY } = samples;
       const fog = Math.min(1, depth / 28);
-      const step = depth * width / (focal * floor.width);
-      const side = ((0.5 / floor.width - 0.5) * width / focal) * depth;
-      let x = camera.x + cosine * depth - sine * side;
-      let y = camera.y + sine * depth + cosine * side;
+      let { x, y } = samples;
       for (let column = 0; column < floor.width; column++) {
         const tx = ((Math.floor(x * 64) % 64) + 64) % 64;
         const ty = ((Math.floor(y * 64) % 64) + 64) % 64;
@@ -97,8 +65,8 @@ export function createRenderer(canvas, { reducedMotion = false } = {}) {
           data[pixel + channel] = grass[texture + channel] * (1 - fog) + PAPER_RGB[channel] * fog;
         }
         data[pixel + 3] = 255;
-        x -= sine * step;
-        y += cosine * step;
+        x += stepX;
+        y += stepY;
       }
     }
     floorCtx.putImageData(floorPixels, 0, 0);
@@ -131,21 +99,16 @@ export function createRenderer(canvas, { reducedMotion = false } = {}) {
 
   function render(session, { effects } = {}) {
     resize();
-    camera = session.player;
-    cosine = Math.cos(camera.angle);
-    sine = Math.sin(camera.angle);
+    view = createCameraFrame(width, height, session.player);
     ctx.fillStyle = paper;
     ctx.fillRect(0, 0, width, height);
     drawFloor();
     drawForest(session.world);
     for (let column = 0; column < width; column++) {
-      const side = (column + 0.5 - width / 2) / focal;
-      const hit = raycast(session.world, camera, { x: cosine - sine * side, y: sine + cosine * side });
-      // raycast normalizes its direction. Divide out its length to recover
-      // camera-forward depth, keeping a planar hedge straight across the view.
-      const depth = Math.max(0.01, hit.distance / Math.hypot(1, side));
+      const hit = raycast(session.world, view.camera, columnRay(view, column));
+      const depth = perpendicularDepth(view, column, hit.distance);
       wallDepth[column] = depth;
-      const scale = focal / depth;
+      const scale = view.focal / depth;
       const top = height / 2 - (1 - CAMERA_HEIGHT) * scale;
       const coordinate = hit.normal.x ? hit.y : hit.x;
       const textureX = Math.floor((coordinate - Math.floor(coordinate)) * art.hedge.width);
