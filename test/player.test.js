@@ -2,14 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createPlayer, updatePlayer, WALK_SPEED, RUN_MULTIPLIER, TURN_SPEED } from '../src/player.js';
 import { createWorld, circleCollides, HEDGE } from '../src/world.js';
+import { arena as createArena } from './helpers/world.js';
 
 function arena() {
-  const world = { width: 32, height: 32, tiles: new Uint8Array(32 * 32) };
-  for (let i = 0; i < 32; i++) {
-    world.tiles[i] = world.tiles[31 * 32 + i] = HEDGE;
-    world.tiles[i * 32] = world.tiles[i * 32 + 31] = HEDGE;
-  }
-  return world;
+  return createArena([], 32, 32);
 }
 const spawn = { x: 8.5, y: 8.5, angle: 0 };
 const near = (actual, expected, tolerance = 1e-9) => {

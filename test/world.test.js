@@ -2,22 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createRng, normalize } from '../src/math.js';
 import {
-  MAP_SIZE, EMPTY, HEDGE, createWorld, isSolid, raycast, circleCollides,
+  MAP_SIZE, EMPTY, createWorld, isSolid, raycast, circleCollides,
   moveCircle, hasLineOfSight, buildDistanceField,
 } from '../src/world.js';
-
-function fixture(width = 8, height = 8, hedges = []) {
-  const world = { width, height, tiles: new Uint8Array(width * height), decorations: [] };
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      if (x === 0 || y === 0 || x === width - 1 || y === height - 1) {
-        world.tiles[y * width + x] = HEDGE;
-      }
-    }
-  }
-  for (const [x, y] of hedges) world.tiles[y * width + x] = HEDGE;
-  return world;
-}
+import { fixture } from './helpers/world.js';
 
 function near(actual, expected, tolerance = 1e-9) {
   assert.ok(Math.abs(actual - expected) <= tolerance, `${actual} should be near ${expected}`);
