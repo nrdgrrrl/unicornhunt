@@ -143,6 +143,7 @@ test('a complete rear windup emits a real rose; impacts consume armor before hea
   await capture(page, testInfo, 'rear-origin-rose');
   await step(page, 5);
   expect(await page.evaluate(() => game.session.roses[0].x)).toBeCloseTo(rose.x + rose.vx * 5 / 60, 10);
+  await capture(page, testInfo, 'rose-in-flight');
   // Swept point contact happens on the first tick reaching the player radius.
   const hitTick = Math.ceil((rose.x - emitted.player.x - emitted.player.radius) / (3.5 / 60));
   await step(page, hitTick - 6);
@@ -166,6 +167,29 @@ test('a complete rear windup emits a real rose; impacts consume armor before hea
   expect(result.pending).toEqual([]);
   expect(result.feedback.audio).toEqual(result.feedback.effects);
   await attachJSON(testInfo, 'attack-and-impact-events', result.feedback.effects);
+});
+
+test('keyboard strafing after emission dodges the locked rose trajectory', async ({ page }, testInfo) => {
+  await arrange(page);
+  await until(page, () => game.session.roses.length === 1);
+  const emitted = await snapshot(page);
+  await page.keyboard.down('KeyD');
+  await step(page, 20);
+  await page.keyboard.up('KeyD');
+  await step(page, 30);
+  const dodged = await snapshot(page);
+  expect(dodged.player.y).toBeGreaterThan(emitted.player.y + 0.8);
+  expect(dodged.roses[0].y).toBeCloseTo(emitted.roses[0].y, 10);
+  expect(dodged.roses[0].x).toBeLessThan(dodged.player.x - dodged.player.radius);
+  expect(dodged.player).toMatchObject({ health: 5, armor: 1 });
+  expect(dodged.feedback.effects.filter(event => event.type === 'damage')).toEqual([]);
+  await attachJSON(testInfo, 'keyboard-dodge', {
+    seed: 1, fixture: 'arranged survival scenario', controls: 'KeyD for 20 ticks after emission',
+    emission: { player: emitted.player, rose: emitted.roses[0] },
+    outcome: { player: dodged.player, rose: dodged.roses[0], damageEvents: 0 },
+    humanPlaytest: false,
+  });
+  await capture(page, testInfo, 'dodged-rose');
 });
 
 test('pause freezes windup, recovery, cooldown, and airborne roses; keyboard restart clears the attack', async ({ page }) => {

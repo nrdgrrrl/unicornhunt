@@ -2,7 +2,7 @@
 
 Turn unicorns into rainbow glitter in a hand-drawn forest. Clear three waves
 before your health runs out. The game runs locally in a desktop browser; artwork
-is generated on canvas and all six sound effects are synthesized with Web Audio.
+is generated on canvas and all eight sound effects are synthesized with Web Audio.
 
 ## Play
 
@@ -66,7 +66,14 @@ The hit indicator remains visible.
 - Start with **five health and no armor**. Contact and rear-fired roses deal one
   point, absorbed by armor first, with 0.75 seconds of shared invulnerability.
   Rainbow cakes restore one health; star-shield charms add one armor, each capped
-  at five. At zero health you lose, even on a cleared wave.
+  at five. Walk over a supply to collect it; items for a full resource stay put.
+  At zero health you lose, even on a cleared wave.
+- Unicorns stop and turn their rear toward you before firing a rose. The
+  windup lasts 0.55 seconds and locks their aim at your earlier position:
+  strafe out of its path or take cover behind a hedge. Roses travel in a
+  straight line and disappear on a hedge or player impact. Converting their
+  source stops future attacks, but an airborne rose remains until impact,
+  expiry, or the wave clears.
 - Between waves you get a two-second break. You can still move/fire; the next
   wave restores one health, capped at five. Supplies remain collectible during
   the break and are replaced for the next wave. Later unicorns move slightly faster.
@@ -76,7 +83,11 @@ The hit indicator remains visible.
 The first unicorn is straight ahead: fire before moving to see a conversion.
 Keep space between yourself and the herd, strafe around hedges, and turn toward
 unicorns as they enter the clearing. Running helps you escape contact. Listen
-for the shot, glitter, damage, new-wave, victory, and defeat cues.
+for the shot, glitter, pickup, rose-fire, damage, new-wave, victory, and defeat cues.
+Look for layered rainbow cake slices to heal and pastel star-shield charms to
+build armor. Initial waves place three cakes and five charms; supply counts and
+attack timings are starting values awaiting human playtesting. The five-health,
+five-armor caps and one-point damage/pickup rules are fixed.
 
 ## Reproduce a seed
 
@@ -97,6 +108,8 @@ the app browser suite checks lifecycle behavior.
 
 See [geometry contracts and distance-field freshness](docs/geometry.md) for the
 shared collision, visibility, navigation, and rendering query boundary.
+See [survival implementation contracts](docs/survival-contracts.md) for point
+roses, rear socket alignment, seeded supplies, attack timing, and cleanup.
 
 From a clean checkout:
 
@@ -133,9 +146,12 @@ Every suite fails on uncaught page errors, failed local requests, and local HTTP
 errors. The smoke suite also checks the startup state, menus, nonblank canvas,
 first conversion, pause/resume, mute persistence, restart, denied capture, real
 keyboard and captured-mouse three-wave automated victories, natural defeat,
-reduced motion, and a sustained 144-star performance sample. Automated round
+reduced motion, and a combined performance sample with 32 active roses, all
+eight supplies, and the maximum 144-star glitter burst. It attaches frame-time
+percentiles and slow streaks without host-dependent timing limits. Automated round
 controllers read positions to aim; they do not replace human usability testing.
-The audio test also renders all six production cues to WAV clips for audition.
+Their results include final health and armor. The audio test also renders all
+eight production cues to WAV clips for audition.
 
 Screenshots and JSON evidence are in `test-results/`; the browsable report is in
 `playwright-report/`. Failure traces can be opened with `npx playwright show-trace
@@ -143,8 +159,10 @@ Screenshots and JSON evidence are in `test-results/`; the browsable report is in
 CI runs typecheck before runtime and browser tests on pushes and pull requests
 targeting `1-epic-sketchbook-rainbow-lsd` or `36-epic-refactor-modularization-hpu`,
 and uploads the report/screenshots even on failure.
-See [observed verification and remaining human checks](docs/verification.md)
+See [current survival verification and remaining human checks](docs/survival-verification.md)
 for the actual browser versions, results, selected screenshots, and review steps.
+The [issue 13 verification record](docs/verification.md) and its original evidence
+are historical; their magic rules, counts, and timings do not describe this version.
 
 ## Static hosting
 

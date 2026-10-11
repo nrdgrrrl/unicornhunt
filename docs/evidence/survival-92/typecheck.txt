@@ -1,0 +1,4 @@
+
+> unicornhunt@1.0.0 typecheck
+> tsc --project jsconfig.json --noEmit
+

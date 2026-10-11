@@ -1,4 +1,10 @@
-# Verification record — issue 13
+# Historical verification record — issue 13
+
+**Historical evidence only.** The record and original attachments below describe
+the earlier magic/contact-only game. Its observed numbers have been preserved,
+not rerun or relabeled as current survival results. See
+[issue 92 survival verification](survival-verification.md) for current rules,
+fresh evidence, and the outstanding human acceptance checks.
 
 Verification date: **2026-10-11 (UTC)**. This record distinguishes executed
 browser/simulation checks from human review. **Human acceptance is incomplete**:

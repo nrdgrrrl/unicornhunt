@@ -1,4 +1,4 @@
-import { test, expect, origin, controlledClock, stepFrames as step } from './fixtures.js';
+import { test, expect, origin, controlledClock, stepFrames as step, attachJSON } from './fixtures.js';
 
 test.beforeEach(async ({ page }) => {
   // Three simulation ticks per frame, including the two-second intermission.
@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }) => {
   await page.evaluate(async () => { window.game = (await import('/main.js')).game; });
 });
 
-test('the focused primary action stays inside the scrollable panel on a narrow screen', async ({ page }) => {
+test('the focused primary action stays inside the scrollable panel on a narrow screen', async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 320, height: 720 });
   await page.reload();
   await expect(page.getByRole('button', { name: 'Start game', exact: true })).toBeFocused();
@@ -29,6 +29,13 @@ test('the focused primary action stays inside the scrollable panel on a narrow s
     });
   });
   expect(badgesFit).toBe(true);
+  const path = testInfo.outputPath('narrow-survival-hud.png');
+  await page.screenshot({ path });
+  await testInfo.attach('narrow-survival-hud', { path, contentType: 'image/png' });
+  await attachJSON(testInfo, 'narrow-hud-layout', {
+    viewport: page.viewportSize(), seed: 1, primaryActionVisible: visible, badgesFit,
+    humanReadabilityReview: 'pending',
+  });
   await page.keyboard.press('Escape');
   await expect(page.getByRole('button', { name: 'Resume game' })).toBeFocused();
 });
