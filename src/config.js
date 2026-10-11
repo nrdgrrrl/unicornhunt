@@ -19,6 +19,11 @@ export const MAX_HEALTH = 5;
 export const MAX_ARMOR = 5;
 export const DAMAGE_INVULNERABILITY = CONTACT_INVULNERABILITY;
 
+// Staged collectibles; counts are initial per-wave tuning defaults.
+export const PICKUP_RADIUS = 0.2;
+export const HEALTH_PICKUPS_PER_WAVE = 3;
+export const ARMOR_PICKUPS_PER_WAVE = 5;
+
 export const FIRE_COOLDOWN = 0.22;
 export const COMBO_WINDOW = 2;
 export const MAX_COMBO = 5;

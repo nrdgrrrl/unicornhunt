@@ -31,6 +31,14 @@
  *   health: number, armor: number }} SurvivalDamageEvent
  * @typedef {{ state: SurvivalState, event: SurvivalDamageEvent | null }} DamageResult
  *
+ * Staged collectibles: health is a rainbow cake; armor is a pastel star-shield
+ * charm. The session replaces the pickup array each wave and on restart.
+ * @typedef {SurvivalResource} PickupKind
+ * @typedef {Position & { id: string, kind: PickupKind, radius: number }} Pickup
+ * @typedef {Position & { type: 'pickup', source: string, kind: PickupKind,
+ *   amount: 1, health: number, armor: number }} PickupEvent
+ * @typedef {{ pickups: Pickup[], state: SurvivalState, events: PickupEvent[] }} PickupResult
+ *
  * Sampled input is complete; simulation updates also accept Partial<InputFrame>.
  * Axes are in [-1, 1]; look is a consumed angle delta rather than a rate.
  * @typedef {{ forward: number, strafe: number, turn: number, look: number,
