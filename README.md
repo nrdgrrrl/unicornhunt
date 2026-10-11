@@ -1,6 +1,6 @@
 # unicornhunt
 
-Run the game with `npm start`, then choose **Start game**. Three waves of unicorns
+Run the game with `npm start`, then choose **Start game**. Three waves of 6, 8, and 10 unicorns
 turn into rainbow glitter when hit. Escape or the Pause button suspends play;
 the Resume button continues it. Losing focus also pauses the game.
 
@@ -12,6 +12,26 @@ The HUD shows score, best score, magic, wave, living unicorns, and active combo.
 Best score persists under `unicornhunt:bestScore` when local storage is available,
 and otherwise lasts for the current visit. Muted and unavailable audio have
 explicit sound status; unavailable audio displays **Silent mode**.
+
+`new GameSession(seed = 1)` in `src/session.js` owns the simulation and starts
+in `ready`. Call `start()`, `pause()`, and `resume()` to transition through
+`playing` and `paused`; `update(seconds, input = {})` advances only while playing.
+Supply fresh sampled input for each step (the fixed-step loop can use 1/60 second).
+Clearing waves one and two starts a full two-second intermission. The player can
+still move and fire during the break; the next wave restores 20 magic, capped at
+100. Clearing wave three immediately reaches `won`; zero magic reaches `lost`
+and takes precedence over wave progression. Both results freeze the simulation.
+Pausing also freezes the intermission, elapsed time, actors, combo, and cooldowns.
+
+`restart(seed = session.seed)` replaces the world, player, unicorns, timers,
+score, combo, and event queue, then starts playing. The same seed and inputs
+reproduce each run. `remaining` counts living unicorns; converted enemies leave
+the array after combat. `drainEvents()` returns the queued events once, in order,
+including `wave`, `victory`, and `defeat` transitions. The bootstrap shares each
+batch with effects, renderer, and audio. The session imports no browser or storage
+APIs; best-score persistence belongs to the app. For compatibility with the HUD,
+the bootstrap maps `ready`/`won`/`lost` to `title`/`victory`/`defeat` in its public
+`state` getter, while `game.session.state` exposes the simulation state directly.
 
 `createHUD(root, { onStart, onResume, onRestart, onPause, onMute })` in
 `src/hud.js` owns presentation only. Call `update({ state, score, bestScore,
@@ -79,7 +99,7 @@ misses. The rainbow starts at `(x, y)` and ends `distance` tiles along `angle`,
 at the target's surface or the first hedge. A hit also appends
 `{ type: 'glitter', source, x, y, points, combo, score }`, where `source` is the
 converted unicorn's ID. The app sends the queue to separate effects and audio
-consumers, then drains it; combat calls no graphics or sound APIs. The app adds
+consumers, then drains it; combat calls no graphics or sound APIs. The session adds
 `wave`, `victory`, and `defeat` events when those transitions occur.
 
 `createEffects()` in `src/effects.js` consumes events, advances with

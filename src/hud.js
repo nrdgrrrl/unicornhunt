@@ -8,7 +8,7 @@ export function createHUD(root, { onStart, onResume, onRestart, onPause, onMute 
       <div class="badge"><dt>Best score</dt><dd id="best-score">0</dd></div>
       <div class="badge"><dt>Magic</dt><dd id="magic">100 / 100</dd></div>
       <div class="badge"><dt>Wave</dt><dd id="wave">1 / 3</dd></div>
-      <div class="badge"><dt>Unicorns remaining</dt><dd id="remaining">1</dd></div>
+      <div class="badge"><dt>Unicorns remaining</dt><dd id="remaining">6</dd></div>
       <div class="badge"><dt>Combo</dt><dd id="combo">None</dd></div>
     </dl>
     <section class="panel" aria-labelledby="panel-title" aria-describedby="message">
@@ -20,11 +20,13 @@ export function createHUD(root, { onStart, onResume, onRestart, onPause, onMute 
       </div>
       <div id="instructions">
         <h2>How to play</h2>
-        <p>Clear three waves: 1, 3, then 5 unicorns. Fire unlimited rainbows;
+        <p>Clear three waves: 6, 8, then 10 unicorns. Fire unlimited rainbows;
           there is no ammunition limit. Each hit earns 100 points × your combo.
           Hits within two seconds build a combo up to ×5.</p>
         <p>You start with 100 magic. Contact with a unicorn costs 20 magic,
-          with a brief grace period between hits. Zero magic ends the game.</p>
+          with a brief grace period between hits. Zero magic ends the game.
+          Cleared waves give you a two-second break; the next wave restores
+          20 magic, up to 100.</p>
         <h2>Keyboard and mouse controls</h2>
         <dl class="controls">
           <dt>Move forward / backward</dt><dd>W / S or ↑ / ↓</dd>
