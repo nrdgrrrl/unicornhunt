@@ -168,15 +168,18 @@ test('wave, damage, victory, and defeat transitions reach both feedback consumer
     await expect.poll(() => page.evaluate(() => game.session.wave === 3 && game.state === 'victory' ? 4 : game.session.wave)).toBe(wave + 1);
   }
   await expect(page.locator('#message')).toContainText('All unicorns glittered!');
-  expect(await page.evaluate(() => feedback.audio)).toEqual(['wave', 'wave', 'wave', 'victory']);
-  expect(await page.evaluate(() => feedback.effects)).toEqual(['wave', 'wave', 'wave', 'victory']);
+  const feedbackEvents = await page.evaluate(() => feedback);
+  expect(feedbackEvents.audio).toEqual(feedbackEvents.effects);
+  // Polling the real clock can let the newly enabled enemies fire before the
+  // next clear. Both consumers must receive those events as well as transitions.
+  expect(feedbackEvents.audio.filter(type => type !== 'rose-fired')).toEqual(['wave', 'wave', 'wave', 'victory']);
   await page.getByRole('button', { name: 'Play again' }).click();
   await page.evaluate(() => {
-    game.session.player.magic = 20;
+    game.session.player.health = 1;
     game.session.unicorns[0].x = game.session.player.x;
     game.session.unicorns[0].y = game.session.player.y;
   });
-  await expect(page.locator('#message')).toContainText('Your magic ran out.');
+  await expect(page.locator('#message')).toContainText('Your health ran out.');
   expect(await page.evaluate(() => game.state)).toBe('defeat');
   expect(await page.evaluate(() => feedback.audio.slice(-2))).toEqual(['damage', 'defeat']);
   expect(await page.evaluate(() => feedback.effects.slice(-2))).toEqual(['damage', 'defeat']);

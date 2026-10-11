@@ -4,12 +4,16 @@ import { createWorld } from './world.js';
 import { createPlayer, updatePlayer } from './player.js';
 import { spawnUnicorns, updateUnicorns } from './unicorn.js';
 import { updateCombat } from './combat.js';
-import { MAX_MAGIC, WAVE_COUNTS, INTERMISSION_SECONDS, WAVE_MAGIC_BONUS } from './config.js';
+import { spawnPickups, collectPickups } from './pickups.js';
+import { updateRoses } from './projectiles.js';
+import { updateRangedAttacks } from './ranged-attacks.js';
+import { restoreHealth } from './survival.js';
+import { WAVE_COUNTS, INTERMISSION_SECONDS } from './config.js';
 
 /** @typedef {import('./contracts.js').SessionData} SessionData */
 
 // Existing session imports remain valid while configuration owns the values.
-export { WAVE_COUNTS, INTERMISSION_SECONDS, WAVE_MAGIC_BONUS } from './config.js';
+export { WAVE_COUNTS, INTERMISSION_SECONDS } from './config.js';
 
 /**
  * Authoritative, browser-independent simulation. Time is in seconds; callers
@@ -39,8 +43,8 @@ export class GameSession {
     this.player = player;
     /** @type {import('./contracts.js').Unicorn[]} */
     this.unicorns = unicorns;
-    // Return-fire creation and fixed-step advancement are wired separately.
-    // Neither cosmetic effects nor reduced-motion settings own these values.
+    /** @type {import('./contracts.js').Pickup[]} */
+    this.pickups = spawnPickups(world, player, unicorns, 1);
     /** @type {import('./contracts.js').RoseProjectile[]} */
     this.roses = [];
     /** @type {number} */
@@ -109,36 +113,51 @@ export class GameSession {
       throw new RangeError('Session update time must be finite and nonnegative.');
     }
     if (this.state !== 'playing') return this;
-    // Defeat takes precedence over a cleared wave or its magic restoration.
-    if (this.player.magic <= 0) {
-      this.player.magic = 0;
+    // Defeat takes precedence over supplies and between-wave restoration.
+    if (this.player.health <= 0) {
+      this.player.health = 0;
       this.#finish('lost');
       return this;
     }
 
     const betweenWaves = this.intermissionRemaining > 0;
     this.elapsed += seconds;
+    const previousPosition = { x: this.player.x, y: this.player.y };
     updatePlayer(this.player, this.world, input, seconds);
+    const supplies = collectPickups(this.pickups, this.world, this.player, this.player);
+    this.pickups = supplies.pickups;
+    Object.assign(this.player, supplies.state);
+    this.events.push(...supplies.events);
     updateCombat(this);
-    // Combat publishes conversion data before dead actors leave the world.
-    this.unicorns = this.unicorns.filter(unicorn => unicorn.alive);
     this.events.push(...updateUnicorns(this.unicorns, this.world, this.player, seconds));
+    const projectiles = updateRoses(this.roses, this.world, this.player, this.player, seconds, previousPosition);
+    this.roses = projectiles.roses;
+    Object.assign(this.player, projectiles.state);
+    this.events.push(...projectiles.events);
+    this.events.push(...updateRangedAttacks(this.unicorns, this.world, this.player, this, seconds));
 
-    if (this.player.magic <= 0) {
+    const defeated = this.player.health <= 0;
+    if (defeated) {
       this.#finish('lost');
-    } else if (betweenWaves) {
+    }
+    // Conversion disables actions immediately; remove actors after defeat checks.
+    this.unicorns = this.unicorns.filter(unicorn => unicorn.alive);
+    if (defeated) return this;
+    if (betweenWaves) {
       const remaining = this.intermissionRemaining - seconds;
       // Repeated 1/60 steps must finish at exactly 120 ticks, despite rounding.
       const tolerance = 32 * Number.EPSILON * Math.max(INTERMISSION_SECONDS, seconds);
       this.intermissionRemaining = remaining <= tolerance ? 0 : remaining;
       if (this.intermissionRemaining === 0) {
         const wave = this.wave + 1;
+        Object.assign(this.player, restoreHealth(this.player));
         this.unicorns = spawnUnicorns(this.world, this.player, WAVE_COUNTS[wave - 1], wave);
         this.wave = wave;
-        this.player.magic = Math.min(MAX_MAGIC, this.player.magic + WAVE_MAGIC_BONUS);
+        this.pickups = spawnPickups(this.world, this.player, this.unicorns, wave);
         this.events.push({ type: 'wave', wave });
       }
     } else if (this.unicorns.length === 0) {
+      this.roses = [];
       if (this.wave === WAVE_COUNTS.length) this.#finish('won');
       else this.intermissionRemaining = INTERMISSION_SECONDS;
     }

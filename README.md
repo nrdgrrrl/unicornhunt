@@ -1,7 +1,7 @@
 # Unicorn Hunt
 
 Turn unicorns into rainbow glitter in a hand-drawn forest. Clear three waves
-before your magic runs out. The game runs locally in a desktop browser; artwork
+before your health runs out. The game runs locally in a desktop browser; artwork
 is generated on canvas and all six sound effects are synthesized with Web Audio.
 
 ## Play
@@ -63,11 +63,14 @@ The hit indicator remains visible.
   Hedges block shots and movement; flowers, rocks, and mushrooms are decoration.
 - A conversion earns **100 × combo** points. Hits within two seconds build the
   combo up to ×5. Misses give no points and do not extend the combo timer.
-- Start with **100 magic**. Unicorn contact costs 20, with 0.75 seconds of shared
-  invulnerability between hits. At zero magic you lose, even on a cleared wave.
+- Start with **five health and no armor**. Contact and rear-fired roses deal one
+  point, absorbed by armor first, with 0.75 seconds of shared invulnerability.
+  Rainbow cakes restore one health; star-shield charms add one armor, each capped
+  at five. At zero health you lose, even on a cleared wave.
 - Between waves you get a two-second break. You can still move/fire; the next
-  wave restores 20 magic, capped at 100. Later unicorns move slightly faster.
-- The HUD shows score, best score, magic, wave, remaining unicorns, and combo.
+  wave restores one health, capped at five. Supplies remain collectible during
+  the break and are replaced for the next wave. Later unicorns move slightly faster.
+- The HUD shows score, best score, health, armor, wave, remaining unicorns, and combo.
   Best score and mute preference survive reloads when local storage is available.
 
 The first unicorn is straight ahead: fire before moving to see a conversion.

@@ -260,6 +260,6 @@ test('impossible spawn requests terminate and navigation detours through the onl
   }
   assert.equal(passedOpening, true);
   assert.equal(contact, true);
-  assert.equal(player.magic, 80);
+  assert.equal(player.health, 4);
   assert.ok(Math.hypot(unicorn.x - player.x, unicorn.y - player.y) <= 0.45 + 1e-9);
 });

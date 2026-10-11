@@ -1,5 +1,7 @@
 // @ts-check
 
+import { MAX_HEALTH, MAX_ARMOR } from './config.js';
+
 /**
  * Copy authoritative session values into the presentation-only HUD contract.
  * Audio availability is supplied by the app, which owns browser capability checks.
@@ -13,7 +15,8 @@ export function createHUDSnapshot(session, { bestScore, muted, audioUnavailable 
     : session.state === 'lost' ? 'defeat' : session.state;
   return {
     state, score: session.score, bestScore,
-    magic: session.player.magic, wave: session.wave,
+    health: session.player.health, maxHealth: MAX_HEALTH,
+    armor: session.player.armor, maxArmor: MAX_ARMOR, wave: session.wave,
     remaining: session.remaining, combo: session.combo,
     muted, audioUnavailable,
   };

@@ -156,7 +156,7 @@ test('two pixel padding, default radius, viewport clipping, and the final column
 });
 
 test('frames snapshot player state and helpers leave all inputs and depth buffers unchanged', () => {
-  const player = { x: 3.5, y: 12.5, angle: 0.25, magic: 100, z: 9 };
+  const player = { x: 3.5, y: 12.5, angle: 0.25, health: 5, z: 9 };
   const originalPlayer = { ...player };
   const frame = createCameraFrame(401, 601, player);
   assert.deepEqual(player, originalPlayer);
