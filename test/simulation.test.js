@@ -1,18 +1,26 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { EMPTY, HEDGE, createWorld, hasLineOfSight } from '../src/world.js';
-import { createPlayer, updatePlayer } from '../src/player.js';
+import { updatePlayer } from '../src/player.js';
 import { updateCombat } from '../src/combat.js';
 import { GameSession } from '../src/session.js';
 import { COMBO_WINDOW, STEP_SECONDS as STEP } from '../src/config.js';
-import { snapshot } from './helpers/simulation.js';
+import { snapshot, enemy, combatSession } from './helpers/simulation.js';
 
 const near = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-9, `${actual} should be near ${expected}`);
-const target = (id, x, y = 12.5, radius = 0.25) => ({ id, x, y, radius, alive: true });
+const target = (id, x, y = 12.5, radius = 0.25) => enemy(id, x, y, { radius });
 
 function combat(unicorns) {
   const world = createWorld(0);
-  return { world, player: createPlayer(world.spawn), unicorns, score: 0, combo: 0, elapsed: 0, lastHitAt: null, events: [] };
+  return combatSession(unicorns, world, world.spawn);
+}
+
+// Copy all survival entities, including nested aim samples, for per-tick replay.
+function survivalSnapshot(session) {
+  return structuredClone({
+    player: session.player, unicorns: session.unicorns, pickups: session.pickups,
+    roses: session.roses, nextRoseId: session.nextRoseId,
+  });
 }
 
 function shoot(session, seconds = 0, fire = true) {
@@ -127,7 +135,8 @@ function play(session, done = game => game.state !== 'playing') {
       }
     }
     events.push(...batch);
-    history.push({ input, events: batch, state: session.state, wave: session.wave, score: session.score, combo: session.combo });
+    history.push({ input, events: batch, state: session.state, wave: session.wave, score: session.score, combo: session.combo,
+      survival: survivalSnapshot(session) });
     assert.ok(session.player.health > 0, `controller survived tick ${tick}`);
   }
   assert.ok(done(session), 'session must finish within 60 simulated seconds');
@@ -207,6 +216,7 @@ test('three generated waves reach victory through 24 real conversions and replay
       assert.equal(session.wave, frame.wave);
       assert.equal(session.score, frame.score);
       assert.equal(session.combo, frame.combo);
+      assert.deepEqual(survivalSnapshot(session), frame.survival);
     }
     assert.deepEqual(snapshot(session), won);
   }

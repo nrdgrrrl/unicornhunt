@@ -19,6 +19,10 @@ function enemy(x, y, overrides = {}) {
   return { id: 'test', x, y, radius: UNICORN_RADIUS, speed: UNICORN_SPEED, angle: 0, alive: true, ...overrides };
 }
 
+// These tests advance navigation/contact through updateUnicorns alone. Natural
+// pathfinding must not depend on ranged windup/recovery pauses; ranged timing
+// lives in ranged-attacks.test.js and the complete ordering in session.test.js.
+
 test('waves spawn their full counts safely and reproducibly over generated forests', () => {
   for (let seed = 0; seed < 200; seed++) {
     const world = createWorld(seed);

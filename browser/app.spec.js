@@ -66,6 +66,58 @@ test('simulation uses 60 Hz steps, bounds delayed frames, and consumes mouse mot
   expect(await page.evaluate(() => steps.length)).toBe(7);
 });
 
+test('a movement tick drains pickup-before-damage feedback once to effects and audio and updates the HUD', async ({ page }) => {
+  await start(page);
+  await advance(page, 0);
+  await page.evaluate(async () => {
+    const { PICKUP_RADIUS, STEP_SECONDS, WALK_SPEED } = await import('/src/config.js');
+    const { spawnRose } = await import('/src/projectiles.js');
+    const session = game.session;
+    session.player.health = 1;
+    const contact = session.unicorns[0];
+    contact.x = session.player.x + session.player.radius + contact.radius;
+    contact.y = session.player.y;
+    contact.speed = 0;
+    contact.attack.cooldownFor = 100;
+    session.unicorns.slice(1).forEach(unicorn => { unicorn.alive = false; });
+    // Just outside pickup range now; one movement tick overlaps both supplies.
+    session.pickups = ['health', 'armor'].map(kind => ({
+      id: kind, kind, radius: PICKUP_RADIUS,
+      x: session.player.x + session.player.radius + PICKUP_RADIUS + WALK_SPEED * STEP_SECONDS / 2,
+      y: session.player.y,
+    }));
+    spawnRose(session, { id: contact.id, x: session.player.x, y: session.player.y }, { x: 1, y: 0 });
+    window.feedback = { effects: [], audio: [] };
+    for (const name of ['effects', 'audio']) {
+      const consume = game[name].consume.bind(game[name]);
+      game[name].consume = events => { feedback[name].push(events); consume(events); };
+    }
+  });
+  await page.keyboard.down('KeyW');
+  await advance(page, 1000 / 60);
+  await page.keyboard.up('KeyW');
+  const result = await page.evaluate(() => ({
+    effects: feedback.effects, audio: feedback.audio,
+    sharedBatch: feedback.effects[0] === feedback.audio[0],
+    pending: game.session.events, pickups: game.session.pickups, roses: game.session.roses,
+    state: game.state,
+  }));
+  expect(result.effects).toHaveLength(1);
+  expect(result.effects[0].map(event => event.type)).toEqual(['pickup', 'pickup', 'damage']);
+  expect(result.effects[0][2]).toMatchObject({ cause: 'contact', resource: 'armor', health: 2, armor: 0 });
+  expect(result.audio).toEqual(result.effects);
+  expect(result.sharedBatch).toBe(true);
+  expect(result.pending).toEqual([]);
+  expect(result.pickups).toEqual([]);
+  expect(result.roses).toEqual([]);
+  expect(result.state).toBe('playing');
+  await expect(page.locator('#health')).toHaveText('2 / 5');
+  await expect(page.locator('#armor')).toHaveText('0 / 5');
+  await advance(page, 1000 / 60);
+  expect(await page.evaluate(() => feedback.effects[1])).toEqual([]);
+  expect(await page.evaluate(() => feedback.audio[1])).toEqual([]);
+});
+
 for (const cause of ['Escape', 'hidden tab', 'focus loss', 'pointer-lock loss']) {
   test(`${cause} freezes play until explicit Resume and discards held input and elapsed time`, async ({ page }) => {
     await start(page);
@@ -87,10 +139,19 @@ for (const cause of ['Escape', 'hidden tab', 'focus loss', 'pointer-lock loss'])
     }, cause);
     await expect(page.getByRole('button', { name: 'Resume game' })).toBeFocused();
     // Include intermission timing in the frozen snapshot.
-    await page.evaluate(() => { game.session.intermissionRemaining = 1; });
+    await page.evaluate(async () => {
+      const { spawnRose } = await import('/src/projectiles.js');
+      game.session.intermissionRemaining = 1;
+      game.session.player.armor = 2;
+      game.session.player.invulnerableFor = 0.6;
+      game.session.unicorns[0].attack.phase = 'windup';
+      game.session.unicorns[0].attack.remaining = 0.5;
+      spawnRose(game.session, { id: 'paused-source', x: game.session.player.x + 1, y: game.session.player.y }, { x: 1, y: 0 });
+    });
     const snapshot = await page.evaluate(() => JSON.stringify({
       elapsed: game.session.elapsed, player: game.session.player, unicorns: game.session.unicorns,
       wave: game.session.wave, intermission: game.session.intermissionRemaining,
+      pickups: game.session.pickups, roses: game.session.roses, nextRoseId: game.session.nextRoseId, events: game.session.events,
       particles: game.effects.particleCount, trails: game.effects.trailCount,
     }));
     await advance(page, 60_000, 2);
@@ -104,6 +165,7 @@ for (const cause of ['Escape', 'hidden tab', 'focus loss', 'pointer-lock loss'])
     expect(await page.evaluate(() => JSON.stringify({
       elapsed: game.session.elapsed, player: game.session.player, unicorns: game.session.unicorns,
       wave: game.session.wave, intermission: game.session.intermissionRemaining,
+      pickups: game.session.pickups, roses: game.session.roses, nextRoseId: game.session.nextRoseId, events: game.session.events,
       particles: game.effects.particleCount, trails: game.effects.trailCount,
     }))).toBe(snapshot);
     await page.getByRole('button', { name: 'Resume game' }).click();
@@ -133,6 +195,10 @@ test('ten restarts retain one loop and audio context, clear cosmetics, and prese
     window.originalEffects = game.effects;
     window.originalAudio = game.audio;
     window.originalSession = game.session;
+    window.initialSurvival = JSON.stringify({
+      player: game.session.player, unicorns: game.session.unicorns, pickups: game.session.pickups,
+      roses: game.session.roses, nextRoseId: game.session.nextRoseId,
+    });
   });
   for (let run = 0; run <= 10; run++) {
     expect(await page.evaluate(() => pendingFrames())).toBe(1);
@@ -144,14 +210,26 @@ test('ten restarts retain one loop and audio context, clear cosmetics, and prese
     expect(await page.evaluate(() => shots)).toBe(5);
     await page.keyboard.press('Escape');
     // Add lingering feedback and held movement to check the restart boundary.
-    await page.evaluate(() => {
-      game.effects.consume([{ type: 'glitter', x: game.session.player.x, y: game.session.player.y }]);
+    await page.evaluate(async () => {
+      const { spawnRose } = await import('/src/projectiles.js');
+      game.effects.consume([{ type: 'glitter', source: 'old-run', points: 100, combo: 1, score: 100,
+        x: game.session.player.x, y: game.session.player.y }]);
+      spawnRose(game.session, { id: 'old-run', x: game.session.player.x + 1, y: game.session.player.y }, { x: 1, y: 0 });
+      game.session.pickups.length = 0;
+      game.session.player.armor = 4;
+      game.session.player.invulnerableFor = 0.7;
+      game.session.unicorns[0].attack.phase = 'recovery';
+      game.session.unicorns[0].attack.remaining = 0.2;
     });
     await page.getByRole('button', { name: 'Restart game' }).click();
     expect(await page.evaluate(() => ({
       score: game.session.score, particles: game.effects.particleCount, trails: game.effects.trailCount,
       elapsed: game.session.elapsed, health: game.session.player.health, firing: game.session.player.firing,
     }))).toEqual({ score: 0, particles: 0, trails: 0, elapsed: 0, health: 5, firing: false });
+    expect(await page.evaluate(() => JSON.stringify({
+      player: game.session.player, unicorns: game.session.unicorns, pickups: game.session.pickups,
+      roses: game.session.roses, nextRoseId: game.session.nextRoseId,
+    }))).toBe(await page.evaluate(() => initialSurvival));
     await advance(page, 1000 / 60, 2);
     expect(await page.evaluate(() => game.session.player.firing)).toBe(false);
     await page.keyboard.up('Space');
