@@ -1,4 +1,5 @@
 import { UNICORN_REAR_RUMP_ANCHOR } from './art.js';
+import { SPRITE_DESIGN_WIDTH, SPRITE_DESIGN_HEIGHT } from './vector-art.js';
 import { rearSocket } from './ranged-attacks.js';
 
 /** Pure presentation of a simulation snapshot. The returned rectangles and
@@ -10,7 +11,11 @@ export function presentSprites(session, art, project) {
   function add(item, artwork, point, height, layer, anchor) {
     const sprite = art[artwork];
     if (!sprite) return;
-    const origin = anchor ?? { x: sprite.width / 2, y: sprite.height / 2 };
+    // Convert logical design coordinates to physical atlas pixels.
+    const origin = anchor ? {
+      x: anchor.x / SPRITE_DESIGN_WIDTH * sprite.width,
+      y: anchor.y / SPRITE_DESIGN_HEIGHT * sprite.height,
+    } : { x: sprite.width / 2, y: sprite.height / 2 };
     const worldWidth = height * sprite.width / sprite.height;
     // Include transparent margins and the entire footprint around the anchor.
     const size = worldWidth * Math.max(origin.x / sprite.width, 1 - origin.x / sprite.width);

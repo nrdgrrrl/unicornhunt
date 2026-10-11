@@ -1,4 +1,6 @@
-import { createArt, INK } from './art.js';
+import { INK } from './art.js';
+import { createVectorArt } from './vector-art.js';
+import { resizeDisplayCanvas } from './render-resolution.js';
 import { createRng } from './math.js';
 import {
   CAMERA_HEIGHT, HORIZONTAL_FOV, createCameraFrame, columnRay,
@@ -14,9 +16,9 @@ const PAPER_RGB = [255, 248, 232];
 /** The camera stays horizontal at a fixed height. All world artwork and effects
  * share perpendicular depth and per-column wall clipping. Render never advances
  * animation time; update and consume are called only by the simulation. */
-export function createRenderer(canvas, { reducedMotion = false } = {}) {
+export function createRenderer(canvas, { reducedMotion = false, responsive = false } = {}) {
   const ctx = canvas.getContext('2d');
-  const art = createArt();
+  const art = createVectorArt();
   const paper = ctx.createPattern(art.paper, 'repeat');
   const grass = art.grass.getContext('2d').getImageData(0, 0, 64, 64).data;
   const floor = canvas.ownerDocument.createElement('canvas');
@@ -99,7 +101,12 @@ export function createRenderer(canvas, { reducedMotion = false } = {}) {
   }
 
   function render(session, { effects } = {}) {
+    // Isolated consumers retain explicit buffers; the app follows its CSS stage.
+    if (responsive) resizeDisplayCanvas(canvas);
     resize();
+    // Dimension changes reset context state, including interpolation settings.
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
     view = createCameraFrame(width, height, session.player);
     ctx.fillStyle = paper;
     ctx.fillRect(0, 0, width, height);

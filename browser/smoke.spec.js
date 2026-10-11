@@ -289,6 +289,9 @@ test('combined roses, supplies, and maximum glitter record frame times and reduc
             expectedRoses: MAX_ROSES, expectedHealthSupplies: HEALTH_PICKUPS_PER_WAVE,
             expectedArmorSupplies: ARMOR_PICKUPS_PER_WAVE,
             state: game.state, intervalsMs: intervals,
+            backingSize: { width: document.querySelector('#game').width, height: document.querySelector('#game').height },
+            displaySize: { width: document.querySelector('#game').clientWidth, height: document.querySelector('#game').clientHeight },
+            devicePixelRatio: window.devicePixelRatio,
             userAgent: navigator.userAgent, hardwareConcurrency: navigator.hardwareConcurrency });
         }
       }

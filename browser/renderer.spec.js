@@ -6,12 +6,14 @@ test.beforeEach(async ({ page }) => {
     const { game } = await import('/main.js');
     game.destroy();
     const { createRenderer } = await import('/src/renderer.js');
-    const { createArt } = await import('/src/art.js');
+    const { createVectorArt } = await import('/src/vector-art.js');
     const { createWorld } = await import('/src/world.js');
     const { createPlayer } = await import('/src/player.js');
     window.canvas = document.querySelector('#game');
+    canvas.width = 640;
+    canvas.height = 360;
     window.renderer = createRenderer(canvas);
-    window.art = createArt();
+    window.art = createVectorArt();
     const world = createWorld(1);
     world.tiles.fill(0);
     world.decorations = [];
