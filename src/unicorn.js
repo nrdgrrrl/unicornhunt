@@ -1,5 +1,8 @@
 import { createRng } from './math.js';
-import { buildDistanceField, circleCollides, hasLineOfSight, moveCircle } from './world.js';
+import {
+  buildDistanceField, circleCollides, hasLineOfSight, moveCircle,
+  distanceAt, nextDistanceCell, assertDistanceField,
+} from './geometry.js';
 import {
   UNICORN_RADIUS, UNICORN_SPEED, WAVE_SPEED_INCREMENT, PLAYER_SPAWN_DISTANCE,
   UNICORN_SPAWN_DISTANCE, CONTACT_DAMAGE, CONTACT_INVULNERABILITY,
@@ -10,7 +13,6 @@ export {
   UNICORN_RADIUS, UNICORN_SPEED, WAVE_SPEED_INCREMENT, PLAYER_SPAWN_DISTANCE,
   UNICORN_SPAWN_DISTANCE, CONTACT_DAMAGE, CONTACT_INVULNERABILITY,
 } from './config.js';
-const NEIGHBORS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
 const EPSILON = 1e-9;
 const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 
@@ -38,7 +40,9 @@ export function spawnUnicorns(world, player, count, wave = 1, seed = `${world.se
   const random = createRng(seed);
   const field = buildDistanceField(world, player, UNICORN_RADIUS);
   const candidates = [];
-  const safe = position => Number.isFinite(field.distances[Math.floor(position.y) * world.width + Math.floor(position.x)])
+  // Reachability describes cell centers; an off-center introduction also needs
+  // circle clearance at its exact position, even when its cell is reachable.
+  const safe = position => Number.isFinite(distanceAt(field, Math.floor(position.x), Math.floor(position.y)))
     && !circleCollides(world, position, UNICORN_RADIUS)
     && distance(position, player) + EPSILON >= Math.max(PLAYER_SPAWN_DISTANCE, player.radius + UNICORN_RADIUS);
   for (let y = 0; y < world.height; y++) {
@@ -77,21 +81,17 @@ function navigate(unicorn, world, player, field, seconds) {
   let remaining = unicorn.speed * seconds;
   // Each completed cardinal step descends the field. This bound also handles
   // very long frames without discarding ordinary frame movement or tunneling.
-  for (let step = 0; step < field.distances.length + 2 && remaining > 0; step++) {
+  for (let step = 0; step < field.width * field.height + 2 && remaining > 0; step++) {
     const x = Math.floor(unicorn.x);
     const y = Math.floor(unicorn.y);
-    const current = field.distances[y * world.width + x];
+    const current = distanceAt(field, x, y);
     if (!Number.isFinite(current)) break;
     let target = player;
     if (current > 0) {
-      const neighbor = NEIGHBORS.find(([dx, dy]) => {
-        const nx = x + dx;
-        const ny = y + dy;
-        return nx >= 0 && ny >= 0 && nx < world.width && ny < world.height
-          && field.distances[ny * world.width + nx] < current;
-      });
+      const neighbor = nextDistanceCell(field, x, y);
       if (!neighbor) break;
-      const [dx, dy] = neighbor;
+      const dx = neighbor.x - x;
+      const dy = neighbor.y - y;
       // Finish reaching this cell's centerline before turning. Steering
       // diagonally at a lower-distance cell can otherwise stick on corners.
       const aligned = dx ? Math.abs(unicorn.y - (y + 0.5)) < EPSILON
@@ -131,10 +131,7 @@ export function updateUnicorns(unicorns, world, player, seconds, field) {
     throw new RangeError('Unicorn update time must be finite and nonnegative.');
   }
   field ??= buildDistanceField(world, player, UNICORN_RADIUS);
-  if (field.width !== world.width || field.height !== world.height || field.radius !== UNICORN_RADIUS
-    || field.target.x !== Math.floor(player.x) || field.target.y !== Math.floor(player.y)) {
-    throw new RangeError('Unicorns need a current distance field with unicorn clearance.');
-  }
+  assertDistanceField(field, world, player, UNICORN_RADIUS);
   player.invulnerableFor = Math.max(0, player.invulnerableFor - seconds);
   const events = [];
   for (const unicorn of unicorns) {

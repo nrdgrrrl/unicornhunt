@@ -1,5 +1,5 @@
 import { createRng } from './math.js';
-import { moveCircle } from './world.js';
+import { moveCircle } from './geometry.js';
 import { EFFECT_PARTICLE_RADIUS } from './config.js';
 
 export const MAX_PARTICLES = 144;

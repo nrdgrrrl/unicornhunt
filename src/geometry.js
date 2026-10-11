@@ -14,8 +14,9 @@
  * radii (tangency counts as contact); gameplay also checks visibility so actors
  * cannot damage one another through hedges. Ray-circle tangency counts as a hit.
  *
- * Production consumer migration, including combat's private ray-circle query,
- * is deferred to issue 15.
+ * Fields are snapshots: callers must rebuild after tile changes. Validation
+ * checks dimensions, target tile, and radius, not world identity or freshness.
+ * See docs/geometry.md for the public contracts and consumer invariants.
  * @typedef {ReturnType<typeof import('./world.js').buildDistanceField>} DistanceField
  */
 
