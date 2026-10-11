@@ -88,10 +88,11 @@
  *   pickups: Pickup[], wave: number, intermissionRemaining: number, readonly remaining: number }} SessionData
  *
  * @typedef {'title' | 'playing' | 'paused' | 'victory' | 'defeat'} HUDState
- * @typedef {{ state: HUDState, score: number, bestScore: number,
+ * HUD snapshots contain frozen scalar copies, never aliases of mutable session data.
+ * @typedef {Readonly<{ state: HUDState, score: number, bestScore: number,
  *   health: number, maxHealth: number, armor: number, maxArmor: number,
  *   wave: number, remaining: number, combo: number, muted: boolean,
- *   audioUnavailable: boolean }} HUDSnapshot
+ *   audioUnavailable: boolean }>} HUDSnapshot
  * @typedef {{ onStart: () => void, onResume: () => void, onRestart: () => void,
  *   onPause: () => void, onMute: () => void }} HUDActions
  * @typedef {{ update: (snapshot: HUDSnapshot) => void, destroy: () => void }} HUD
