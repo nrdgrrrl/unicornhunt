@@ -1,157 +1,133 @@
-# unicornhunt
+# Unicorn Hunt
 
-Run the game with `npm start`, then choose **Start game**. Three waves of 6, 8, and 10 unicorns
-turn into rainbow glitter when hit. Escape or the Pause button suspends play;
-the Resume button continues it. Losing focus also pauses the game.
+Turn unicorns into rainbow glitter in a hand-drawn forest. Clear three waves
+before your magic runs out. The game runs locally in a desktop browser; artwork
+is generated on canvas and all six sound effects are synthesized with Web Audio.
 
-The menus explain scoring, contact damage, and all controls. The pause menu also
-offers **Restart game**; victory and defeat show final scores and **Play again**.
-Keyboard focus moves to the primary menu action when a panel opens, and returns
-to the canvas on Start/Resume. Tab, Enter, and Space work on all menu buttons.
-The HUD shows score, best score, magic, wave, living unicorns, and active combo.
-Best score persists under `unicornhunt:bestScore` when local storage is available,
-and otherwise lasts for the current visit. Muted and unavailable audio have
-explicit sound status; unavailable audio displays **Silent mode**.
+## Install and play
 
-`new GameSession(seed = 1)` in `src/session.js` owns the simulation and starts
-in `ready`. Call `start()`, `pause()`, and `resume()` to transition through
-`playing` and `paused`; `update(seconds, input = {})` advances only while playing.
-Supply fresh sampled input for each step (the fixed-step loop can use 1/60 second).
-Clearing waves one and two starts a full two-second intermission. The player can
-still move and fire during the break; the next wave restores 20 magic, capped at
-100. Clearing wave three immediately reaches `won`; zero magic reaches `lost`
-and takes precedence over wave progression. Both results freeze the simulation.
-Pausing also freezes the intermission, elapsed time, actors, combo, and cooldowns.
+Install **Node.js 22 or newer**, which includes npm, then open a terminal in
+this repository:
 
-`restart(seed = session.seed)` replaces the world, player, unicorns, timers,
-score, combo, and event queue, then starts playing. The same seed and inputs
-reproduce each run. `remaining` counts living unicorns; converted enemies leave
-the array after combat. `drainEvents()` returns the queued events once, in order,
-including `wave`, `victory`, and `defeat` transitions. The bootstrap shares each
-batch with effects, renderer, and audio. The session imports no browser or storage
-APIs; best-score persistence belongs to the app. For compatibility with the HUD,
-the bootstrap maps `ready`/`won`/`lost` to `title`/`victory`/`defeat` in its public
-`state` getter, while `game.session.state` exposes the simulation state directly.
+```sh
+npm ci
+npm start
+```
 
-`createHUD(root, { onStart, onResume, onRestart, onPause, onMute })` in
-`src/hud.js` owns presentation only. Call `update({ state, score, bestScore,
-magic, wave, remaining, combo, muted, audioUnavailable })` with app snapshots.
-The overlay keeps its DOM nodes between updates, focuses menu actions only on
-state changes, and announces wave, pause/resume, and result transitions through
-a separate live region. Score changes are not live announcements. Call
-`destroy()` to detach action listeners and remove the overlay.
+Open **http://127.0.0.1:4173** and select **Start game**, or press Enter on the
+focused Start button. Leave the terminal running. Stop the server with Ctrl+C.
+To choose another port, use `PORT=8080 npm start` on macOS/Linux or set the `PORT`
+environment variable in your shell. No build step or account is required.
 
-The focusable game canvas supports these controls through `src/input.js`:
+Use a desktop browser with Canvas 2D support. Audio and pointer capture are
+optional: keyboard play works when capture is denied, and unavailable audio is
+reported as **Silent mode**. Audio begins only after Start/Resume. Touch controls
+are not implemented.
 
-- Up/Down or W/S: forward/backward. Left/Right: turn.
-- Alt + Left/Right, comma/period, or A/D: strafe.
-- Ctrl, Space, or primary mouse button: fire. Shift: run at twice walking speed.
-- Escape: request pause. M: toggle sound through the supplied callback.
-- With optional pointer lock: horizontal mouse movement turns; vertical movement is ignored.
+## Controls
 
-Create the adapter with `createInput(canvas, { onPause, onMute })` and a player
-with `createPlayer(world.spawn)`. Each simulation tick calls
-`updatePlayer(player, world, input.sample(), elapsedSeconds)`. The player exposes
-`x`, `y`, `angle` (radians), `radius`, and `firing`. Movement uses world collision
-and normalizes diagonals. Walking speed is 2.5 tiles/second and keyboard turning
-is π radians/second.
+| Action | Keyboard | Mouse |
+| --- | --- | --- |
+| Forward / backward | W / S or ↑ / ↓ | — |
+| Turn left / right | ← / → | Move horizontally while the pointer is captured |
+| Strafe left / right | A / D, comma / period, or Alt + ← / → | — |
+| Fire (hold to repeat) | Space or Ctrl | Hold the primary button on the game |
+| Run | Hold Shift while moving | — |
+| Pause | Escape | Pause button |
+| Toggle sound | M while the game has focus | Sound button |
 
-`src/unicorn.js` exposes `spawnUnicorns(world, player, count, wave = 1, seed)`
-for each new wave. Spawning uses a finite, seeded selection of reachable open
-cells, at least three tiles from the player and one tile apart. Wave one puts
-its first unicorn three tiles ahead in the generated introduction corridor.
-Requests exceeding the available safe positions throw a `RangeError`.
+Click the canvas to request pointer capture. Escape releases it and pauses.
+If capture is refused, continue with keyboard turning; mouse firing still works.
+There is no vertical aim or jumping. Tab moves through menu buttons; Enter or
+Space activates them. Start/Resume return focus to the canvas. Switching tabs or
+losing window focus pauses and clears held controls: resume explicitly and press
+movement/fire again. Restart is in the pause menu; Play again follows either result.
 
-After updating the player, call
-`updateUnicorns(unicorns, world, player, elapsedSeconds)` once per simulation
-tick, including ticks with an empty group. Unicorns follow one shared distance
-field around hedges, moving at 1.2 tiles/second plus 0.08 per subsequent wave.
-The optional fifth argument accepts a field built with
-`buildDistanceField(world, player, UNICORN_RADIUS)` for the current player tile.
-Unicorns expose position, radius, speed, angle, and a single `alive` flag; setting
-`alive = false` immediately prevents movement and contact damage.
+Your browser/OS reduced-motion preference reduces glitter count and movement,
+removes star rotation, and disables weapon bob/recoil. Changes apply during play.
+The hit indicator remains visible.
 
-Players start with 100 `magic` and zero `invulnerableFor` seconds. Contact costs
-20 magic and grants 0.75 seconds of shared invulnerability, limiting the entire
-group to one hit per tick. The unicorn update advances this cooldown and returns
-an array of `{ type: 'damage', source, amount, magic, x, y }` events for future
-audio and visual feedback; `source` is the contacting unicorn's ID, and `magic`
-is the player's remaining magic. Walking bob and sprite facing belong to the
-renderer.
+## Rules and tips
 
-`src/combat.js` exposes `updateCombat(session)`. Initialize the session with
-`world`, `player`, `unicorns`, `score: 0`, `combo: 0`, `elapsed: 0`,
-`lastHitAt: null`, and `events: []`. Each tick advances `session.elapsed` in
-seconds, calls `updatePlayer`, then `updateCombat`, then `updateUnicorns` (append
-its returned damage events to `session.events`). Firing before unicorn movement
-makes a hit immediate and prevents a converted unicorn from dealing damage.
+- Clear **6, 8, then 10 unicorns**. Clearing wave three wins immediately.
+- Fire unlimited rainbows. Held fire repeats every 0.22 seconds, rounded to the
+  next simulation tick. A shot converts the nearest unicorn along your aim.
+  Hedges block shots and movement; flowers, rocks, and mushrooms are decoration.
+- A conversion earns **100 × combo** points. Hits within two seconds build the
+  combo up to ×5. Misses give no points and do not extend the combo timer.
+- Start with **100 magic**. Unicorn contact costs 20, with 0.75 seconds of shared
+  invulnerability between hits. At zero magic you lose, even on a cleared wave.
+- Between waves you get a two-second break. You can still move/fire; the next
+  wave restores 20 magic, capped at 100. Later unicorns move slightly faster.
+- The HUD shows score, best score, magic, wave, remaining unicorns, and combo.
+  Best score and mute preference survive reloads when local storage is available.
 
-Held fire shoots immediately when ready and repeats with a 0.22-second cooldown;
-`updatePlayer` decrements `player.fireCooldown` even when fire is released.
-There is no ammunition limit. Each shot hits only the nearest living unicorn's
-circle along the aim ray before the first hedge. A hit sets `alive = false` and
-awards 100 points times the combo. Successful hits within two seconds (inclusive)
-continue the combo up to five; misses neither score nor refresh its timer, and
-idle combat ticks expire it after two seconds.
+The first unicorn is straight ahead: fire before moving to see a conversion.
+Keep space between yourself and the herd, strafe around hedges, and turn toward
+unicorns as they enter the clearing. Running helps you escape contact. Listen
+for the shot, glitter, damage, new-wave, victory, and defeat cues.
 
-Combat appends `{ type: 'shot', x, y, angle, distance }` for every shot, including
-misses. The rainbow starts at `(x, y)` and ends `distance` tiles along `angle`,
-at the target's surface or the first hedge. A hit also appends
-`{ type: 'glitter', source, x, y, points, combo, score }`, where `source` is the
-converted unicorn's ID. The app sends the queue to separate effects and audio
-consumers, then drains it; combat calls no graphics or sound APIs. The session adds
-`wave`, `victory`, and `defeat` events when those transitions occur.
+## Reproduce a seed
 
-`createEffects()` in `src/effects.js` consumes events, advances with
-`update(seconds, world)`, and draws with `render(ctx, project)`. Stars expand from
-the conversion's world position and collide with hedges. The renderer supplies
-`project({ x, y, z, size })`, returning `{ x, y, depth, scale, visibleSpans }` or
-null; visible column spans clip stars and rainbow trails against walls. Effects
-never import the renderer. Limits are 144 stars and eight 0.14-second trails;
-stars expire after 0.8 seconds. Reduced-motion preferences are observed live:
-six stars per hit instead of 24, a 24-star cap, reduced movement, and no rotation.
-The brief crosshair hit indicator remains available in either mode.
+Open **http://127.0.0.1:4173/?seed=42** to generate seed 42. The default is 1.
+Any finite numeric seed is accepted (including zero); absent, empty, or invalid
+values use 1. Restart/Play again preserves the seed and resets the round.
+Share the full URL, browser version, control approach, and steps when reporting
+an issue. The simulation uses 60 Hz steps; exact replay requires identical input
+on identical ticks. A seed alone does not reproduce human timing or final scores.
 
-`createRenderer(canvas, { reducedMotion })` in `src/renderer.js` uses a fixed
-0.65-tile eye height and a 70-degree horizontal field of view. Walls, floor,
-billboards, and effects use the same camera-forward depth; unicorns and props
-draw from far to near and clip against each screen column's hedge depth.
-Paper grain, grass marks, hedge artwork, and distant trees are cached and seeded.
-Canvas backing-size changes recompute projection; CSS scaling preserves the
-game's aspect ratio.
+## Tests and screenshots
 
-Call `renderer.update(seconds, actualDistanceMoved)` only during play and
-`renderer.consume(events)` before draining feedback events. These advance crayon
-walking motion and shot recoil; rendering alone leaves motion frozen. Use
-`setReducedMotion(value)` for live preferences and `reset()` for a new game.
-`renderer.render(session, { effects })` draws world feedback beneath the crayon
-and centered crosshair. Projection's `z` is height above the floor in tiles,
-and `size` is the horizontal radius of the full effect or sprite footprint.
+From a clean checkout:
 
-`createAudio()` in `src/audio.js` synthesizes six distinct effects locally with
-Web Audio, without audio assets. Invoke `activate()` directly in Start/Resume
-gesture handlers; constructing the module creates no audio context. Inactive,
-paused, and muted events are discarded. At most 12 oscillator sources (including
-scheduled ones) exist at once, with the oldest stopped at capacity and completed
-nodes disconnected. `pause()` stops sources immediately and suspends the context;
-`setMuted(true)` stops sources immediately and stores the preference under
-`unicornhunt:muted`. Unsupported or failing audio becomes silent mode, and blocked
-local storage does not prevent play. Dispose audio, effects, and input when
-removing the app with the bootstrap's `destroy()` method.
+```sh
+npm ci
+npx playwright install --with-deps chromium
+npm test
+npm run test:browser
+```
 
-`onPause` runs after input has been cleared and suspended. The UI can also call
-`input.setPaused(true)` when opening a menu, then `input.setPaused(false)` when
-resuming. Sample fresh input each tick; do not cache held-input frames across
-pause or focus transitions. Blur, visibility changes, and loss of the canvas's
-pointer lock clear keys, firing, and pending mouse motion. Auto-repeat cannot
-reactivate a cleared key until it is pressed again.
+`npm test` runs the browser-independent simulation/input/audio tests.
+`npm run test:browser` starts its own server on port 4174, runs Chromium tests,
+and shuts the server down. Keep that port free. The configuration prefers
+`/usr/bin/chromium` when available, otherwise Playwright's downloaded Chromium.
+Set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to use another Chromium executable.
+Linux browser installation may require permission to install system libraries;
+on an already configured machine, `npx playwright install chromium` suffices.
 
-Primary mouse presses request pointer lock when available. The adapter also
-exposes `requestPointerLock()` (a Promise resolving to a boolean) for a UI button;
-refusal is handled internally, and keyboard controls remain available. Call
-`input.destroy()` when removing the game to detach its listeners.
+To inspect a live browser or the generated evidence:
 
-Install dependencies with `npm ci`. Run logic and lifecycle tests with `npm test`,
-and browser tests with `npx playwright test browser`. Browser tests use system
-Chromium if available, or Playwright's installed Chromium (`npx playwright install
-chromium`); `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` can override the executable.
+```sh
+npm run test:browser -- --headed
+npm run test:browser -- browser/smoke.spec.js
+npx playwright show-report
+```
+
+Every suite fails on uncaught page errors, failed local requests, and local HTTP
+errors. The smoke suite also checks the startup state, menus, nonblank canvas,
+first conversion, pause/resume, mute persistence, restart, denied capture, real
+keyboard and captured-mouse three-wave automated victories, natural defeat,
+reduced motion, and a sustained 144-star performance sample. Automated round
+controllers read positions to aim; they do not replace human usability testing.
+The audio test also renders all six production cues to WAV clips for audition.
+
+Screenshots and JSON evidence are in `test-results/`; the browsable report is in
+`playwright-report/`. Failure traces can be opened with `npx playwright show-trace
+<path-to-trace.zip>`. These generated directories are ignored by version control.
+CI runs both commands on pushes and pull requests targeting
+`1-epic-sketchbook-rainbow-lsd`, and uploads the report/screenshots even on failure.
+See [observed verification and remaining human checks](docs/verification.md)
+for the actual browser versions, results, selected screenshots, and review steps.
+
+## Static hosting
+
+Upload **index.html**, **styles.css**, **main.js**, and the entire **src/** directory
+to any static HTTP(S) host, preserving their relative paths. The entry page and
+module imports work at either the site root or a subdirectory. Serve `.js` as
+JavaScript and `.css` as CSS. There is no backend, external asset request, build,
+or production dependency; omit `node_modules/`, tests, and development tools.
+Use HTTP(S), rather than opening `index.html` with a `file://` URL, so ES modules
+load correctly. Best score and mute settings are stored per browser origin.
+
+The local `npm start` server binds to loopback for development. A public host
+serves the static files itself; it does not need to run Node.js.

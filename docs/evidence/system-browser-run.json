@@ -1,0 +1,140 @@
+{
+  "date": "2026-10-11",
+  "command": "npm run test:browser",
+  "browser": [
+    "154.0.8037.92"
+  ],
+  "testsPassed": 53,
+  "healthFailures": [],
+  "seed": 1,
+  "mouse": {
+    "state": "victory",
+    "score": 6300,
+    "magic": 100,
+    "elapsed": 27.283333333333065,
+    "conversions": [
+      "1:0",
+      "1:2",
+      "1:1",
+      "1:4",
+      "1:3",
+      "1:5",
+      "2:1",
+      "2:3",
+      "2:7",
+      "2:2",
+      "2:6",
+      "2:0",
+      "2:4",
+      "2:5",
+      "3:4",
+      "3:6",
+      "3:2",
+      "3:0",
+      "3:8",
+      "3:3",
+      "3:7",
+      "3:9",
+      "3:5",
+      "3:1"
+    ],
+    "waves": [
+      1,
+      2,
+      3
+    ]
+  },
+  "keyboard": {
+    "state": "victory",
+    "score": 5900,
+    "magic": 100,
+    "elapsed": 36.38333333333255,
+    "conversions": [
+      "1:0",
+      "1:2",
+      "1:4",
+      "1:3",
+      "1:5",
+      "1:1",
+      "2:1",
+      "2:3",
+      "2:7",
+      "2:2",
+      "2:0",
+      "2:4",
+      "2:5",
+      "2:6",
+      "3:0",
+      "3:6",
+      "3:4",
+      "3:2",
+      "3:3",
+      "3:8",
+      "3:7",
+      "3:9",
+      "3:5",
+      "3:1"
+    ],
+    "waves": [
+      1,
+      2,
+      3
+    ]
+  },
+  "performance": {
+    "samples": 180,
+    "medianMs": 16.699999999999818,
+    "p95Ms": 16.700000000000273,
+    "maxMs": 16.800000000000182,
+    "over33Ms": 0,
+    "maxConsecutiveOver33Ms": 0,
+    "minParticles": 144,
+    "maxParticles": 144,
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+    "hardwareConcurrency": 9
+  },
+  "audio": [
+    {
+      "type": "shot",
+      "peak": 0.0882781520485878,
+      "rms": 0.006276592505850813,
+      "sampleRate": 24000,
+      "seconds": 1.2
+    },
+    {
+      "type": "glitter",
+      "peak": 0.08946701884269714,
+      "rms": 0.010744093364589149,
+      "sampleRate": 24000,
+      "seconds": 1.2
+    },
+    {
+      "type": "damage",
+      "peak": 0.08496937900781631,
+      "rms": 0.005998275471827989,
+      "sampleRate": 24000,
+      "seconds": 1.2
+    },
+    {
+      "type": "wave",
+      "peak": 0.08825366944074631,
+      "rms": 0.010207925115367422,
+      "sampleRate": 24000,
+      "seconds": 1.2
+    },
+    {
+      "type": "victory",
+      "peak": 0.0899287611246109,
+      "rms": 0.016684288409854836,
+      "sampleRate": 24000,
+      "seconds": 1.2
+    },
+    {
+      "type": "defeat",
+      "peak": 0.08854637295007706,
+      "rms": 0.012226787071617564,
+      "sampleRate": 24000,
+      "seconds": 1.2
+    }
+  ]
+}
