@@ -95,6 +95,8 @@ test('contact damage reaches lost once, with damage before defeat in the queue',
   const session = new GameSession().start();
   session.drainEvents();
   const unicorn = session.unicorns[0];
+  // Isolate contact ordering from the other actors' natural arrival/rose timing.
+  session.unicorns = [unicorn];
   unicorn.x = session.player.x;
   unicorn.y = session.player.y;
   for (let hit = 1; hit <= 5; hit++) {

@@ -1,5 +1,6 @@
 import { createRng } from './math.js';
 import { createRangedAttackState } from './ranged-attacks.js';
+import { createMovementState, snapshotHerd, tryVariedMovement } from './unicorn-steering.js';
 import { damagePlayer } from './player.js';
 import {
   buildDistanceField, circleCollides, hasLineOfSight, moveCircle,
@@ -72,12 +73,15 @@ export function spawnUnicorns(world, player, count, wave = 1, seed = `${world.se
     [available[i], available[j]] = [available[j], available[i]];
   }
   positions.push(...available.slice(0, count - positions.length));
-  return positions.map((position, index) => ({
-    id: `${wave}:${index}`, ...position, radius: UNICORN_RADIUS,
-    speed: UNICORN_SPEED + (wave - 1) * WAVE_SPEED_INCREMENT,
-    angle: Math.atan2(player.y - position.y, player.x - position.x), alive: true,
-    attack: createRangedAttackState(seed, `${wave}:${index}`),
-  }));
+  return positions.map((position, index) => {
+    const unicorn = {
+      id: `${wave}:${index}`, ...position, radius: UNICORN_RADIUS,
+      speed: UNICORN_SPEED + (wave - 1) * WAVE_SPEED_INCREMENT,
+      angle: Math.atan2(player.y - position.y, player.x - position.x), alive: true,
+      attack: createRangedAttackState(seed, `${wave}:${index}`),
+    };
+    return { ...unicorn, movement: createMovementState(seed, unicorn.id) };
+  });
 }
 
 function navigate(unicorn, world, player, field, seconds) {
@@ -136,13 +140,16 @@ export function updateUnicorns(unicorns, world, player, seconds, field) {
   field ??= buildDistanceField(world, player, UNICORN_RADIUS);
   assertDistanceField(field, world, player, UNICORN_RADIUS);
   const events = [];
+  const herdSnapshot = snapshotHerd(unicorns);
   for (const unicorn of unicorns) {
     if (!unicorn.alive) continue;
     const touching = () => distance(unicorn, player) <= unicorn.radius + player.radius + EPSILON
       && hasLineOfSight(world, unicorn, player);
     const contacted = touching();
     if (!unicorn.attack || unicorn.attack.phase === 'idle') {
-      navigate(unicorn, world, player, field, seconds);
+      if (!tryVariedMovement(unicorn, world, player, herdSnapshot, seconds)) {
+        navigate(unicorn, world, player, field, seconds);
+      }
     }
     if (contacted || touching()) {
       const event = damagePlayer(player, { cause: 'contact', source: unicorn.id });
