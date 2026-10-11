@@ -1,3 +1,3 @@
 import { boot } from './src/bootstrap.js';
 
-boot(document.querySelector('#game'));
+export const game = boot(document.querySelector('#game'));
