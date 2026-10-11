@@ -1,4 +1,5 @@
 import { createRng } from './math.js';
+import { createRangedAttackState } from './ranged-attacks.js';
 import {
   buildDistanceField, circleCollides, hasLineOfSight, moveCircle,
   distanceAt, nextDistanceCell, assertDistanceField,
@@ -74,6 +75,7 @@ export function spawnUnicorns(world, player, count, wave = 1, seed = `${world.se
     id: `${wave}:${index}`, ...position, radius: UNICORN_RADIUS,
     speed: UNICORN_SPEED + (wave - 1) * WAVE_SPEED_INCREMENT,
     angle: Math.atan2(player.y - position.y, player.x - position.x), alive: true,
+    attack: createRangedAttackState(seed, `${wave}:${index}`),
   }));
 }
 

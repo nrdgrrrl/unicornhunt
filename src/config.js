@@ -24,6 +24,14 @@ export const ROSE_SPEED = 3.5;
 export const ROSE_LIFETIME = 3;
 export const MAX_ROSES = 32;
 
+// Staged rear-facing attacks; navigation/session integration follows separately.
+export const ROSE_MIN_RANGE = 1.25;
+export const ROSE_MAX_RANGE = 7;
+export const ROSE_WINDUP = 0.55;
+export const ROSE_RECOVERY = 0.25;
+export const ROSE_COOLDOWN = 2.6;
+export const ROSE_REAR_OFFSET = 0.35;
+
 // Staged collectibles; counts are initial per-wave tuning defaults.
 export const PICKUP_RADIUS = 0.2;
 export const HEALTH_PICKUPS_PER_WAVE = 3;
