@@ -81,6 +81,8 @@ test('real canvas stars expand, stay multicolored, and are fully clipped behind 
     const { createPlayer } = await import('/src/player.js');
     const { RAINBOW } = await import('/src/art.js');
     const canvas = document.querySelector('#game');
+    canvas.width = 640;
+    canvas.height = 360;
     const renderer = createRenderer(canvas);
     const world = createWorld(1);
     world.decorations = [];
