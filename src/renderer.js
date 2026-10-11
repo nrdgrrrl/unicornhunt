@@ -1,33 +1,73 @@
-import { createArt, INK, PAPER } from './art.js';
+import { createArt, INK } from './art.js';
+import { createRng } from './math.js';
 import { raycast } from './world.js';
 
-/** Projection is the effects' only rendering contract. Its visibleSpans clip
- * every part of a billboard against per-column wall depths. */
-export function createRenderer(canvas) {
+export const CAMERA_HEIGHT = 0.65;
+export const HORIZONTAL_FOV = 70 * Math.PI / 180;
+const NEAR = 0.08;
+const RECOIL_TIME = 0.16;
+const PAPER_RGB = [255, 248, 232];
+
+/** The camera stays horizontal at a fixed height. All world artwork and effects
+ * share perpendicular depth and per-column wall clipping. Render never advances
+ * animation time; update and consume are called only by the simulation. */
+export function createRenderer(canvas, { reducedMotion = false } = {}) {
   const ctx = canvas.getContext('2d');
   const art = createArt();
-  const { width, height } = canvas;
-  const focal = width / (2 * Math.tan(Math.PI / 6));
-  const wallDepth = new Float64Array(width);
+  const paper = ctx.createPattern(art.paper, 'repeat');
+  const grass = art.grass.getContext('2d').getImageData(0, 0, 64, 64).data;
+  const floor = canvas.ownerDocument.createElement('canvas');
+  const floorCtx = floor.getContext('2d');
+  const forests = new WeakMap();
+  let width = 0;
+  let height = 0;
+  let focal;
+  let wallDepth;
+  let floorPixels;
   let camera;
+  let cosine;
+  let sine;
+  let walkPhase = 0;
+  let walking = 0;
+  let recoil = 0;
 
-  function project({ x, y, z = 0.5, size = 0.1 }) {
+  function resize() {
+    if (width === canvas.width && height === canvas.height) return;
+    width = canvas.width;
+    height = canvas.height;
+    focal = width / (2 * Math.tan(HORIZONTAL_FOV / 2));
+    wallDepth = new Float64Array(width);
+    // A bounded paper raster keeps floor casting inexpensive on large canvases.
+    floor.width = Math.min(320, Math.ceil(width / 2));
+    floor.height = Math.min(180, Math.ceil(height / 4));
+    floorPixels = floorCtx.createImageData(floor.width, floor.height);
+  }
+
+  function position({ x, y, z = 0.5 }) {
     if (!camera) return null;
     const dx = x - camera.x;
     const dy = y - camera.y;
-    const cosine = Math.cos(camera.angle);
-    const sine = Math.sin(camera.angle);
     const depth = dx * cosine + dy * sine;
-    if (depth < 0.08) return null;
+    if (depth < NEAR) return null;
     const scale = focal / depth;
-    const screenX = width / 2 + (-dx * sine + dy * cosine) * scale;
-    const screenY = height / 2 + (0.5 - z) * scale;
-    const left = Math.max(0, Math.floor(screenX - size * scale - 2));
-    const right = Math.min(width, Math.ceil(screenX + size * scale + 2));
+    return {
+      x: width / 2 + (-dx * sine + dy * cosine) * scale,
+      y: height / 2 + (CAMERA_HEIGHT - z) * scale,
+      depth, scale,
+    };
+  }
+
+  // size is a horizontal world-space radius, including transparent sprite
+  // margins. Spans cover the entire footprint, not just the center ray.
+  function project({ size = 0.1, ...point }) {
+    const screen = position(point);
+    if (!screen) return null;
+    const left = Math.max(0, Math.floor(screen.x - size * screen.scale - 2));
+    const right = Math.min(width, Math.ceil(screen.x + size * screen.scale + 2));
     const visibleSpans = [];
     let start = null;
     for (let column = left; column < right; column++) {
-      const visible = depth < wallDepth[column] + 1e-6;
+      const visible = screen.depth < wallDepth[column];
       if (visible && start === null) start = column;
       if (!visible && start !== null) {
         visibleSpans.push({ x: start, width: column - start });
@@ -35,38 +75,91 @@ export function createRenderer(canvas) {
       }
     }
     if (start !== null) visibleSpans.push({ x: start, width: right - start });
-    return visibleSpans.length ? { x: screenX, y: screenY, depth, scale, visibleSpans } : null;
+    return visibleSpans.length ? { ...screen, visibleSpans } : null;
   }
 
-  function render(session) {
+  function drawFloor() {
+    const data = floorPixels.data;
+    for (let row = 0; row < floor.height; row++) {
+      const screenY = (row + 0.5) * height / (2 * floor.height);
+      const depth = focal * CAMERA_HEIGHT / screenY;
+      const fog = Math.min(1, depth / 28);
+      const step = depth * width / (focal * floor.width);
+      const side = ((0.5 / floor.width - 0.5) * width / focal) * depth;
+      let x = camera.x + cosine * depth - sine * side;
+      let y = camera.y + sine * depth + cosine * side;
+      for (let column = 0; column < floor.width; column++) {
+        const tx = ((Math.floor(x * 64) % 64) + 64) % 64;
+        const ty = ((Math.floor(y * 64) % 64) + 64) % 64;
+        const texture = (ty * 64 + tx) * 4;
+        const pixel = (row * floor.width + column) * 4;
+        for (let channel = 0; channel < 3; channel++) {
+          data[pixel + channel] = grass[texture + channel] * (1 - fog) + PAPER_RGB[channel] * fog;
+        }
+        data[pixel + 3] = 255;
+        x -= sine * step;
+        y += cosine * step;
+      }
+    }
+    floorCtx.putImageData(floorPixels, 0, 0);
+    ctx.drawImage(floor, 0, height / 2, width, height / 2);
+  }
+
+  function drawForest(world) {
+    let trees = forests.get(world);
+    if (!trees) {
+      const random = createRng(world.seed ?? 1);
+      const radius = Math.hypot(world.width, world.height) / 2 + 6;
+      trees = Array.from({ length: 72 }, (_, i) => {
+        const angle = i * Math.PI * 2 / 72;
+        return { x: world.width / 2 + Math.cos(angle) * radius,
+          y: world.height / 2 + Math.sin(angle) * radius, height: 4 + random() * 2 };
+      });
+      forests.set(world, trees);
+    }
+    ctx.save();
+    ctx.globalAlpha = 0.65;
+    const visible = trees.map(tree => ({ tree, screen: position({ ...tree, z: tree.height / 2 }) }))
+      .filter(item => item.screen).sort((a, b) => b.screen.depth - a.screen.depth);
+    for (const { tree, screen } of visible) {
+      const h = tree.height * screen.scale;
+      const w = h * art.tree.width / art.tree.height;
+      ctx.drawImage(art.tree, screen.x - w / 2, screen.y - h / 2, w, h);
+    }
+    ctx.restore();
+  }
+
+  function render(session, { effects } = {}) {
+    resize();
     camera = session.player;
-    ctx.fillStyle = PAPER;
-    ctx.fillRect(0, 0, width, height / 2);
-    ctx.fillStyle = '#e6e6c8';
-    ctx.fillRect(0, height / 2, width, height / 2);
-    const cosine = Math.cos(camera.angle);
-    const sine = Math.sin(camera.angle);
-    for (let column = 0; column < width; column += 2) {
-      const side = (column + 1 - width / 2) / focal;
+    cosine = Math.cos(camera.angle);
+    sine = Math.sin(camera.angle);
+    ctx.fillStyle = paper;
+    ctx.fillRect(0, 0, width, height);
+    drawFloor();
+    drawForest(session.world);
+    for (let column = 0; column < width; column++) {
+      const side = (column + 0.5 - width / 2) / focal;
       const hit = raycast(session.world, camera, { x: cosine - sine * side, y: sine + cosine * side });
+      // raycast normalizes its direction. Divide out its length to recover
+      // camera-forward depth, keeping a planar hedge straight across the view.
       const depth = Math.max(0.01, hit.distance / Math.hypot(1, side));
       wallDepth[column] = depth;
-      wallDepth[column + 1] = depth;
-      const wallHeight = focal / depth;
+      const scale = focal / depth;
+      const top = height / 2 - (1 - CAMERA_HEIGHT) * scale;
       const coordinate = hit.normal.x ? hit.y : hit.x;
       const textureX = Math.floor((coordinate - Math.floor(coordinate)) * art.hedge.width);
-      ctx.drawImage(art.hedge, textureX, 0, 1, art.hedge.height,
-        column, (height - wallHeight) / 2, 2, wallHeight);
-      ctx.fillStyle = `rgba(48,39,54,${Math.min(0.55, depth * 0.022)})`;
-      ctx.fillRect(column, (height - wallHeight) / 2, 2, wallHeight);
+      ctx.drawImage(art.hedge, textureX, 0, 1, art.hedge.height, column, top, 1, scale);
+      ctx.fillStyle = `rgba(48,39,54,${Math.min(0.5, depth * 0.018 + (hit.normal.y ? 0.07 : 0))})`;
+      ctx.fillRect(column, top, 1, scale);
     }
     const sprites = [
       ...session.world.decorations.map(item => ({ ...item, sprite: art[item.type], height: item.size * 2 })),
       ...session.unicorns.filter(item => item.alive).map(item => ({ ...item, sprite: art.unicorn, height: 0.95 })),
-    ].map(item => ({ ...item, screen: project({ ...item, z: item.height / 2, size: item.height * 0.4 }) }))
-      .filter(item => item.screen).sort((a, b) => b.screen.depth - a.screen.depth);
+    ].filter(item => item.sprite).map(item => ({ ...item,
+      screen: project({ ...item, z: item.height / 2, size: item.height * item.sprite.width / item.sprite.height / 2 }),
+    })).filter(item => item.screen).sort((a, b) => b.screen.depth - a.screen.depth);
     for (const { sprite, height: worldHeight, screen } of sprites) {
-      if (!sprite) continue;
       const spriteHeight = screen.scale * worldHeight;
       const spriteWidth = spriteHeight * sprite.width / sprite.height;
       ctx.save();
@@ -76,14 +169,41 @@ export function createRenderer(canvas) {
       ctx.drawImage(sprite, screen.x - spriteWidth / 2, screen.y - spriteHeight / 2, spriteWidth, spriteHeight);
       ctx.restore();
     }
-    ctx.drawImage(art.weapon, width / 2 - 48, height - 115, 96, 120);
+    // World feedback goes underneath the foreground crayon and centered aim.
+    effects?.render(ctx, project);
+    const unit = height / 360;
+    const bobX = reducedMotion ? 0 : Math.sin(walkPhase) * walking * 2.5 * unit;
+    const bobY = reducedMotion ? 0 : Math.cos(walkPhase * 2) * walking * 1.5 * unit;
+    const kick = reducedMotion ? 0 : Math.sin(recoil / RECOIL_TIME * Math.PI / 2) * 9 * unit;
+    const weaponHeight = height / 3;
+    const weaponWidth = weaponHeight * art.weapon.width / art.weapon.height;
+    ctx.drawImage(art.weapon, width / 2 - weaponWidth / 2 + bobX,
+      height - weaponHeight + bobY + kick, weaponWidth, weaponHeight);
     ctx.strokeStyle = INK;
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = Math.max(1, 1.5 * unit);
+    const aim = Math.max(3, 4 * unit);
     ctx.beginPath();
-    ctx.moveTo(width / 2 - 4, height / 2); ctx.lineTo(width / 2 + 4, height / 2);
-    ctx.moveTo(width / 2, height / 2 - 4); ctx.lineTo(width / 2, height / 2 + 4);
+    ctx.moveTo(width / 2 - aim, height / 2); ctx.lineTo(width / 2 + aim, height / 2);
+    ctx.moveTo(width / 2, height / 2 - aim); ctx.lineTo(width / 2, height / 2 + aim);
     ctx.stroke();
   }
 
-  return { ctx, render, project };
+  return {
+    ctx, render, project,
+    get reducedMotion() { return reducedMotion; },
+    setReducedMotion(value) {
+      reducedMotion = Boolean(value);
+      if (reducedMotion) { walking = 0; recoil = 0; }
+    },
+    update(seconds, distance = 0) {
+      walkPhase = (walkPhase + distance * Math.PI * 3) % (Math.PI * 2);
+      const target = !reducedMotion && distance > 0.0001 ? 1 : 0;
+      walking += (target - walking) * Math.min(1, seconds * 12);
+      recoil = Math.max(0, recoil - seconds);
+    },
+    consume(events) {
+      if (!reducedMotion && events.some(event => event.type === 'shot')) recoil = RECOIL_TIME;
+    },
+    reset() { walkPhase = 0; walking = 0; recoil = 0; },
+  };
 }

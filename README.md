@@ -75,6 +75,22 @@ stars expire after 0.8 seconds. Reduced-motion preferences are observed live:
 six stars per hit instead of 24, a 24-star cap, reduced movement, and no rotation.
 The brief crosshair hit indicator remains available in either mode.
 
+`createRenderer(canvas, { reducedMotion })` in `src/renderer.js` uses a fixed
+0.65-tile eye height and a 70-degree horizontal field of view. Walls, floor,
+billboards, and effects use the same camera-forward depth; unicorns and props
+draw from far to near and clip against each screen column's hedge depth.
+Paper grain, grass marks, hedge artwork, and distant trees are cached and seeded.
+Canvas backing-size changes recompute projection; CSS scaling preserves the
+game's aspect ratio.
+
+Call `renderer.update(seconds, actualDistanceMoved)` only during play and
+`renderer.consume(events)` before draining feedback events. These advance crayon
+walking motion and shot recoil; rendering alone leaves motion frozen. Use
+`setReducedMotion(value)` for live preferences and `reset()` for a new game.
+`renderer.render(session, { effects })` draws world feedback beneath the crayon
+and centered crosshair. Projection's `z` is height above the floor in tiles,
+and `size` is the horizontal radius of the full effect or sprite footprint.
+
 `createAudio()` in `src/audio.js` synthesizes six distinct effects locally with
 Web Audio, without audio assets. Invoke `activate()` directly in Start/Resume
 gesture handlers; constructing the module creates no audio context. Inactive,

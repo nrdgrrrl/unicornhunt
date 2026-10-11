@@ -106,7 +106,7 @@ export function createEffects({ reducedMotion = false, seed = 7 } = {}) {
           const point = {
             x: trail.x + Math.cos(trail.angle) * distance,
             y: trail.y + Math.sin(trail.angle) * distance,
-            z: 0.12 + 0.38 * t, size: 0.035,
+            z: 0.12 + 0.53 * t, size: 0.035,
           };
           const screen = project(point);
           if (!screen) { previous = null; continue; }

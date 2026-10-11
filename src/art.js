@@ -195,11 +195,36 @@ function weapon() {
   return canvas;
 }
 
+function paper(grassy = false) {
+  const { canvas, ctx } = surface(64, 64);
+  ctx.fillStyle = grassy ? '#e6e6c8' : PAPER;
+  ctx.fillRect(0, 0, 64, 64);
+  const random = createRng(grassy ? 124 : 123);
+  // Grain and crayon marks are generated once, never in the frame loop.
+  for (let i = 0; i < 450; i++) {
+    ctx.fillStyle = i % 2 ? '#b9aa8a' : '#ffffff';
+    ctx.globalAlpha = 0.09;
+    ctx.fillRect(Math.floor(random() * 64), Math.floor(random() * 64), 1, 1);
+  }
+  ctx.globalAlpha = 1;
+  if (grassy) {
+    for (let i = 0; i < 16; i++) {
+      const x = random() * 64;
+      const y = random() * 64;
+      for (const dx of [-64, 0, 64]) for (const dy of [-64, 0, 64]) {
+        line(ctx, [[x + dx - 2, y + dy - 3], [x + dx, y + dy], [x + dx + 3, y + dy - 4]], '#b5c49c', 0.7);
+      }
+    }
+  }
+  return canvas;
+}
+
 /**
  * Lazily draw once in the browser and reuse the same offscreen canvases.
  * Treat returned canvases as read-only: render with drawImage and transforms.
  * Sprites are 128 × 160 with transparent margins; hedge is an opaque 64 × 64
- * wall texture. `rock` aliases `stone` for the planned renderer's asset key.
+ * wall texture. Paper and grass are opaque, repeating 64 × 64 textures.
+ * `rock` aliases `stone` for the planned renderer's asset key.
  */
 export function createArt() {
   if (!cachedArt) {
@@ -207,6 +232,7 @@ export function createArt() {
     cachedArt = Object.freeze({
       unicorn: unicorn(), tree: tree(), mushroom: mushroom(), stone: rock,
       rock, flower: flower(), hedge: hedge(), weapon: weapon(),
+      paper: paper(), grass: paper(true),
     });
   }
   return cachedArt;

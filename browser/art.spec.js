@@ -67,10 +67,10 @@ test('artwork is cached, local, and uses transparent sprite surfaces', async ({ 
   expect(result.reused).toBe(true);
   expect(result.alias).toBe(true);
   expect(result.assets.map(asset => asset.name).sort()).toEqual(
-    ['flower', 'hedge', 'mushroom', 'rock', 'stone', 'tree', 'unicorn', 'weapon']);
+    ['flower', 'grass', 'hedge', 'mushroom', 'paper', 'rock', 'stone', 'tree', 'unicorn', 'weapon']);
   for (const asset of result.assets) {
     expect(asset.drawn, asset.name).toBeGreaterThan(1000);
-    if (asset.name === 'hedge') {
+    if (['hedge', 'paper', 'grass'].includes(asset.name)) {
       expect([asset.width, asset.height]).toEqual([64, 64]);
       expect(asset.opaque).toBe(64 * 64);
     } else {
