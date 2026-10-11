@@ -9,7 +9,7 @@ import { arena } from './helpers/world.js';
 import { spawnRose } from '../src/projectiles.js';
 import { spawnPickups } from '../src/pickups.js';
 import { rearSocket } from '../src/ranged-attacks.js';
-import { ROSE_RECOVERY, PICKUP_RADIUS, DAMAGE_INVULNERABILITY } from '../src/config.js';
+import { ROSE_RECOVERY, ROSE_COOLDOWN, PICKUP_RADIUS, DAMAGE_INVULNERABILITY } from '../src/config.js';
 
 const near = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-9, `${actual} should be near ${expected}`);
 
@@ -256,9 +256,9 @@ test('restart from every lifecycle state replaces all previous-run objects and t
 });
 
 // Open-space fixtures isolate tick ordering from generated navigation routes.
-function survivalSession() {
-  const session = new GameSession(7).start();
-  session.world = { ...arena(), seed: 7, spawn: { x: 4.5, y: 5.5, angle: 0 } };
+function survivalSession(seed = 7) {
+  const session = new GameSession(seed).start();
+  session.world = { ...arena(), seed, spawn: { x: 4.5, y: 5.5, angle: 0 } };
   session.player = createPlayer(session.world.spawn);
   session.unicorns = [enemy('near', 4.5, 5.5, { speed: 0 })];
   session.pickups = [];
@@ -303,6 +303,12 @@ test('conversion disables movement, contact, and a ready ranged shot before enem
       const position = { x: unicorn.x, y: unicorn.y, angle: unicorn.angle };
       session.update(STEP, { fire: true });
       assert.equal(unicorn.alive, false);
+      assert.equal(unicorn.attack.phase, 'idle');
+      if (phase === 'windup') {
+        assert.equal(unicorn.attack.remaining, 0);
+        assert.equal(unicorn.attack.target, null);
+        assert.equal(unicorn.attack.cooldownFor, ROSE_COOLDOWN);
+      }
       assert.deepEqual({ x: unicorn.x, y: unicorn.y, angle: unicorn.angle }, position);
       assert.equal(session.player.health, 5);
       assert.deepEqual(session.roses, []);
@@ -373,6 +379,55 @@ test('collect supplies after movement and before combat and contact damage', () 
   assert.deepEqual(session.drainEvents().map(event => event.type), ['pickup', 'pickup', 'shot', 'glitter', 'damage']);
 });
 
+test('moving into supplies restores health and armor before a crowd and multiple roses can damage', () => {
+  const session = survivalSession();
+  session.player.health = 1;
+  session.unicorns = ['first', 'second'].map(id => enemy(id, 5.5, 5.5, { speed: 0 }));
+  const items = ['health', 'armor'].map(kind => ({ id: kind, kind, x: 5.5, y: 5.5, radius: PICKUP_RADIUS }));
+  session.pickups = items;
+  for (let i = 0; i < 2; i++) spawnRose(session, { id: 'first', x: 5.5, y: 5.5 }, { x: -1, y: 0 });
+
+  session.update(0.4, { forward: 1 });
+  near(session.player.x, 5.5);
+  assert.equal(session.state, 'playing');
+  assert.equal(session.player.health, 2);
+  assert.equal(session.player.armor, 0);
+  assert.equal(session.player.invulnerableFor, DAMAGE_INVULNERABILITY);
+  assert.deepEqual(session.pickups, []);
+  assert.deepEqual(session.roses, []);
+  assert.deepEqual(session.drainEvents(), [
+    { type: 'pickup', source: 'health', kind: 'health', amount: 1, health: 2, armor: 0, x: 5.5, y: 5.5 },
+    { type: 'pickup', source: 'armor', kind: 'armor', amount: 1, health: 2, armor: 1, x: 5.5, y: 5.5 },
+    { type: 'damage', cause: 'contact', source: 'first', amount: 1, resource: 'armor', health: 2, armor: 0, x: 5.5, y: 5.5 },
+  ]);
+  // Neither another contact nor any consumed pickup emits again during cooldown.
+  session.update(STEP);
+  assert.deepEqual(session.drainEvents(), []);
+  near(session.player.invulnerableFor, DAMAGE_INVULNERABILITY - STEP);
+});
+
+test('a full-resource pickup stays available until the tick after damage makes room', () => {
+  for (const kind of ['health', 'armor']) {
+    const session = survivalSession();
+    if (kind === 'armor') session.player.armor = 5;
+    const pickup = { id: kind, kind, x: session.player.x, y: session.player.y, radius: PICKUP_RADIUS };
+    session.pickups = [pickup];
+    session.update(STEP);
+    assert.deepEqual(session.pickups, [pickup]);
+    assert.equal(session.player[kind], 4);
+    assert.deepEqual(session.drainEvents().map(event => event.type), ['damage']);
+    session.update(STEP);
+    assert.equal(session.player[kind], 5);
+    assert.deepEqual(session.pickups, []);
+    assert.deepEqual(session.drainEvents(), [{
+      type: 'pickup', source: kind, kind, amount: 1, health: 5,
+      armor: kind === 'armor' ? 5 : 0, x: pickup.x, y: pickup.y,
+    }]);
+    session.update(STEP);
+    assert.deepEqual(session.drainEvents(), []);
+  }
+});
+
 test('wave completion clears all roses immediately, including after the final wave', () => {
   for (const wave of [1, 3]) {
     const session = survivalSession();
@@ -400,6 +455,28 @@ test('a lethal rose wins a same-tick final conversion race and cannot be revived
   const before = snapshot(session);
   session.update(10, { fire: true, forward: 1 });
   assert.deepEqual(snapshot(session), before);
+});
+
+test('lethal damage on the last intermission tick precedes healing and next-wave spawning', () => {
+  const session = survivalSession();
+  clearWave(session);
+  session.drainEvents();
+  session.player.health = 1;
+  session.intermissionRemaining = STEP;
+  const pickups = session.pickups;
+  const rose = spawnRose(session, { ...session.player, id: 'old-wave' }, { x: 1, y: 0 });
+  session.update(STEP);
+  assert.equal(session.state, 'lost');
+  assert.equal(session.wave, 1);
+  assert.equal(session.player.health, 0);
+  assert.equal(session.remaining, 0);
+  assert.equal(session.intermissionRemaining, 0);
+  assert.deepEqual(session.pickups, pickups);
+  assert.deepEqual(session.roses, []);
+  assert.deepEqual(session.drainEvents(), [
+    { type: 'damage', cause: 'rose', source: rose.id, amount: 1, resource: 'health', health: 0, armor: 0, x: rose.x, y: rose.y },
+    { type: 'defeat' },
+  ]);
 });
 
 test('intermission allows movement, firing, and supply collection; next wave preserves armor and cooldown', () => {
@@ -464,6 +541,66 @@ test('identical seeds and input histories reproduce maps, later waves, and event
   assert.notDeepEqual(new GameSession(1).world.tiles, new GameSession(2).world.tiles);
 });
 
+test('seeded supply collection and ranged survival replay every entity and event batch on each tick', () => {
+  function prepare(session) {
+    session.world = { ...arena(), seed: session.seed, spawn: { x: 4.5, y: 5.5, angle: 0 } };
+    session.player = createPlayer(session.world.spawn);
+    session.player.health = 4;
+    session.player.armor = 4;
+    // Stationary actors isolate the attack state machine from navigation tests.
+    session.unicorns = [enemy('a', 7.5, 5.5, { speed: 0 }), enemy('b', 10.5, 5.5, { speed: 0 })];
+    session.pickups = spawnPickups(session.world, session.player, session.unicorns);
+    assert.deepEqual(session.drainEvents(), [{ type: 'wave', wave: 1 }]);
+    return session;
+  }
+
+  for (const seed of [0, 42, 'rainbow']) {
+    const session = prepare(new GameSession(seed).start());
+    const history = [];
+    const phases = new Set();
+    const events = [];
+    let collected = false;
+    for (let tick = 0; tick < 600 && session.state === 'playing'; tick++) {
+      const pickup = session.pickups.filter(item => session.player[item.kind] < 5)
+        .sort((a, b) => Math.hypot(a.x - session.player.x, a.y - session.player.y)
+          - Math.hypot(b.x - session.player.x, b.y - session.player.y))[0];
+      const input = !collected && pickup ? {
+        forward: 1, look: Math.atan2(pickup.y - session.player.y, pickup.x - session.player.x) - session.player.angle,
+      } : {};
+      const before = { health: session.player.health, armor: session.player.armor, pickups: [...session.pickups] };
+      session.update(STEP, input);
+      const batch = session.drainEvents();
+      assert.deepEqual(session.drainEvents(), []);
+      const pickups = batch.filter(event => event.type === 'pickup');
+      const damage = batch.filter(event => event.type === 'damage');
+      const removed = before.pickups.filter(item => !session.pickups.some(next => next.id === item.id));
+      assert.deepEqual(pickups.map(event => event.source), removed.map(item => item.id));
+      for (const resource of ['health', 'armor']) {
+        assert.equal(session.player[resource], before[resource]
+          + pickups.filter(event => event.kind === resource).length
+          - damage.filter(event => event.resource === resource).length);
+      }
+      collected ||= pickups.length > 0;
+      events.push(...batch);
+      for (const unicorn of session.unicorns) phases.add(unicorn.attack.phase);
+      history.push({ input, events: batch, snapshot: snapshot(session) });
+    }
+    assert.equal(collected, true);
+    assert.ok(events.some(event => event.type === 'damage'));
+    assert.ok(events.some(event => event.type === 'rose-fired'));
+    assert.deepEqual([...phases].sort(), ['idle', 'recovery', 'windup']);
+    assert.ok(history.some(frame => frame.snapshot.roses.length > 0));
+
+    for (const replay of [prepare(new GameSession(seed).start()), prepare(session.restart())]) {
+      for (const frame of history) {
+        replay.update(STEP, frame.input);
+        assert.deepEqual(replay.drainEvents(), frame.events);
+        assert.deepEqual(snapshot(replay), frame.snapshot);
+      }
+    }
+  }
+});
+
 test('draining returns events once, preserves ordering, and isolates subsequent events', () => {
   const session = new GameSession().start();
   session.update(STEP, { fire: true });
@@ -475,6 +612,43 @@ test('draining returns events once, preserves ordering, and isolates subsequent 
   session.update(STEP);
   assert.deepEqual(events.map(event => event.type), ['wave', 'shot', 'glitter']);
   assert.deepEqual(session.drainEvents(), [{ type: 'defeat' }]);
+});
+
+test('drained survival and attack feedback contains scalar copies, never mutable entities', () => {
+  const session = survivalSession();
+  session.player.health = 3;
+  const converted = session.unicorns[0];
+  const contact = enemy('contact', session.player.x, session.player.y, { speed: 0 });
+  const attacker = enemy('attacker', 7.5, 5.5, {
+    speed: 0,
+    attack: { phase: 'windup', facing: 0, target: { x: 4.5, y: 5.5 }, remaining: STEP, cooldownFor: 0 },
+  });
+  session.unicorns.push(contact, attacker);
+  const pickups = ['health', 'armor'].map(kind => ({ id: kind, kind, x: 4.5, y: 5.5, radius: PICKUP_RADIUS }));
+  session.pickups = pickups;
+  session.update(STEP, { fire: true });
+  const events = session.drainEvents();
+  assert.deepEqual(events.map(event => event.type), ['pickup', 'pickup', 'shot', 'glitter', 'damage', 'rose-fired']);
+  assert.ok(events.every(event => Object.values(event).every(value => typeof value !== 'object')));
+  const feedback = structuredClone(events);
+  const rose = session.roses[0];
+  for (const entity of [session.player, converted, contact, attacker, ...pickups, rose]) {
+    entity.x += 1;
+    entity.y += 1;
+  }
+  session.player.health = 2;
+  attacker.attack.target.x += 1;
+  assert.deepEqual(events, feedback);
+
+  const before = snapshot(session);
+  for (const event of events) {
+    for (const key of Object.keys(event)) event[key] = null;
+  }
+  events.push({ type: 'defeat' });
+  assert.deepEqual(snapshot(session), before);
+  assert.deepEqual(session.drainEvents(), []);
+  session.restart();
+  assert.deepEqual(session.drainEvents(), [{ type: 'wave', wave: 1 }]);
 });
 
 test('invalid time and seeds fail explicitly without changing a session', () => {
