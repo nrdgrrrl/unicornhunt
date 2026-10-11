@@ -5,6 +5,7 @@ import { DEFAULT_RADIUS, moveCircle } from './world.js';
 export const WALK_SPEED = 2.5;
 export const RUN_MULTIPLIER = 2;
 export const TURN_SPEED = Math.PI;
+export const MAX_MAGIC = 100;
 const TAU = Math.PI * 2;
 
 function wrapAngle(angle) {
@@ -19,7 +20,10 @@ export function createPlayer(spawn, radius = DEFAULT_RADIUS) {
   if (!Number.isFinite(radius) || radius <= 0) {
     throw new RangeError('Player radius must be finite and positive.');
   }
-  return { x: spawn.x, y: spawn.y, angle: wrapAngle(spawn.angle), radius, firing: false };
+  return {
+    x: spawn.x, y: spawn.y, angle: wrapAngle(spawn.angle), radius, firing: false,
+    magic: MAX_MAGIC, invulnerableFor: 0,
+  };
 }
 
 /**

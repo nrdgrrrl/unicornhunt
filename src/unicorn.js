@@ -1,0 +1,141 @@
+import { createRng } from './math.js';
+import { buildDistanceField, circleCollides, hasLineOfSight, moveCircle } from './world.js';
+
+// Distances are tiles and time is seconds, as in the player and world modules.
+export const UNICORN_RADIUS = 0.25;
+export const UNICORN_SPEED = 1.2;
+export const WAVE_SPEED_INCREMENT = 0.08;
+export const PLAYER_SPAWN_DISTANCE = 3;
+export const UNICORN_SPAWN_DISTANCE = 1;
+export const CONTACT_DAMAGE = 20;
+export const CONTACT_INVULNERABILITY = 0.75;
+const NEIGHBORS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+const EPSILON = 1e-9;
+const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+
+/**
+ * Return exactly count living unicorns for a new wave. Enumerate reachable cell
+ * centers once, then shuffle without replacement: no random retry loop.
+ * Wave one reserves a visible unicorn three tiles directly ahead when clear
+ * (the generated world's protected introduction corridor guarantees this).
+ * Impossible requests fail explicitly rather than returning a partial wave.
+ */
+export function spawnUnicorns(world, player, count, wave = 1, seed = `${world.seed ?? 1}:${wave}`) {
+  if (!Number.isSafeInteger(count) || count < 0) {
+    throw new RangeError('Unicorn count must be a nonnegative safe integer.');
+  }
+  if (!Number.isSafeInteger(wave) || wave < 1) {
+    throw new RangeError('Wave must be a positive safe integer.');
+  }
+  if (!Number.isFinite(player.angle)) throw new TypeError('Player angle must be finite.');
+  const random = createRng(seed);
+  const field = buildDistanceField(world, player, UNICORN_RADIUS);
+  const candidates = [];
+  const safe = position => Number.isFinite(field.distances[Math.floor(position.y) * world.width + Math.floor(position.x)])
+    && !circleCollides(world, position, UNICORN_RADIUS)
+    && distance(position, player) + EPSILON >= Math.max(PLAYER_SPAWN_DISTANCE, player.radius + UNICORN_RADIUS);
+  for (let y = 0; y < world.height; y++) {
+    for (let x = 0; x < world.width; x++) {
+      const position = { x: x + 0.5, y: y + 0.5 };
+      if (safe(position)) candidates.push(position);
+    }
+  }
+  const positions = [];
+  if (wave === 1 && count > 0) {
+    const ahead = {
+      x: player.x + Math.cos(player.angle) * PLAYER_SPAWN_DISTANCE,
+      y: player.y + Math.sin(player.angle) * PLAYER_SPAWN_DISTANCE,
+    };
+    if (safe(ahead) && hasLineOfSight(world, player, ahead)) positions.push(ahead);
+  }
+  // Cell centers are at least one tile apart. Only the introductory position
+  // can be off-center, so filter its clearance before selecting candidates.
+  const available = candidates.filter(position => positions.every(other => distance(position, other) + EPSILON >= UNICORN_SPAWN_DISTANCE));
+  if (count > positions.length + available.length) {
+    throw new RangeError('Requested wave exceeds the number of safe spawn positions.');
+  }
+  for (let i = available.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [available[i], available[j]] = [available[j], available[i]];
+  }
+  positions.push(...available.slice(0, count - positions.length));
+  return positions.map((position, index) => ({
+    id: `${wave}:${index}`, ...position, radius: UNICORN_RADIUS,
+    speed: UNICORN_SPEED + (wave - 1) * WAVE_SPEED_INCREMENT,
+    angle: Math.atan2(player.y - position.y, player.x - position.x), alive: true,
+  }));
+}
+
+function navigate(unicorn, world, player, field, seconds) {
+  let remaining = unicorn.speed * seconds;
+  // Each completed cardinal step descends the field. This bound also handles
+  // very long frames without discarding ordinary frame movement or tunneling.
+  for (let step = 0; step < field.distances.length + 2 && remaining > 0; step++) {
+    const x = Math.floor(unicorn.x);
+    const y = Math.floor(unicorn.y);
+    const current = field.distances[y * world.width + x];
+    if (!Number.isFinite(current)) break;
+    let target = player;
+    if (current > 0) {
+      const neighbor = NEIGHBORS.find(([dx, dy]) => {
+        const nx = x + dx;
+        const ny = y + dy;
+        return nx >= 0 && ny >= 0 && nx < world.width && ny < world.height
+          && field.distances[ny * world.width + nx] < current;
+      });
+      if (!neighbor) break;
+      const [dx, dy] = neighbor;
+      // Finish reaching this cell's centerline before turning. Steering
+      // diagonally at a lower-distance cell can otherwise stick on corners.
+      const aligned = dx ? Math.abs(unicorn.y - (y + 0.5)) < EPSILON
+        : Math.abs(unicorn.x - (x + 0.5)) < EPSILON;
+      target = { x: x + 0.5 + (aligned ? dx : 0), y: y + 0.5 + (aligned ? dy : 0) };
+    }
+    const length = distance(unicorn, target);
+    if (length < EPSILON) break;
+    const amount = Math.min(remaining, length);
+    const delta = { x: (target.x - unicorn.x) / length * amount, y: (target.y - unicorn.y) / length * amount };
+    const moved = moveCircle(world, unicorn, delta, unicorn.radius);
+    const traveled = distance(unicorn, moved);
+    if (traveled < EPSILON) break;
+    unicorn.angle = Math.atan2(moved.y - unicorn.y, moved.x - unicorn.x);
+    unicorn.x = moved.x;
+    unicorn.y = moved.y;
+    remaining -= amount;
+    if (traveled + EPSILON < amount) break;
+  }
+}
+
+/**
+ * Mutate living unicorns and the player's magic/cooldown; return damage events
+ * for later sound and visuals. Call once for the entire group per simulation
+ * tick, after updatePlayer. A caller may supply this tick's shared distance
+ * field, built for UNICORN_RADIUS; otherwise it is built once for the group.
+ * Setting alive=false immediately disables both movement and contact damage.
+ */
+export function updateUnicorns(unicorns, world, player, seconds, field) {
+  if (!Number.isFinite(seconds) || seconds < 0) {
+    throw new RangeError('Unicorn update time must be finite and nonnegative.');
+  }
+  field ??= buildDistanceField(world, player, UNICORN_RADIUS);
+  if (field.width !== world.width || field.height !== world.height || field.radius !== UNICORN_RADIUS
+    || field.target.x !== Math.floor(player.x) || field.target.y !== Math.floor(player.y)) {
+    throw new RangeError('Unicorns need a current distance field with unicorn clearance.');
+  }
+  player.invulnerableFor = Math.max(0, player.invulnerableFor - seconds);
+  const events = [];
+  for (const unicorn of unicorns) {
+    if (!unicorn.alive) continue;
+    const touching = () => distance(unicorn, player) <= unicorn.radius + player.radius + EPSILON
+      && hasLineOfSight(world, unicorn, player);
+    const contacted = touching();
+    navigate(unicorn, world, player, field, seconds);
+    if ((contacted || touching()) && player.invulnerableFor === 0 && player.magic > 0 && events.length === 0) {
+      const amount = Math.min(CONTACT_DAMAGE, player.magic);
+      player.magic -= amount;
+      player.invulnerableFor = CONTACT_INVULNERABILITY;
+      events.push({ type: 'damage', source: unicorn.id, amount, magic: player.magic, x: player.x, y: player.y });
+    }
+  }
+  return events;
+}
