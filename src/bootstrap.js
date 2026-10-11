@@ -11,8 +11,8 @@ export function boot(canvas) {
   const document = canvas.ownerDocument;
   const window = document.defaultView;
   const ui = document.querySelector('#ui');
-  const renderer = createRenderer(canvas);
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const renderer = createRenderer(canvas, { reducedMotion: motion.matches });
   const effects = createEffects({ reducedMotion: motion.matches });
   const audio = createAudio();
   const waveCounts = [1, 3, 5];
@@ -50,6 +50,7 @@ export function boot(canvas) {
     session.unicorns = spawnUnicorns(world, session.player, waveCounts[0], 1);
     waveDelay = 0;
     effects.clear();
+    renderer.reset();
   }
   function syncMute() {
     muteButton.textContent = audio.muted ? 'Unmute sound' : 'Mute sound';
@@ -108,7 +109,9 @@ export function boot(canvas) {
   function tick(seconds) {
     session.elapsed += seconds;
     effects.update(seconds, session.world);
+    const { x, y } = session.player;
     updatePlayer(session.player, session.world, input.sample(), seconds);
+    renderer.update(seconds, Math.hypot(session.player.x - x, session.player.y - y));
     updateCombat(session);
     session.events.push(...updateUnicorns(session.unicorns, session.world, session.player, seconds));
     if (session.player.magic <= 0) finish('defeat');
@@ -125,8 +128,9 @@ export function boot(canvas) {
         }
       }
     }
-    // Both consumers see the same queue; simulation calls no graphics/audio.
+    // Feedback consumers see the same queue; simulation calls no graphics/audio.
     effects.consume(session.events);
+    renderer.consume(session.events);
     audio.consume(session.events);
     session.events.length = 0;
   }
@@ -136,13 +140,15 @@ export function boot(canvas) {
     previous = now;
     if (state === 'playing') tick(seconds);
     else if (state === 'victory' || state === 'defeat') effects.update(seconds, session.world);
-    renderer.render(session);
-    effects.render(renderer.ctx, renderer.project);
+    renderer.render(session, { effects });
     stats.textContent = `Magic ${session.player.magic} · Score ${session.score} · Combo ${session.combo}`;
     wave.textContent = `Wave ${session.wave} · ${session.unicorns.filter(unicorn => unicorn.alive).length} unicorns`;
     frame = window.requestAnimationFrame(draw);
   }
-  const onMotion = () => effects.setReducedMotion(motion.matches);
+  const onMotion = () => {
+    effects.setReducedMotion(motion.matches);
+    renderer.setReducedMotion(motion.matches);
+  };
   const onVisibility = () => { if (document.hidden) { pause(); audio.pause(); } };
   const onBlur = () => { pause(); audio.pause(); };
   startButton.addEventListener('click', start);
