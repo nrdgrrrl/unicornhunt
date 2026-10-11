@@ -55,7 +55,11 @@ export function boot(canvas) {
     muteButton.textContent = audio.muted ? 'Unmute sound' : 'Mute sound';
     muteButton.setAttribute('aria-pressed', String(audio.muted));
   }
-  function toggleMute() { audio.setMuted(!audio.muted); syncMute(); }
+  function toggleMute() {
+    audio.setMuted(!audio.muted);
+    syncMute();
+    if (state === 'playing') canvas.focus({ preventScroll: true });
+  }
   function pause() {
     if (state !== 'playing') return;
     state = 'paused';
