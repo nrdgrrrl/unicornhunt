@@ -29,6 +29,9 @@ test.afterAll(() => { server?.kill(); });
 test.beforeEach(async ({ page }) => {
   await page.goto(origin);
   await page.evaluate(async () => {
+    // Isolate the adapter from the running game's listeners and menu.
+    const { game } = await import('/main.js');
+    game.destroy();
     const { createInput } = await import('/src/input.js');
     const { createPlayer, updatePlayer } = await import('/src/player.js');
     const { createWorld } = await import('/src/world.js');
