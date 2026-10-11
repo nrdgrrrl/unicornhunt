@@ -6,21 +6,13 @@ import {
   spawnUnicorns, updateUnicorns, UNICORN_RADIUS, UNICORN_SPEED, WAVE_SPEED_INCREMENT,
   PLAYER_SPAWN_DISTANCE, UNICORN_SPAWN_DISTANCE, CONTACT_DAMAGE, CONTACT_INVULNERABILITY,
 } from '../src/unicorn.js';
+import { arena as createArena } from './helpers/world.js';
 
 const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const near = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-8, `${actual} should be near ${expected}`);
 
 function arena(hedges = []) {
-  const width = 9;
-  const height = 9;
-  const world = { width, height, tiles: new Uint8Array(width * height) };
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      if (x === 0 || y === 0 || x === width - 1 || y === height - 1) world.tiles[y * width + x] = HEDGE;
-    }
-  }
-  for (const [x, y] of hedges) world.tiles[y * width + x] = HEDGE;
-  return world;
+  return createArena(hedges, 9, 9);
 }
 
 function enemy(x, y, overrides = {}) {

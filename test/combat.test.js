@@ -1,24 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createPlayer, updatePlayer } from '../src/player.js';
-import { createWorld, HEDGE } from '../src/world.js';
+import { createWorld } from '../src/world.js';
 import { spawnUnicorns, updateUnicorns, UNICORN_RADIUS } from '../src/unicorn.js';
 import { updateCombat, FIRE_COOLDOWN, COMBO_WINDOW, MAX_COMBO, HIT_POINTS } from '../src/combat.js';
-
-function arena(hedges = []) {
-  const width = 16;
-  const height = 12;
-  const world = { width, height, tiles: new Uint8Array(width * height) };
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      if (x === 0 || y === 0 || x === width - 1 || y === height - 1) {
-        world.tiles[y * width + x] = HEDGE;
-      }
-    }
-  }
-  for (const [x, y] of hedges) world.tiles[y * width + x] = HEDGE;
-  return world;
-}
+import { arena } from './helpers/world.js';
 
 function enemy(id, x = 4.5, y = 5.5, overrides = {}) {
   return { id, x, y, radius: UNICORN_RADIUS, speed: 1.2, angle: 0, alive: true, ...overrides };

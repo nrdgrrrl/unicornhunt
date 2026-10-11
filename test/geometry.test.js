@@ -1,25 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  EMPTY, HEDGE, createWorld, raycast, circleCollides, moveCircle, hasLineOfSight,
+  EMPTY, createWorld, raycast, circleCollides, moveCircle, hasLineOfSight,
 } from '../src/world.js';
 import { createPlayer, updatePlayer } from '../src/player.js';
 import { spawnUnicorns, updateUnicorns } from '../src/unicorn.js';
+import { arena as createArena } from './helpers/world.js';
 
 const near = (actual, expected, tolerance = 1e-9) =>
   assert.ok(Math.abs(actual - expected) <= tolerance, `${actual} should be near ${expected}`);
 
 function arena(hedges = []) {
-  const width = 10;
-  const height = 10;
-  const tiles = new Uint8Array(width * height);
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      if (x === 0 || y === 0 || x === width - 1 || y === height - 1) tiles[y * width + x] = HEDGE;
-    }
-  }
-  for (const [x, y] of hedges) tiles[y * width + x] = HEDGE;
-  return { width, height, tiles };
+  return createArena(hedges, 10, 10);
 }
 
 // Check connectivity independently of the distance field used by generation
