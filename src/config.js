@@ -19,6 +19,11 @@ export const MAX_HEALTH = 5;
 export const MAX_ARMOR = 5;
 export const DAMAGE_INVULNERABILITY = CONTACT_INVULNERABILITY;
 
+// Authoritative roses are point projectiles; petals are presentation only.
+export const ROSE_SPEED = 3.5;
+export const ROSE_LIFETIME = 3;
+export const MAX_ROSES = 32;
+
 // Staged collectibles; counts are initial per-wave tuning defaults.
 export const PICKUP_RADIUS = 0.2;
 export const HEALTH_PICKUPS_PER_WAVE = 3;
