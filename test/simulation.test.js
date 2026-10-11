@@ -4,9 +4,8 @@ import { EMPTY, HEDGE, createWorld, hasLineOfSight } from '../src/world.js';
 import { createPlayer, updatePlayer } from '../src/player.js';
 import { updateCombat } from '../src/combat.js';
 import { GameSession } from '../src/session.js';
+import { STEP_SECONDS as STEP, snapshot } from './helpers/simulation.js';
 
-const STEP = 1 / 60;
-const snapshot = session => structuredClone({ ...session });
 const near = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-9, `${actual} should be near ${expected}`);
 const target = (id, x, y = 12.5, radius = 0.25) => ({ id, x, y, radius, alive: true });
 

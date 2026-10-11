@@ -4,26 +4,9 @@ import { GameSession, WAVE_COUNTS, INTERMISSION_SECONDS } from '../src/session.j
 import { createPlayer } from '../src/player.js';
 import { spawnUnicorns, CONTACT_INVULNERABILITY } from '../src/unicorn.js';
 import { FIRE_COOLDOWN } from '../src/combat.js';
+import { STEP_SECONDS as STEP, snapshot, advance, clearWave, win } from './helpers/simulation.js';
 
-const STEP = 1 / 60;
 const near = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-9, `${actual} should be near ${expected}`);
-const snapshot = session => structuredClone({ ...session });
-
-function advance(session, ticks, input = {}) {
-  for (let i = 0; i < ticks; i++) session.update(STEP, input);
-}
-
-function clearWave(session) {
-  for (const unicorn of session.unicorns) unicorn.alive = false;
-  session.update(STEP);
-}
-
-function win(session) {
-  for (let wave = 1; wave <= 3; wave++) {
-    clearWave(session);
-    if (wave < 3) advance(session, 120);
-  }
-}
 
 test('ready prepares six seeded unicorns and ignores simulation until started', () => {
   const session = new GameSession('rainbow');
