@@ -5,7 +5,8 @@
   "type": "module",
   "engines": { "node": ">=22" },
   "scripts": {
-    "start": "node tools/serve.mjs"
+    "start": "node tools/serve.mjs",
+    "test": "node --test"
   },
   "devDependencies": {
     "@playwright/test": "^1.48.0"
