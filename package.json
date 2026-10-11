@@ -3,13 +3,17 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "start": "node tools/serve.mjs",
+    "typecheck": "tsc --project jsconfig.json --noEmit",
     "test": "node --test",
     "test:browser": "playwright test"
   },
   "devDependencies": {
-    "@playwright/test": "^1.48.0"
+    "@playwright/test": "^1.48.0",
+    "typescript": "^7.0.2"
   }
 }

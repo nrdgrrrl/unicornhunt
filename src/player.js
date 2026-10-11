@@ -1,3 +1,5 @@
+// @ts-check
+
 import { clamp } from './math.js';
 import { moveCircle } from './world.js';
 import { DEFAULT_RADIUS, WALK_SPEED, RUN_MULTIPLIER, TURN_SPEED, MAX_MAGIC } from './config.js';
@@ -7,11 +9,17 @@ export { WALK_SPEED, RUN_MULTIPLIER, TURN_SPEED, MAX_MAGIC } from './config.js';
 
 const TAU = Math.PI * 2;
 
+/** @param {number} angle */
 function wrapAngle(angle) {
   return ((angle % TAU) + TAU) % TAU;
 }
 
-/** A horizontal player state, independent of the browser and input devices. */
+/**
+ * A horizontal player state, independent of the browser and input devices.
+ * @param {import('./contracts.js').Spawn} spawn
+ * @param {number} [radius]
+ * @returns {import('./contracts.js').Player}
+ */
 export function createPlayer(spawn, radius = DEFAULT_RADIUS) {
   if (![spawn.x, spawn.y, spawn.angle].every(Number.isFinite)) {
     throw new TypeError('Player spawn components must be finite numbers.');
@@ -30,6 +38,11 @@ export function createPlayer(spawn, radius = DEFAULT_RADIUS) {
  * axes in [-1, 1]; positive strafe and turn go right in the world's y-down plane.
  * look is a horizontal angle delta (already sensitivity-scaled), not a rate.
  * Call once per simulation tick with fresh input.sample(), including when idle.
+ * @param {import('./contracts.js').Player} player
+ * @param {import('./contracts.js').World} world
+ * @param {Partial<import('./contracts.js').InputFrame>} input
+ * @param {number} seconds
+ * @returns {import('./contracts.js').Player}
  */
 export function updatePlayer(player, world, input, seconds) {
   if (!Number.isFinite(seconds) || seconds < 0) {

@@ -20,6 +20,12 @@ const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
  * Wave one reserves a visible unicorn three tiles directly ahead when clear
  * (the generated world's protected introduction corridor guarantees this).
  * Impossible requests fail explicitly rather than returning a partial wave.
+ * @param {import('./contracts.js').World} world
+ * @param {import('./contracts.js').Player} player
+ * @param {number} count
+ * @param {number} [wave]
+ * @param {import('./contracts.js').Seed} [seed]
+ * @returns {import('./contracts.js').Unicorn[]}
  */
 export function spawnUnicorns(world, player, count, wave = 1, seed = `${world.seed ?? 1}:${wave}`) {
   if (!Number.isSafeInteger(count) || count < 0) {
@@ -113,6 +119,12 @@ function navigate(unicorn, world, player, field, seconds) {
  * tick, after updatePlayer. A caller may supply this tick's shared distance
  * field, built for UNICORN_RADIUS; otherwise it is built once for the group.
  * Setting alive=false immediately disables both movement and contact damage.
+ * @param {import('./contracts.js').Unicorn[]} unicorns
+ * @param {import('./contracts.js').World} world
+ * @param {import('./contracts.js').Player} player
+ * @param {number} seconds
+ * @param {ReturnType<typeof buildDistanceField>} [field]
+ * @returns {import('./contracts.js').DamageEvent[]}
  */
 export function updateUnicorns(unicorns, world, player, seconds, field) {
   if (!Number.isFinite(seconds) || seconds < 0) {

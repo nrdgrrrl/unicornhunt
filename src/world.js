@@ -16,6 +16,8 @@ const NEIGHBORS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
  * World coordinates are in tiles. Tiles are row-major: tiles[y * width + x].
  * Only EMPTY tiles are walkable; decorations have no collision geometry.
  * The spawn faces east (angle 0), down a protected three-tile-wide corridor.
+ * @param {import('./contracts.js').Seed} [seed]
+ * @returns {import('./contracts.js').GeneratedWorld}
  */
 export function createWorld(seed = 1) {
   const random = createRng(seed);

@@ -89,10 +89,16 @@ From a clean checkout:
 ```sh
 npm ci
 npx playwright install --with-deps chromium
+npm run typecheck
 npm test
 npm run test:browser
 ```
 
+`npm run typecheck` checks shared JSDoc contracts at the simulation, input, and
+HUD boundaries, including the HUD snapshot producer in `src/snapshot.js`.
+Checking is enabled per file with `@ts-check`; presentation internals can adopt
+it gradually. TypeScript is a development dependency and emits no files, so
+browser deployment still uses the existing JavaScript without a build step.
 `npm test` runs the browser-independent simulation/input/audio tests.
 `npm run test:browser` starts its own server on port 4174, runs Chromium tests,
 and shuts the server down. Keep that port free. The configuration prefers
@@ -120,8 +126,9 @@ The audio test also renders all six production cues to WAV clips for audition.
 Screenshots and JSON evidence are in `test-results/`; the browsable report is in
 `playwright-report/`. Failure traces can be opened with `npx playwright show-trace
 <path-to-trace.zip>`. These generated directories are ignored by version control.
-CI runs both commands on pushes and pull requests targeting
-`1-epic-sketchbook-rainbow-lsd`, and uploads the report/screenshots even on failure.
+CI runs typecheck before runtime and browser tests on pushes and pull requests
+targeting `1-epic-sketchbook-rainbow-lsd` or `36-epic-refactor-modularization-hpu`,
+and uploads the report/screenshots even on failure.
 See [observed verification and remaining human checks](docs/verification.md)
 for the actual browser versions, results, selected screenshots, and review steps.
 

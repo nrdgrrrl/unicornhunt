@@ -1,3 +1,5 @@
+// @ts-check
+
 import { normalize } from './math.js';
 import { raycast } from './world.js';
 import { FIRE_COOLDOWN, COMBO_WINDOW, MAX_COMBO, HIT_POINTS } from './config.js';
@@ -7,6 +9,12 @@ export { FIRE_COOLDOWN, COMBO_WINDOW, MAX_COMBO, HIT_POINTS } from './config.js'
 
 // Return the first intersection with a unicorn's circle on the forward ray.
 // A circle containing the muzzle is hit at zero; circles behind it are ignored.
+/**
+ * @param {import('./contracts.js').Position} origin
+ * @param {import('./contracts.js').Position} direction
+ * @param {import('./contracts.js').Unicorn} unicorn
+ * @returns {number}
+ */
 function hitDistance(origin, direction, unicorn) {
   const dx = unicorn.x - origin.x;
   const dy = unicorn.y - origin.y;
@@ -28,6 +36,9 @@ function hitDistance(origin, direction, unicorn) {
  * Every shot appends a shot event, including misses, for rainbow/sound feedback.
  * A conversion appends a separate glitter event and sets alive=false, preventing
  * further scoring, movement, or contact damage. No rendering/audio APIs are used.
+ * @template {import('./contracts.js').CombatState} T
+ * @param {T} session
+ * @returns {T}
  */
 export function updateCombat(session) {
   const { world, player, unicorns, elapsed, events } = session;
@@ -39,6 +50,7 @@ export function updateCombat(session) {
   const direction = normalize({ x: Math.cos(player.angle), y: Math.sin(player.angle) });
   const wall = raycast(world, player, direction);
   let distance = wall.distance;
+  /** @type {import('./contracts.js').Unicorn | null} */
   let target = null;
   const wallTolerance = 8 * Number.EPSILON * Math.max(1, wall.distance);
   for (const unicorn of unicorns) {
