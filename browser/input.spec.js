@@ -123,7 +123,7 @@ test('rejected mouse capture never rejects globally and leaves keyboard play usa
   expect(errors).toEqual([]);
 });
 
-test('locked mouse movement consumes horizontal aim once, and lock loss clears movement/fire', async ({ page }) => {
+test('locked mouse movement consumes horizontal aim once, and lock loss pauses without keydown', async ({ page }) => {
   await page.evaluate(() => {
     const canvas = document.querySelector('#game');
     Object.defineProperty(document, 'pointerLockElement', { configurable: true, value: canvas });
@@ -141,8 +141,15 @@ test('locked mouse movement consumes horizontal aim once, and lock loss clears m
     step(0.5);
   });
   expect(await page.evaluate(() => ({ ...player }))).toMatchObject({ x: 3.5, y: 12.5, firing: false });
+  expect(await page.evaluate(() => pauses)).toBe(1);
   await page.keyboard.up('w');
   await page.keyboard.up('Space');
+  await page.keyboard.down('ArrowUp');
+  await page.keyboard.down('Control');
+  expect(await page.evaluate(() => { step(0.1); return { ...player }; })).toMatchObject({ x: 3.5, y: 12.5, firing: false });
+  await page.keyboard.up('ArrowUp');
+  await page.keyboard.up('Control');
+  await page.evaluate(() => controls.setPaused(false));
   await page.keyboard.down('ArrowUp');
   expect(await page.evaluate(() => { step(0.1); return player.x; })).toBeGreaterThan(3.5);
   await page.keyboard.up('ArrowUp');

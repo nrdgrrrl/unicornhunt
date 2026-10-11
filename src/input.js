@@ -57,6 +57,12 @@ export function createInput(canvas, {
     paused = nextPaused;
   }
 
+  function requestPause() {
+    if (paused) return;
+    setPaused(true);
+    onPause();
+  }
+
   // Both the legacy void-returning API and the newer rejecting Promise API
   // are supported. Failure leaves keyboard input available to the game.
   function requestPointerLock() {
@@ -98,8 +104,7 @@ export function createInput(canvas, {
     event.preventDefault();
     if (event.repeat || keys.has(event.code)) return;
     if (event.code === 'Escape') {
-      setPaused(true);
-      onPause();
+      requestPause();
     } else if (event.code === 'KeyM') {
       keys.add(event.code);
       onMute();
@@ -130,8 +135,10 @@ export function createInput(canvas, {
   listen(document, 'visibilitychange', clear);
   listen(document, 'pointerlockchange', () => {
     const nextLocked = document.pointerLockElement === canvas;
-    if (locked && !nextLocked) clear();
+    const lostLock = locked && !nextLocked;
     locked = nextLocked;
+    // Browsers may consume Escape to unlock without delivering its keydown.
+    if (lostLock) requestPause();
     finishLockRequest?.(nextLocked);
   });
   // Legacy implementations report refusal as an event, not a rejected promise.

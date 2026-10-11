@@ -111,7 +111,7 @@ test('blur, canvas blur, hidden page, pause, and lock loss clear every held inpu
     assert.deepEqual(input.sample(), idle, transition);
     emit(window, 'focus');
     document.hidden = false;
-    if (transition === 'pause') input.setPaused(false);
+    if (transition === 'pause' || transition === 'lock loss') input.setPaused(false);
     // Auto-repeat from a previously held key must never restore movement/fire.
     key('KeyW', 'keydown', { repeat: true });
     key('Space', 'keydown', { repeat: true });
@@ -143,6 +143,63 @@ test('pause clears before the callback and mute is a single command per press', 
   key('ArrowUp');
   assert.equal(input.sample().forward, 1);
   input.destroy();
+});
+
+test('canvas lock loss pauses without Escape keydown and stays suspended until resumed', () => {
+  let pauses = 0;
+  const { input, document, canvas, emit, key } = fixture({ onPause: () => {
+    pauses++;
+    assert.deepEqual(input.sample(), idle);
+    key('ArrowUp');
+    assert.deepEqual(input.sample(), idle);
+  } });
+  // Unrelated lock changes must not pause keyboard-only play.
+  document.pointerLockElement = {};
+  emit(document, 'pointerlockchange');
+  document.pointerLockElement = null;
+  emit(document, 'pointerlockchange');
+  assert.equal(pauses, 0);
+  document.pointerLockElement = canvas;
+  emit(document, 'pointerlockchange');
+  key('KeyW'); key('Space'); key('ShiftLeft');
+  emit(canvas, 'mousedown', { button: 0 });
+  emit(document, 'mousemove', { movementX: 30 });
+  // Native Escape can unlock without delivering a keydown to the page.
+  document.pointerLockElement = null;
+  emit(document, 'pointerlockchange');
+  assert.equal(pauses, 1);
+  emit(document, 'pointerlockchange');
+  key('KeyD'); key('Space');
+  emit(canvas, 'mousedown', { button: 0 });
+  assert.equal(pauses, 1);
+  assert.deepEqual(input.sample(), idle);
+  input.setPaused(false);
+  assert.deepEqual(input.sample(), idle);
+  key('KeyW');
+  assert.equal(input.sample().forward, 1);
+  document.pointerLockElement = canvas;
+  emit(document, 'pointerlockchange');
+  document.pointerLockElement = null;
+  emit(document, 'pointerlockchange');
+  assert.equal(pauses, 2);
+  input.destroy();
+});
+
+test('Escape and canvas lock loss request pause once in either event order', () => {
+  for (const escapeFirst of [true, false]) {
+    let pauses = 0;
+    const { input, document, canvas, emit, key } = fixture({ onPause: () => pauses++ });
+    document.pointerLockElement = canvas;
+    emit(document, 'pointerlockchange');
+    if (escapeFirst) key('Escape');
+    document.pointerLockElement = null;
+    emit(document, 'pointerlockchange');
+    if (!escapeFirst) key('Escape');
+    assert.equal(pauses, 1);
+    key('KeyW'); key('Space');
+    assert.deepEqual(input.sample(), idle);
+    input.destroy();
+  }
 });
 
 test('unfocused game and editable/menu elements keep browser key behavior', () => {
@@ -221,6 +278,7 @@ test('legacy lock requests wait for browser events and can be cancelled by lifec
   assert.equal(await success, true);
   document.pointerLockElement = null;
   emit(document, 'pointerlockchange');
+  input.setPaused(false);
   const refusal = input.requestPointerLock();
   emit(document, 'pointerlockerror');
   assert.equal(await refusal, false);
