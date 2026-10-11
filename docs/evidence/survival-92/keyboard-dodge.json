@@ -1,0 +1,53 @@
+{
+  "seed": 1,
+  "fixture": "arranged survival scenario",
+  "controls": "KeyD for 20 ticks after emission",
+  "emission": {
+    "player": {
+      "x": 3.5,
+      "y": 12.5,
+      "angle": 0,
+      "radius": 0.2,
+      "firing": false,
+      "health": 5,
+      "armor": 1,
+      "invulnerableFor": 0,
+      "fireCooldown": 0
+    },
+    "rose": {
+      "id": "rose:0",
+      "source": "1:0",
+      "x": 6.15,
+      "y": 12.5,
+      "z": 0.5,
+      "vx": -3.5,
+      "vy": 0,
+      "remaining": 3
+    }
+  },
+  "outcome": {
+    "player": {
+      "x": 3.5,
+      "y": 13.333333333333321,
+      "angle": 0,
+      "radius": 0.2,
+      "firing": false,
+      "health": 5,
+      "armor": 1,
+      "invulnerableFor": 0,
+      "fireCooldown": 0
+    },
+    "rose": {
+      "id": "rose:0",
+      "source": "1:0",
+      "x": 3.233333333333328,
+      "y": 12.5,
+      "z": 0.5,
+      "vx": -3.5,
+      "vy": 0,
+      "remaining": 2.1666666666666696
+    },
+    "damageEvents": 0
+  },
+  "humanPlaytest": false
+}

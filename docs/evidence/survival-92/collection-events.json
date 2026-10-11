@@ -1,0 +1,22 @@
+[
+  {
+    "type": "pickup",
+    "source": "pickup:1:0",
+    "kind": "health",
+    "amount": 1,
+    "health": 5,
+    "armor": 0,
+    "x": 5.5,
+    "y": 12
+  },
+  {
+    "type": "pickup",
+    "source": "pickup:1:3",
+    "kind": "armor",
+    "amount": 1,
+    "health": 5,
+    "armor": 1,
+    "x": 5.5,
+    "y": 13
+  }
+]

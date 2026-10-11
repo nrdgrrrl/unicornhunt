@@ -1,0 +1,10 @@
+{
+  "viewport": {
+    "width": 320,
+    "height": 720
+  },
+  "seed": 1,
+  "primaryActionVisible": true,
+  "badgesFit": true,
+  "humanReadabilityReview": "pending"
+}
