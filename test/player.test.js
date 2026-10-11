@@ -19,7 +19,7 @@ const near = (actual, expected, tolerance = 1e-9) => {
 test('player spawns from world coordinates and only has horizontal aim', () => {
   const world = createWorld(4);
   const player = createPlayer(world.spawn);
-  assert.deepEqual(player, { ...world.spawn, radius: 0.2, firing: false, magic: 100, invulnerableFor: 0 });
+  assert.deepEqual(player, { ...world.spawn, radius: 0.2, firing: false, magic: 100, invulnerableFor: 0, fireCooldown: 0 });
   updatePlayer(player, world, { look: 0.2, pitch: 10, jump: true }, 0);
   near(player.angle, 0.2);
   assert.equal('pitch' in player, false);
