@@ -6,7 +6,6 @@ import { MAX_HEALTH, MAX_ARMOR, DAMAGE_INVULNERABILITY } from './config.js';
  * Pure survival transitions for contact and rose hits. Inputs are trusted
  * SurvivalState values and are never mutated. Callers adopt the returned state
  * and queue non-null damage events; session lifecycle owns defeat events.
- * These rules are staged and are not yet used by the running game.
  * @returns {import('./contracts.js').SurvivalState}
  */
 export function createSurvivalState() {

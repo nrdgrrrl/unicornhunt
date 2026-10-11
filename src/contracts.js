@@ -14,8 +14,8 @@
  *   seed?: Seed, spawn?: Spawn, decorations?: Decoration[] }} World
  * @typedef {World & { seed: Seed, spawn: Spawn, decorations: Decoration[] }} GeneratedWorld
  *
- * @typedef {Spawn & { radius: number, firing: boolean, magic: number,
- *   invulnerableFor: number, fireCooldown: number }} Player
+ * @typedef {Spawn & SurvivalState & { radius: number, firing: boolean,
+ *   fireCooldown: number }} Player
  * @typedef {Spawn & { id: string, radius: number, speed: number, alive: boolean,
  *   attack?: RangedAttackState }} Unicorn
  *
@@ -25,7 +25,7 @@
  * @typedef {{ phase: 'idle' | 'windup' | 'recovery', remaining: number,
  *   cooldownFor: number, facing: number, target: Position | null }} RangedAttackState
  *
- * Staged survival contracts, independent of the current magic-based Player.
+ * Shared survival contracts for player, pickups, and damage sources.
  * Health and armor are integer points in [0, 5]; zero health means defeated,
  * even if armor remains. invulnerableFor is a nonnegative duration in seconds.
  * @typedef {{ health: number, armor: number, invulnerableFor: number }} SurvivalState
@@ -50,7 +50,7 @@
  * @typedef {{ roses: RoseProjectile[], state: SurvivalState,
  *   events: RoseDamageEvent[] }} RoseResult
  *
- * Staged collectibles: health is a rainbow cake; armor is a pastel star-shield
+ * Collectibles: health is a rainbow cake; armor is a pastel star-shield
  * charm. The session replaces the pickup array each wave and on restart.
  * @typedef {SurvivalResource} PickupKind
  * @typedef {Position & { id: string, kind: PickupKind, radius: number }} Pickup
@@ -72,11 +72,10 @@
  * @typedef {Position & { type: 'shot', angle: number, distance: number }} ShotEvent
  * @typedef {Position & { type: 'glitter', source: string, points: number,
  *   combo: number, score: number }} GlitterEvent
- * @typedef {Position & { type: 'damage', source: string, amount: number,
- *   magic: number }} DamageEvent
+ * @typedef {Position & SurvivalDamageEvent} DamageEvent
  * @typedef {{ type: 'wave', wave: number }} WaveEvent
  * @typedef {{ type: 'victory' } | { type: 'defeat' }} ResultEvent
- * @typedef {ShotEvent | GlitterEvent | DamageEvent | WaveEvent | ResultEvent | RoseFiredEvent} GameEvent
+ * @typedef {ShotEvent | GlitterEvent | DamageEvent | WaveEvent | ResultEvent | RoseFiredEvent | PickupEvent} GameEvent
  *
  * Combat requires only this subset, so synthetic sessions need no lifecycle.
  * @typedef {{ world: World, player: Player, unicorns: Unicorn[], score: number,
@@ -86,10 +85,11 @@
  *
  * SessionData is a structural data contract, not a second session class.
  * @typedef {CombatState & RoseState & { seed: Seed, state: SessionState, world: GeneratedWorld,
- *   wave: number, intermissionRemaining: number, readonly remaining: number }} SessionData
+ *   pickups: Pickup[], wave: number, intermissionRemaining: number, readonly remaining: number }} SessionData
  *
  * @typedef {'title' | 'playing' | 'paused' | 'victory' | 'defeat'} HUDState
- * @typedef {{ state: HUDState, score: number, bestScore: number, magic: number,
+ * @typedef {{ state: HUDState, score: number, bestScore: number,
+ *   health: number, maxHealth: number, armor: number, maxArmor: number,
  *   wave: number, remaining: number, combo: number, muted: boolean,
  *   audioUnavailable: boolean }} HUDSnapshot
  * @typedef {{ onStart: () => void, onResume: () => void, onRestart: () => void,

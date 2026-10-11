@@ -4,17 +4,16 @@ export const DEFAULT_RADIUS = 0.2;
 export const WALK_SPEED = 2.5;
 export const RUN_MULTIPLIER = 2;
 export const TURN_SPEED = Math.PI;
-export const MAX_MAGIC = 100;
 
 export const UNICORN_RADIUS = 0.25;
 export const UNICORN_SPEED = 1.2;
 export const WAVE_SPEED_INCREMENT = 0.08;
 export const PLAYER_SPAWN_DISTANCE = 3;
 export const UNICORN_SPAWN_DISTANCE = 1;
-export const CONTACT_DAMAGE = 20;
+export const CONTACT_DAMAGE = 1;
 export const CONTACT_INVULNERABILITY = 0.75;
 
-// Staged survival rules; player/session integration follows separately.
+// Shared survival rules for contact and rose impacts.
 export const MAX_HEALTH = 5;
 export const MAX_ARMOR = 5;
 export const DAMAGE_INVULNERABILITY = CONTACT_INVULNERABILITY;
@@ -24,7 +23,7 @@ export const ROSE_SPEED = 3.5;
 export const ROSE_LIFETIME = 3;
 export const MAX_ROSES = 32;
 
-// Staged rear-facing attacks; navigation/session integration follows separately.
+// Rear-facing ranged attacks pause navigation during windup and recovery.
 export const ROSE_MIN_RANGE = 1.25;
 export const ROSE_MAX_RANGE = 7;
 export const ROSE_WINDUP = 0.55;
@@ -32,7 +31,7 @@ export const ROSE_RECOVERY = 0.25;
 export const ROSE_COOLDOWN = 2.6;
 export const ROSE_REAR_OFFSET = 0.35;
 
-// Staged collectibles; counts are initial per-wave tuning defaults.
+// Collectibles; counts are initial per-wave tuning defaults.
 export const PICKUP_RADIUS = 0.2;
 export const HEALTH_PICKUPS_PER_WAVE = 3;
 export const ARMOR_PICKUPS_PER_WAVE = 5;
@@ -45,7 +44,6 @@ export const HIT_POINTS = 100;
 // Freezing prevents one run from changing the rules of later seeded replays.
 export const WAVE_COUNTS = Object.freeze([6, 8, 10]);
 export const INTERMISSION_SECONDS = 2;
-export const WAVE_MAGIC_BONUS = 20;
 
 // Production and test clocks must agree on both tick size and catch-up policy.
 export const STEP_SECONDS = 1 / 60;

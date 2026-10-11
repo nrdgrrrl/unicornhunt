@@ -128,7 +128,7 @@ function play(session, done = game => game.state !== 'playing') {
     }
     events.push(...batch);
     history.push({ input, events: batch, state: session.state, wave: session.wave, score: session.score, combo: session.combo });
-    assert.ok(session.player.magic > 0, `controller survived tick ${tick}`);
+    assert.ok(session.player.health > 0, `controller survived tick ${tick}`);
   }
   assert.ok(done(session), 'session must finish within 60 simulated seconds');
   return { events, history, breaks };
@@ -250,12 +250,12 @@ test('generated enemies cause defeat without firing; restart discards damage, ti
   const session = new GameSession(0).start();
   for (let tick = 0; tick < 3600 && session.state === 'playing'; tick++) session.update(STEP);
   assert.equal(session.state, 'lost');
-  assert.equal(session.player.magic, 0);
+  assert.equal(session.player.health, 0);
   assert.equal(session.score, 0);
   assert.equal(session.wave, 1);
   const lost = snapshot(session);
-  assert.deepEqual(lost.events.map(event => event.type), ['wave', 'damage', 'damage', 'damage', 'damage', 'damage', 'defeat']);
-  assert.deepEqual(lost.events.filter(event => event.type === 'damage').map(event => event.magic), [80, 60, 40, 20, 0]);
+  assert.deepEqual(lost.events.filter(event => event.type !== 'rose-fired').map(event => event.type), ['wave', 'damage', 'damage', 'damage', 'damage', 'damage', 'defeat']);
+  assert.deepEqual(lost.events.filter(event => event.type === 'damage').map(event => event.health), [4, 3, 2, 1, 0]);
   session.resume().update(10, { fire: true });
   assert.deepEqual(snapshot(session), lost);
   const { world, player, unicorns, events } = session;

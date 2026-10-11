@@ -150,8 +150,8 @@ test('ten restarts retain one loop and audio context, clear cosmetics, and prese
     await page.getByRole('button', { name: 'Restart game' }).click();
     expect(await page.evaluate(() => ({
       score: game.session.score, particles: game.effects.particleCount, trails: game.effects.trailCount,
-      elapsed: game.session.elapsed, magic: game.session.player.magic, firing: game.session.player.firing,
-    }))).toEqual({ score: 0, particles: 0, trails: 0, elapsed: 0, magic: 100, firing: false });
+      elapsed: game.session.elapsed, health: game.session.player.health, firing: game.session.player.firing,
+    }))).toEqual({ score: 0, particles: 0, trails: 0, elapsed: 0, health: 5, firing: false });
     await advance(page, 1000 / 60, 2);
     expect(await page.evaluate(() => game.session.player.firing)).toBe(false);
     await page.keyboard.up('Space');
@@ -184,7 +184,7 @@ test('both results stop simulation, persist each new record once, and support an
   expect(await page.evaluate(() => scoreWrites)).toEqual(['400']);
   await page.getByRole('button', { name: 'Play again' }).click();
   await advance(page, 0);
-  await page.evaluate(() => { game.session.player.magic = 0; });
+  await page.evaluate(() => { game.session.player.health = 0; });
   await advance(page, 1000 / 60);
   expect(await page.evaluate(() => game.state)).toBe('defeat');
   await advance(page, 1000, 10);

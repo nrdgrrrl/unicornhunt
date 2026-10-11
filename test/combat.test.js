@@ -35,7 +35,7 @@ test('empty shots emit rainbow/sound data to the first hedge without points or a
   assert.equal(state.score, 0);
   assert.equal(state.combo, 0);
   assert.equal(state.lastHitAt, null);
-  assert.equal(state.player.magic, 100);
+  assert.equal(state.player.health, 5);
 });
 
 test('held firing waits 0.22 seconds and is ready at the exact subdivided cooldown boundary', () => {
@@ -234,6 +234,6 @@ test('converted unicorns cannot move or deal contact damage later in the same ti
   step(state);
   state.events.push(...updateUnicorns(state.unicorns, state.world, state.player, 0.1));
   assert.deepEqual({ x: target.x, y: target.y }, position);
-  assert.equal(state.player.magic, 100);
+  assert.equal(state.player.health, 5);
   assert.deepEqual(state.events.map(event => event.type), ['shot', 'glitter']);
 });

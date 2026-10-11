@@ -68,7 +68,7 @@ function targetEligible(unicorn, world, target) {
  * Mutate attack state/facing and enqueue at most one new rose per unicorn.
  * Return only successful firing events; no rendering or wall-clock timers.
  *
- * Issue 07's tick owner calls this AFTER advancing existing roses and combat
+ * The session tick owner calls this AFTER advancing existing roses and combat
  * conversions. Newly emitted roses stay at the rear socket for their first
  * rendered frame. Navigation must skip windup/recovery actors before this
  * call, preserving their position and facing throughout those phases.

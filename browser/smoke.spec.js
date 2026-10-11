@@ -52,7 +52,7 @@ test('startup renders a playable scene; conversion, pause, sound, restart, and d
   await expect(page.getByRole('button', { name: 'Restart game' })).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.locator('#score')).toHaveText('0');
-  await expect(page.locator('#magic')).toHaveText('100 / 100');
+  await expect(page.locator('#health')).toHaveText('5 / 5');
   await expect(page.locator('#mute')).toHaveAttribute('aria-pressed', 'true');
   await page.reload();
   await page.evaluate(async () => { window.game = (await import('/main.js')).game; });
@@ -205,7 +205,7 @@ for (const controls of ['keyboard', 'mouse']) {
     else await page.mouse.up();
     await expect(page.getByRole('heading', { name: 'Victory!' })).toBeVisible();
     const result = await page.evaluate(() => ({
-      state: game.state, score: game.session.score, magic: game.session.player.magic,
+      state: game.state, score: game.session.score, health: game.session.player.health,
       elapsed: game.session.elapsed,
       conversions: observedEvents.filter(e => e.type === 'glitter').map(e => e.source),
       waves: observedEvents.filter(e => e.type === 'wave').map(e => e.wave),
@@ -213,7 +213,7 @@ for (const controls of ['keyboard', 'mouse']) {
     expect(result.waves).toEqual([1, 2, 3]);
     expect(result.conversions).toHaveLength(24);
     expect(new Set(result.conversions).size).toBe(24);
-    expect(result.magic).toBeGreaterThan(0);
+    expect(result.health).toBeGreaterThan(0);
     await attachJSON(testInfo, 'playthrough-result', result);
     await capture(page, testInfo, `${controls}-victory`);
   });
@@ -226,13 +226,13 @@ test('generated unicorn contact causes defeat and keyboard Play again resets the
   await frames(page);
   for (let batch = 0; batch < 60 && await page.evaluate(() => game.state === 'playing'); batch++) await frames(page, 60);
   await expect(page.getByRole('heading', { name: 'Defeat', exact: true })).toBeVisible();
-  await expect(page.locator('#magic')).toHaveText('0 / 100');
+  await expect(page.locator('#health')).toHaveText('0 / 5');
   await expect(page.getByRole('button', { name: 'Play again' })).toBeFocused();
   await capture(page, testInfo, 'defeat');
   await page.keyboard.press('Enter');
   await expect(page.locator('#game')).toBeFocused();
   expect(await page.evaluate(() => game.state)).toBe('playing');
-  await expect(page.locator('#magic')).toHaveText('100 / 100');
+  await expect(page.locator('#health')).toHaveText('5 / 5');
 });
 
 test('busy glitter burst records frame times and reduced-motion presentation', async ({ page }, testInfo) => {
