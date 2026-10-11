@@ -1,5 +1,6 @@
 import { createPlayer, updatePlayer } from '../../src/player.js';
 import { updateCombat } from '../../src/combat.js';
+import { createClock } from '../../src/clock.js';
 import { STEP_SECONDS, UNICORN_RADIUS, UNICORN_SPEED, WAVE_COUNTS, INTERMISSION_SECONDS } from '../../src/config.js';
 import { arena } from './world.js';
 
@@ -27,8 +28,18 @@ export function combatStep(session, seconds = 0, fire = true) {
 
 export const snapshot = session => structuredClone({ ...session });
 
+// Input factories receive the zero-based tick index and current session.
 export function advance(session, ticks, input = {}) {
-  for (let i = 0; i < ticks; i++) session.update(STEP_SECONDS, input);
+  const clock = createClock();
+  let tickIndex = 0;
+  const tick = seconds => {
+    const frame = typeof input === 'function' ? input(tickIndex, session) : input;
+    session.update(seconds, frame);
+    tickIndex++;
+  };
+  const isActive = () => session.state === 'playing';
+  clock.advance(0, tick, isActive);
+  for (let i = 0; i < ticks; i++) clock.advance((i + 1) * STEP_SECONDS * 1000, tick, isActive);
 }
 
 export function clearWave(session) {
