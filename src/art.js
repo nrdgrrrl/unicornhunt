@@ -9,6 +9,12 @@ const LEAF_INK = '#739778';
 const TAU = Math.PI * 2;
 let cachedArt;
 
+// Sprite-local pixels measured from the top-left of unicornRear's 128 × 160
+// canvas. For a drawImage at (left, top, width, height), the rear attack origin
+// is (left + x * width / 128, top + y * height / 160). Mirror x with 128 - x
+// when flipping the sprite. This is a presentation anchor, not a world socket.
+export const UNICORN_REAR_RUMP_ANCHOR = Object.freeze({ x: 64, y: 100 });
+
 function surface(width = 128, height = 160) {
   const canvas = document.createElement('canvas');
   canvas.width = width;
@@ -58,6 +64,109 @@ function rainbowHair(ctx, paths) {
   // Ink goes underneath the whole bundle, preserving each colored strand.
   contours.forEach(path => outline(ctx, path, INK, 5));
   contours.forEach((path, i) => outline(ctx, path, RAINBOW[i], 3));
+}
+
+// New billboard art shares the same surface setup and fixed ink helpers.
+function sprite(draw) {
+  const { canvas, ctx } = surface();
+  draw(ctx);
+  return canvas;
+}
+
+function healthCake() {
+  return sprite(ctx => {
+    // Two cut faces form a wedge; each has all six horizontal cake layers.
+    const front = new Path2D('M22 63 L84 77 L84 134 L22 120 Z');
+    const side = new Path2D('M84 77 L108 53 L108 110 L84 134 Z');
+    for (const [face, points] of [
+      [front, i => [[22, 63 + i * 9.5], [84, 77 + i * 9.5], [84, 86.5 + i * 9.5], [22, 72.5 + i * 9.5]]],
+      [side, i => [[84, 77 + i * 9.5], [108, 53 + i * 9.5], [108, 62.5 + i * 9.5], [84, 86.5 + i * 9.5]]],
+    ]) {
+      RAINBOW.forEach((color, i) => {
+        const path = new Path2D();
+        points(i).forEach(([x, y], j) => j ? path.lineTo(x, y) : path.moveTo(x, y));
+        path.closePath();
+        ctx.fillStyle = color;
+        ctx.fill(path);
+        if (i) line(ctx, points(i).slice(0, 2), PAPER, 1.5);
+      });
+      outline(ctx, face);
+    }
+    // The triangular top and scalloped icing identify a slice at small sizes.
+    shape(ctx, 'M22 63 L84 77 L108 34 L108 53 Q102 60 99 53 L91 66 Q88 77 84 81 Q79 85 75 79 L61 76 Q56 81 51 73 L38 70 Q33 75 29 68 L22 67 Z', PAPER);
+    shape(ctx, 'M22 63 L108 34 L84 77 Z', '#ffe7ef');
+    line(ctx, [[35, 62], [83, 72], [98, 45]], PAPER, 2);
+    // A little piped cream and berry, drawn with paths rather than fonts.
+    shape(ctx, 'M65 58 Q58 52 66 46 Q65 38 73 35 Q71 42 79 47 Q87 57 77 61 Z', PAPER);
+    oval(ctx, 74, 48, 5, 5, RAINBOW[0]);
+    line(ctx, [[74, 43], [78, 39]], LEAF_INK, 2);
+  });
+}
+
+function armorCharm() {
+  return sprite(ctx => {
+    oval(ctx, 64, 26, 10, 12, '#ffe7b0');
+    oval(ctx, 64, 26, 4, 6, PAPER);
+    shape(ctx, 'M23 43 Q43 43 64 32 Q85 43 105 43 L101 91 Q96 122 64 144 Q32 122 27 91 Z', '#d8c6ee');
+    shape(ctx, 'M33 51 Q49 49 64 42 Q79 49 95 51 L92 89 Q87 112 64 131 Q41 112 36 89 Z', '#e5f1ef');
+    // Six nested pastel arcs read as a rainbow above the prominent star.
+    RAINBOW.forEach((color, i) => {
+      const path = new Path2D(`M${39 + i * 4} 64 Q64 ${16 + i * 7} ${89 - i * 4} 64`);
+      outline(ctx, path, color, 4);
+    });
+    shape(ctx, 'M64 64 L73 82 L93 85 L78 99 L81 119 L64 109 L47 119 L50 99 L35 85 L55 82 Z', '#ffe7a0');
+    line(ctx, [[64, 75], [66, 89], [82, 90]], PAPER, 2);
+    oval(ctx, 30, 49, 2, 2, '#ffe7a0');
+    oval(ctx, 98, 49, 2, 2, '#ffe7a0');
+  });
+}
+
+function rose() {
+  return sprite(ctx => {
+    line(ctx, [[61, 146], [68, 111], [63, 70]], INK, 7);
+    line(ctx, [[61, 146], [68, 111], [63, 70]], LEAF_INK, 4);
+    shape(ctx, 'M66 115 Q35 118 27 91 Q51 87 66 115 Z', LEAF);
+    shape(ctx, 'M65 131 Q93 134 104 103 Q78 101 65 131 Z', LEAF);
+    line(ctx, [[66, 115], [35, 97]], LEAF_INK, 1.5);
+    line(ctx, [[65, 131], [96, 110]], LEAF_INK, 1.5);
+    shape(ctx, 'M63 82 L43 74 L49 62 L78 62 L86 75 Z', LEAF);
+    // Overlapping cups and curled petals, rather than radial daisy petals.
+    shape(ctx, 'M64 83 Q34 82 25 58 Q20 42 35 34 Q37 22 52 24 Q63 17 77 25 Q94 22 96 37 Q113 45 101 65 Q88 84 64 83 Z', '#ef9bb2');
+    shape(ctx, 'M64 76 Q37 71 33 44 Q49 40 66 56 Q80 39 96 43 Q94 69 64 76 Z', '#f7b9ce');
+    shape(ctx, 'M42 36 Q54 24 70 30 Q88 30 87 47 Q76 61 63 61 Q46 53 42 36 Z', '#f48faa');
+    shape(ctx, 'M39 56 Q50 44 65 53 Q81 41 94 54 Q87 77 64 80 Q44 77 39 56 Z', '#ffd0e0');
+    shape(ctx, 'M52 40 Q65 30 78 40 Q84 51 69 57 Q56 56 52 40 Z', '#f7b9ce');
+    shape(ctx, 'M58 44 Q65 38 73 43 L69 50 Q63 53 58 44 Z', '#e7799b');
+    line(ctx, [[43, 59], [56, 64], [65, 59], [75, 64], [87, 57]], '#b6577d', 1.5);
+  });
+}
+
+function unicornRear() {
+  return sprite(ctx => {
+    // The distant head is seen from behind: ears, horn, mane, and no muzzle.
+    shape(ctx, 'M46 49 L41 26 Q53 29 57 45 Z', PAPER);
+    shape(ctx, 'M71 45 Q76 29 87 26 L82 51 Z', PAPER);
+    line(ctx, [[46, 33], [50, 43]], '#ef9bb2', 3);
+    line(ctx, [[82, 33], [78, 43]], '#ef9bb2', 3);
+    shape(ctx, 'M58 39 L64 9 L70 39 Z', RAINBOW[2]);
+    line(ctx, [[62, 22], [67, 25]], INK, 1.5);
+    line(ctx, [[60, 31], [69, 34]], INK, 1.5);
+    oval(ctx, 64, 53, 23, 23, PAPER);
+    shape(ctx, 'M47 58 Q41 80 36 102 L92 102 Q87 80 81 58 Z', PAPER);
+    rainbowHair(ctx, RAINBOW.map((_, i) =>
+      `M${57 + i * 3} 36 Q${48 + i * 3} 51 ${56 + i * 3} 64 Q${61 + i * 3} 70 ${56 + i * 3} 79`));
+    for (const [x, y, fill] of [[45, 94, '#e4dbcd'], [73, 94, '#e4dbcd'], [30, 101, PAPER], [86, 101, PAPER]]) {
+      shape(ctx, `M${x} ${y} L${x + 11} ${y} L${x + 10} 147 L${x - 1} 147 Z`, fill);
+      shape(ctx, `M${x - 1} 139 L${x + 10} 139 L${x + 10} 147 L${x - 1} 147 Z`, '#ae90df');
+    }
+    // Broad paired haunches and an off-center lifted tail expose the rump.
+    shape(ctx, 'M64 81 Q39 71 28 88 Q20 111 37 123 Q51 131 64 118 Q77 131 91 123 Q108 111 100 88 Q89 71 64 81 Z', PAPER);
+    line(ctx, [[36, 98], [34, 108], [39, 115]], '#c9bca9', 1.5);
+    line(ctx, [[92, 98], [94, 108], [89, 115]], '#c9bca9', 1.5);
+    line(ctx, [[64, 106], [64, 118]], '#c9bca9', 1.5);
+    rainbowHair(ctx, RAINBOW.map((_, i) =>
+      `M${61 + i * 1.5} 88 Q${88 + i * 2} 68 ${94 + i * 2} 86 Q${96 + i * 2} 104 ${87 + i * 2} 115`));
+  });
 }
 
 function unicorn() {
@@ -225,6 +334,8 @@ function paper(grassy = false) {
  * Sprites are 128 × 160 with transparent margins; hedge is an opaque 64 × 64
  * wall texture. Paper and grass are opaque, repeating 64 × 64 textures.
  * `rock` aliases `stone` for the planned renderer's asset key.
+ * `unicornRear` exposes the rump at UNICORN_REAR_RUMP_ANCHOR; use that
+ * sprite-local anchor when placing a rear attack telegraph or firing effect.
  */
 export function createArt() {
   if (!cachedArt) {
@@ -233,6 +344,8 @@ export function createArt() {
       unicorn: unicorn(), tree: tree(), mushroom: mushroom(), stone: rock,
       rock, flower: flower(), hedge: hedge(), weapon: weapon(),
       paper: paper(), grass: paper(true),
+      healthCake: healthCake(), armorCharm: armorCharm(), rose: rose(),
+      unicornRear: unicornRear(),
     });
   }
   return cachedArt;
