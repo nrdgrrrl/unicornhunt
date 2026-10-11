@@ -7,6 +7,8 @@ export const MUTE_STORAGE_KEY = 'unicornhunt:muted';
 const SOUNDS = Object.freeze({
   shot: { wave: 'sine', notes: [420, 1100], duration: 0.12, slide: true },
   glitter: { wave: 'sine', notes: [880, 1175, 1480, 1760], duration: 0.4 },
+  pickup: { wave: 'sine', notes: [660, 990, 1320], duration: 0.18 },
+  'rose-fired': { wave: 'triangle', notes: [110, 220, 660], duration: 0.24, slide: true },
   damage: { wave: 'sawtooth', notes: [180, 65], duration: 0.25, slide: true },
   wave: { wave: 'triangle', notes: [392, 523, 784], duration: 0.55 },
   victory: { wave: 'sine', notes: [523, 659, 784, 1047, 784, 1047], duration: 1 },
