@@ -1,4 +1,4 @@
-import { test, expect, origin, attachJSON } from './fixtures.js';
+import { test, expect, origin, attachJSON, controlledClock, stepFrames as frames } from './fixtures.js';
 
 async function load(page, query = '') {
   await page.goto(origin + query);
@@ -72,29 +72,6 @@ test('startup renders a playable scene; conversion, pause, sound, restart, and d
   await page.keyboard.up('KeyW');
   await expect(page.getByRole('alert')).toHaveCount(0);
 });
-
-// Control only the frame clock. Gameplay still runs through the app's loop,
-// native keyboard/mouse events, collision, combat, renderer, and audio consumers.
-// These automated runs are separate from the required human playtests.
-async function controlledClock(page) {
-  await page.addInitScript(() => {
-    const frames = new Map();
-    let id = 0;
-    let now = 0;
-    window.requestAnimationFrame = callback => { frames.set(++id, callback); return id; };
-    window.cancelAnimationFrame = id => frames.delete(id);
-    window.smokeFrames = (count = 1) => {
-      for (let i = 0; i < count; i++) {
-        now += 1000 / 60;
-        const pending = [...frames.values()];
-        frames.clear();
-        for (const callback of pending) callback(now);
-      }
-    };
-  });
-}
-
-const frames = (page, count = 1) => page.evaluate(count => smokeFrames(count), count);
 
 test('keyboard movement slides along a hedge, shots stop there, and a detour reaches its far side', async ({ page }, testInfo) => {
   await controlledClock(page);

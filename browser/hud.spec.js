@@ -1,27 +1,11 @@
-import { test, expect, origin } from './fixtures.js';
+import { test, expect, origin, controlledClock, stepFrames as step } from './fixtures.js';
 
 test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => {
-    // Drive real app frames deterministically, including the two-second intermission.
-    const frames = new Map();
-    let id = 0;
-    let now = 0;
-    window.requestAnimationFrame = callback => { frames.set(++id, callback); return id; };
-    window.cancelAnimationFrame = id => frames.delete(id);
-    window.stepFrames = (count = 1) => {
-      for (let i = 0; i < count; i++) {
-        now += 50;
-        const pending = [...frames.values()];
-        frames.clear();
-        for (const callback of pending) callback(now);
-      }
-    };
-  });
+  // Three simulation ticks per frame, including the two-second intermission.
+  await controlledClock(page, 50);
   await page.goto(origin);
   await page.evaluate(async () => { window.game = (await import('/main.js')).game; });
 });
-
-const step = (page, count = 1) => page.evaluate(count => stepFrames(count), count);
 
 test('the focused primary action stays inside the scrollable panel on a narrow screen', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 720 });
