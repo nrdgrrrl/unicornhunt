@@ -78,6 +78,12 @@ on identical ticks. A seed alone does not reproduce human timing or final scores
 
 ## Tests and screenshots
 
+`src/app.js` owns application boot, subsystem wiring, and lifecycle cleanup.
+`src/bootstrap.js` is only a compatibility import alias for the same `boot`
+function. `main.js` invokes it once and exports the shared game instance.
+The boot browser suite checks import identity and animation callback ownership;
+the app browser suite checks lifecycle behavior.
+
 From a clean checkout:
 
 ```sh
