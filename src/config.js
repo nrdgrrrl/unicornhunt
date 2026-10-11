@@ -14,6 +14,11 @@ export const UNICORN_SPAWN_DISTANCE = 1;
 export const CONTACT_DAMAGE = 20;
 export const CONTACT_INVULNERABILITY = 0.75;
 
+// Staged survival rules; player/session integration follows separately.
+export const MAX_HEALTH = 5;
+export const MAX_ARMOR = 5;
+export const DAMAGE_INVULNERABILITY = CONTACT_INVULNERABILITY;
+
 export const FIRE_COOLDOWN = 0.22;
 export const COMBO_WINDOW = 2;
 export const MAX_COMBO = 5;

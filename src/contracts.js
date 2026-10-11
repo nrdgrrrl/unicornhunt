@@ -18,6 +18,19 @@
  *   invulnerableFor: number, fireCooldown: number }} Player
  * @typedef {Spawn & { id: string, radius: number, speed: number, alive: boolean }} Unicorn
  *
+ * Staged survival contracts, independent of the current magic-based Player.
+ * Health and armor are integer points in [0, 5]; zero health means defeated,
+ * even if armor remains. invulnerableFor is a nonnegative duration in seconds.
+ * @typedef {{ health: number, armor: number, invulnerableFor: number }} SurvivalState
+ * @typedef {'health' | 'armor'} SurvivalResource
+ * @typedef {'contact' | 'rose'} DamageCause
+ * source identifies the unicorn or rose projectile responsible for the hit.
+ * @typedef {{ cause: DamageCause, source: string }} SurvivalHit
+ * Rule events have no world position; integration can attach it for feedback.
+ * @typedef {SurvivalHit & { type: 'damage', amount: 1, resource: SurvivalResource,
+ *   health: number, armor: number }} SurvivalDamageEvent
+ * @typedef {{ state: SurvivalState, event: SurvivalDamageEvent | null }} DamageResult
+ *
  * Sampled input is complete; simulation updates also accept Partial<InputFrame>.
  * Axes are in [-1, 1]; look is a consumed angle delta rather than a rate.
  * @typedef {{ forward: number, strafe: number, turn: number, look: number,
