@@ -44,9 +44,10 @@ test('the game gates audio on Start, drains a conversion, and freezes/silences o
   await page.keyboard.down('Space');
   await expect.poll(() => page.evaluate(() => game.session.score)).toBe(100);
   await page.keyboard.up('Space');
-  const hit = await page.evaluate(() => ({ particles: game.effects.particleCount, alive: game.session.unicorns[0].alive, events: game.session.events.length }));
+  const hit = await page.evaluate(() => ({ particles: game.effects.particleCount, remaining: game.session.remaining, convertedPresent: game.session.unicorns.some(unicorn => unicorn.id === '1:0'), events: game.session.events.length }));
   expect(hit.particles).toBe(24);
-  expect(hit.alive).toBe(false);
+  expect(hit.remaining).toBe(5);
+  expect(hit.convertedPresent).toBe(false);
   expect(hit.events).toBe(0);
   await page.keyboard.press('Escape');
   const paused = await page.evaluate(() => ({ state: game.state, particles: game.effects.particleCount, elapsed: game.session.elapsed, sources: game.audio.activeSourceCount }));

@@ -25,7 +25,7 @@ test.afterAll(() => { server?.kill(); });
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
-    // Drive real app frames deterministically, including the one-second wave delay.
+    // Drive real app frames deterministically, including the two-second intermission.
     const frames = new Map();
     let id = 0;
     let now = 0;
@@ -64,7 +64,7 @@ test('the focused primary action stays inside the scrollable panel on a narrow s
 test('all menu actions work with keyboard focus and no pointer lock', async ({ page }) => {
   const start = page.getByRole('button', { name: 'Start game', exact: true });
   await expect(start).toBeFocused();
-  await expect(page.locator('#instructions')).toContainText('Clear three waves: 1, 3, then 5');
+  await expect(page.locator('#instructions')).toContainText('Clear three waves: 6, 8, then 10');
   await expect(page.locator('#instructions')).toContainText('unlimited rainbows');
   await expect(page.locator('#instructions')).toContainText('Contact with a unicorn costs 20 magic');
   await expect(page.locator('.controls')).toContainText('Alt + ← / →');
@@ -83,7 +83,7 @@ test('all menu actions work with keyboard focus and no pointer lock', async ({ p
   await expect(page.locator('#score')).toHaveText('100');
   await expect(page.locator('#best-score')).toHaveText('100');
   await expect(page.locator('#combo')).toHaveText('×1');
-  await expect(page.locator('#remaining')).toHaveText('0');
+  await expect(page.locator('#remaining')).toHaveText('5');
   await page.keyboard.press('Tab');
   await expect(page.getByRole('button', { name: 'Pause', exact: true })).toBeFocused();
   await page.keyboard.press('Space');
@@ -129,9 +129,9 @@ test('frame updates preserve controls and focus and announce only meaningful tra
   expect(await page.evaluate(() => announcements)).toEqual([]);
   expect(await page.locator('.hud').getAttribute('aria-live')).toBeNull();
   await page.evaluate(() => { game.session.unicorns.forEach(unicorn => { unicorn.alive = false; }); });
-  await step(page, 21);
-  await expect(page.locator('#announcement')).toHaveText('Wave 2 of 3. 3 unicorns remaining.');
-  expect(await page.evaluate(() => announcements)).toEqual(['Wave 2 of 3. 3 unicorns remaining.']);
+  await step(page, 41);
+  await expect(page.locator('#announcement')).toHaveText('Wave 2 of 3. 8 unicorns remaining.');
+  expect(await page.evaluate(() => announcements)).toEqual(['Wave 2 of 3. 8 unicorns remaining.']);
   await step(page, 5);
   expect(await page.evaluate(() => announcements.length)).toBe(1);
 });
@@ -141,7 +141,7 @@ test('victory and defeat announce final scores, focus restart, and begin a fresh
   await page.evaluate(() => { game.session.score = 400; });
   for (let wave = 1; wave <= 3; wave++) {
     await page.evaluate(() => { game.session.unicorns.forEach(unicorn => { unicorn.alive = false; }); });
-    await step(page, 22);
+    await step(page, 42);
   }
   await expect(page.getByRole('heading', { name: 'Victory!' })).toBeVisible();
   await expect(page.locator('#message')).toContainText('Final score: 400. Best score: 400.');
