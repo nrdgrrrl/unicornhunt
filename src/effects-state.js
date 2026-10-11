@@ -22,7 +22,6 @@ function snapshotItems(items) {
  * Browser-independent effects state. Time is in seconds and positions are in
  * world tiles. snapshot() copies and freezes every record and array; consumers
  * translate colorIndex through their rainbow palette when drawing.
- * The existing effects facade remains independent until drawing is migrated.
  */
 export function createEffectsState({ reducedMotion = false, seed = 7 } = {}) {
   const random = createRng(seed);
