@@ -16,7 +16,14 @@
  *
  * @typedef {Spawn & { radius: number, firing: boolean, magic: number,
  *   invulnerableFor: number, fireCooldown: number }} Player
- * @typedef {Spawn & { id: string, radius: number, speed: number, alive: boolean }} Unicorn
+ * @typedef {Spawn & { id: string, radius: number, speed: number, alive: boolean,
+ *   attack?: RangedAttackState }} Unicorn
+ *
+ * Attack timers belong to simulation. Navigation must hold position and facing
+ * during windup/recovery. target is a copied aim sample; facing is locked at
+ * windup start. cooldownFor measures time until another windup may begin.
+ * @typedef {{ phase: 'idle' | 'windup' | 'recovery', remaining: number,
+ *   cooldownFor: number, facing: number, target: Position | null }} RangedAttackState
  *
  * Staged survival contracts, independent of the current magic-based Player.
  * Health and armor are integer points in [0, 5]; zero health means defeated,
@@ -37,6 +44,8 @@
  * @typedef {Position & { id: string, source: string, vx: number, vy: number,
  *   z: number, remaining: number }} RoseProjectile
  * @typedef {{ roses: RoseProjectile[], nextRoseId: number }} RoseState
+ * @typedef {Position & { type: 'rose-fired', source: string, projectile: string,
+ *   z: number, angle: number }} RoseFiredEvent
  * @typedef {Position & SurvivalDamageEvent} RoseDamageEvent
  * @typedef {{ roses: RoseProjectile[], state: SurvivalState,
  *   events: RoseDamageEvent[] }} RoseResult
@@ -67,7 +76,7 @@
  *   magic: number }} DamageEvent
  * @typedef {{ type: 'wave', wave: number }} WaveEvent
  * @typedef {{ type: 'victory' } | { type: 'defeat' }} ResultEvent
- * @typedef {ShotEvent | GlitterEvent | DamageEvent | WaveEvent | ResultEvent} GameEvent
+ * @typedef {ShotEvent | GlitterEvent | DamageEvent | WaveEvent | ResultEvent | RoseFiredEvent} GameEvent
  *
  * Combat requires only this subset, so synthetic sessions need no lifecycle.
  * @typedef {{ world: World, player: Player, unicorns: Unicorn[], score: number,
