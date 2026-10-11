@@ -4,10 +4,9 @@ import { createRenderer } from './renderer.js';
 import { createEffects } from './effects.js';
 import { createAudio } from './audio.js';
 import { createHUD } from './hud.js';
+import { createClock } from './clock.js';
 
 const BEST_SCORE_STORAGE_KEY = 'unicornhunt:bestScore';
-const STEP_SECONDS = 1 / 60;
-const MAX_CATCH_UP_STEPS = 5;
 
 function querySeed(search) {
   const value = new URLSearchParams(search).get('seed');
@@ -64,9 +63,8 @@ export function boot(canvas) {
     const audio = createAudio();
     cleanup.push(() => audio.destroy());
     const session = new GameSession(querySeed(window.location.search));
+    const clock = createClock();
     let frame;
-    let previous;
-    let accumulator = 0;
     let playGeneration = 0;
     let bestScore = 0;
     try {
@@ -98,8 +96,7 @@ export function boot(canvas) {
     }
 
     function resetClock() {
-      previous = undefined;
-      accumulator = 0;
+      clock.reset();
     }
 
     function releasePointer() {
@@ -163,11 +160,11 @@ export function boot(canvas) {
       beginPlay(activation);
     }
 
-    function tick() {
-      effects.update(STEP_SECONDS, session.world);
+    function tick(seconds) {
+      effects.update(seconds, session.world);
       const { x, y } = session.player;
-      session.update(STEP_SECONDS, input.sample());
-      renderer.update(STEP_SECONDS, Math.hypot(session.player.x - x, session.player.y - y));
+      session.update(seconds, input.sample());
+      renderer.update(seconds, Math.hypot(session.player.x - x, session.player.y - y));
       if (session.score > bestScore) {
         // Write only a newly improved record, never every frame/result render.
         bestScore = session.score;
@@ -190,19 +187,10 @@ export function boot(canvas) {
       try {
         // Guard against missing focus events as well as delayed hidden frames.
         if (document.hidden || !document.hasFocus()) pause();
-        const seconds = previous === undefined ? 0
-          : Math.max(0, Math.min(MAX_CATCH_UP_STEPS * STEP_SECONDS, (now - previous) / 1000));
-        previous = now;
-        if (session.state === 'playing') {
-          accumulator = Math.min(accumulator + seconds, MAX_CATCH_UP_STEPS * STEP_SECONDS);
-          // The epsilon avoids losing a tick to fractional millisecond rounding.
-          while (session.state === 'playing' && accumulator + 1e-12 >= STEP_SECONDS) {
-            accumulator = Math.max(0, accumulator - STEP_SECONDS);
-            tick();
-          }
-        } else if (!document.hidden && (session.state === 'won' || session.state === 'lost')) {
-          effects.update(seconds, session.world);
-        }
+        // A result reached during this frame already advanced effects in tick.
+        const animateResult = !document.hidden && (session.state === 'won' || session.state === 'lost');
+        const seconds = clock.advance(now, tick, () => session.state === 'playing');
+        if (animateResult) effects.update(seconds, session.world);
         renderer.render(session, { effects });
         syncHUD();
         frame = window.requestAnimationFrame(draw);
