@@ -21,7 +21,8 @@ button { cursor: pointer; font: inherit; color: inherit; background: #ffe2f3; bo
 button:focus-visible { outline: 3px solid #5b44c5; outline-offset: 3px; }
 button:hover { background: #d7f4e0; }
 button:disabled { cursor: default; background: #eee7da; }
-.utility { position: absolute; bottom: 7px; left: 7px; right: 7px; pointer-events: auto; font-family: system-ui, sans-serif; font-size: 12px; }
+.utility { position: absolute; bottom: 7px; left: 7px; right: 7px; pointer-events: none; font-family: system-ui, sans-serif; font-size: 12px; }
+.utility button { pointer-events: auto; }
 #audio-status { display: inline-block; padding: 3px; background: #fff9e9; }
 @media (max-width: 600px), (max-height: 420px) {
   .panel { inset: 5px 5px 80px; padding: 10px; }
