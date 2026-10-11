@@ -133,6 +133,130 @@ test('near unicorns and decorative props draw over farther billboards regardless
   expect(result.covered).toBe(true);
 });
 
+test('hedges fully hide cakes, charms, and roses and clip their visible edge without leaks', async ({ page }) => {
+  const results = await page.evaluate(() => {
+    return ['health', 'armor', 'rose'].map(kind => {
+      session.pickups = [];
+      session.roses = [];
+      for (let y = 0; y < session.world.height; y++) session.world.tiles[y * session.world.width + 5] = 1;
+      const background = capture();
+      const place = y => {
+        const item = { id: kind, kind, x: 6.5, y, z: 0.5, remaining: 3 };
+        if (kind === 'rose') session.roses = [item];
+        else session.pickups = [item];
+      };
+      place(12.5);
+      const hidden = capture() === background;
+      for (let y = 13; y < session.world.height; y++) session.world.tiles[y * session.world.width + 5] = 0;
+      session.pickups = [];
+      session.roses = [];
+      capture();
+      const before = renderer.ctx.getImageData(0, 0, 640, 360).data;
+      place(13.46);
+      capture();
+      const after = renderer.ctx.getImageData(0, 0, 640, 360).data;
+      const screen = renderer.project({ x: 6.5, y: 13.46,
+        z: kind === 'rose' ? 0.5 : 0.21, size: kind === 'rose' ? 0.12 : 0.168 });
+      let changed = 0;
+      let leaked = 0;
+      for (let i = 0; i < after.length; i += 4) {
+        if (after.slice(i, i + 3).every((value, channel) => value === before[i + channel])) continue;
+        changed++;
+        const x = i / 4 % 640;
+        if (!screen.visibleSpans.some(span => x >= span.x && x < span.x + span.width)) leaked++;
+      }
+      return { kind, hidden, changed, leaked, centerBlocked: screen.visibleSpans[0].x > screen.x };
+    });
+  });
+  for (const result of results) {
+    expect(result.hidden, result.kind).toBe(true);
+    expect(result.changed, result.kind).toBeGreaterThan(20);
+    expect(result.leaked, result.kind).toBe(0);
+    expect(result.centerBlocked, result.kind).toBe(true);
+  }
+});
+
+test('all entity arrays have stable pixels including coincident depth ties', async ({ page }) => {
+  const result = await page.evaluate(() => {
+    session.world.decorations = ['flower', 'rock'].map(type => ({ type, x: 7.5, y: 12.5, size: 0.4 }));
+    session.unicorns = ['b', 'a'].map(id => ({ id, x: 6.5, y: 12.5, alive: true }));
+    session.pickups = ['health', 'armor'].map(kind => ({ id: kind, kind, x: 6.5, y: 12.5 }));
+    session.roses = [0.5, 0.7].map((z, index) => ({ id: `rose:${index}`, x: 6.5, y: 12.5, z, remaining: 3 }));
+    const first = capture();
+    for (const items of [session.world.decorations, session.unicorns, session.pickups, session.roses]) items.reverse();
+    const reordered = capture();
+    const snapshot = JSON.stringify(session);
+    const freeze = value => {
+      if (value && typeof value === 'object' && !ArrayBuffer.isView(value)) {
+        Object.values(value).forEach(freeze);
+        Object.freeze(value);
+      }
+    };
+    freeze(session);
+    Math.random = () => { throw new Error('Rendering consumed randomness'); };
+    return { reordered: reordered === first, repeated: capture() === first && capture() === first,
+      unchanged: JSON.stringify(session) === snapshot };
+  });
+  expect(result).toEqual({ reordered: true, repeated: true, unchanged: true });
+});
+
+test('emitted rose draws on the rear rump and remains visible with reduced motion', async ({ page }) => {
+  const result = await page.evaluate(async () => {
+    const { rearSocket, updateRangedAttacks } = await import('/src/ranged-attacks.js');
+    const { UNICORN_REAR_RUMP_ANCHOR: anchor } = await import('/src/art.js');
+    const unicorn = { id: 'source', x: 6.5, y: 12.5, angle: 0, alive: true,
+      attack: { phase: 'windup', facing: 0, remaining: 0.01, cooldownFor: 0, target: { x: 3.5, y: 12.5 } } };
+    session.unicorns = [unicorn];
+    session.roses = [];
+    session.nextRoseId = 0;
+    // Use a real simulation emission, without advancing the newly born rose.
+    updateRangedAttacks(session.unicorns, session.world, session.player, session, 0.01);
+    const snapshot = JSON.stringify(session);
+    const drawn = [];
+    const draw = renderer.ctx.drawImage.bind(renderer.ctx);
+    renderer.ctx.drawImage = (...args) => {
+      if (args[0] === art.unicornRear || args[0] === art.rose) {
+        drawn.push({ name: args[0] === art.rose ? 'rose' : 'rear',
+          x: args[1], y: args[2], width: args[3], height: args[4] });
+      }
+      draw(...args);
+    };
+    const normal = capture();
+    const [rear, rose] = drawn;
+    const rump = { x: rear.x + anchor.x / 128 * rear.width, y: rear.y + anchor.y / 160 * rear.height };
+    const center = { x: rose.x + rose.width / 2, y: rose.y + rose.height / 2 };
+    const socket = renderer.project({ ...rearSocket(unicorn), z: 0.5 });
+    // The petals visibly replace cream rump pixels above the exact origin.
+    const sample = () => Array.from(renderer.ctx.getImageData(Math.round(rump.x) - 10,
+      Math.round(rump.y) - 14, 20, 14).data);
+    const withRose = sample();
+    renderer.setReducedMotion(true);
+    const reducedSame = capture() === normal;
+    renderer.update(0.1, 0.5);
+    renderer.consume([{ type: 'shot' }]);
+    const reducedStill = capture() === normal;
+    const unchanged = JSON.stringify(session) === snapshot;
+    session.roses = [];
+    capture();
+    const withoutRose = sample();
+    session.unicorns[0].attack.phase = 'idle';
+    const idle = capture();
+    session.unicorns[0].attack.phase = 'windup';
+    const windup = capture();
+    return { order: drawn.slice(0, 2).map(item => item.name), rump, center, socket,
+      visibleRose: withRose.some((value, i) => value !== withoutRose[i]),
+      reducedSame, reducedStill, unchanged, visibleWindup: windup !== idle };
+  });
+  expect(result.order).toEqual(['rear', 'rose']);
+  expect(result.rump.x).toBeCloseTo(result.center.x, 8);
+  expect(result.rump.y).toBeCloseTo(result.center.y, 8);
+  expect(result.rump.x).toBeCloseTo(result.socket.x, 8);
+  expect(result.rump.y).toBeCloseTo(result.socket.y, 8);
+  for (const property of ['visibleRose', 'reducedSame', 'reducedStill', 'unchanged', 'visibleWindup']) {
+    expect(result[property], property).toBe(true);
+  }
+});
+
 test('cached paper, trees, grass, and sprites stay still; walking and recoil change only the weapon', async ({ page }) => {
   const result = await page.evaluate(() => {
     session.unicorns = [{ x: 6.5, y: 12.5, alive: true }];

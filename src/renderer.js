@@ -5,6 +5,7 @@ import {
   perpendicularDepth, floorRow, position as projectPosition, project as projectPoint,
 } from './projection.js';
 import { raycast } from './geometry.js';
+import { presentSprites } from './sprite-presentation.js';
 
 export { CAMERA_HEIGHT, HORIZONTAL_FOV };
 const RECOIL_TIME = 0.16;
@@ -116,20 +117,13 @@ export function createRenderer(canvas, { reducedMotion = false } = {}) {
       ctx.fillStyle = `rgba(48,39,54,${Math.min(0.5, depth * 0.018 + (hit.normal.y ? 0.07 : 0))})`;
       ctx.fillRect(column, top, 1, scale);
     }
-    const sprites = [
-      ...session.world.decorations.map(item => ({ ...item, sprite: art[item.type], height: item.size * 2 })),
-      ...session.unicorns.filter(item => item.alive).map(item => ({ ...item, sprite: art.unicorn, height: 0.95 })),
-    ].filter(item => item.sprite).map(item => ({ ...item,
-      screen: project({ ...item, z: item.height / 2, size: item.height * item.sprite.width / item.sprite.height / 2 }),
-    })).filter(item => item.screen).sort((a, b) => b.screen.depth - a.screen.depth);
-    for (const { sprite, height: worldHeight, screen } of sprites) {
-      const spriteHeight = screen.scale * worldHeight;
-      const spriteWidth = spriteHeight * sprite.width / sprite.height;
+    const sprites = presentSprites(session, art, project);
+    for (const { sprite, screen, left, top, width: spriteWidth, height: spriteHeight } of sprites) {
       ctx.save();
       ctx.beginPath();
       for (const span of screen.visibleSpans) ctx.rect(span.x, 0, span.width, height);
       ctx.clip();
-      ctx.drawImage(sprite, screen.x - spriteWidth / 2, screen.y - spriteHeight / 2, spriteWidth, spriteHeight);
+      ctx.drawImage(sprite, left, top, spriteWidth, spriteHeight);
       ctx.restore();
     }
     // World feedback goes underneath the foreground crayon and centered aim.
