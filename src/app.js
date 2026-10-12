@@ -58,7 +58,7 @@ export function boot(canvas) {
     if (!canvas || !ui) throw new Error('The game canvas or menu container is missing');
     if (!canvas.getContext('2d')) throw new Error('Canvas 2D graphics are unavailable');
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const renderer = createRenderer(canvas, { reducedMotion: motion.matches });
+    const renderer = createRenderer(canvas, { reducedMotion: motion.matches, responsive: true });
     const effects = createEffects({ reducedMotion: motion.matches });
     cleanup.push(() => effects.clear());
     const audio = createAudio();

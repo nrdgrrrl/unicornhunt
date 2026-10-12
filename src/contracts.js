@@ -17,7 +17,8 @@
  * @typedef {Spawn & SurvivalState & { radius: number, firing: boolean,
  *   fireCooldown: number }} Player
  * @typedef {Spawn & { id: string, radius: number, speed: number, alive: boolean,
- *   attack?: RangedAttackState }} Unicorn
+ *   attack?: RangedAttackState,
+ *   movement?: import('./unicorn-steering.js').MovementState }} Unicorn
  *
  * Attack timers belong to simulation. Navigation must hold position and facing
  * during windup/recovery. target is a copied aim sample; facing is locked at

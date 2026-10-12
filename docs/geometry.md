@@ -81,9 +81,34 @@ It returns integer coordinates or `null` at the target, at invalid/unreachable
 cells, or when no descending neighbor exists. Neither query mutates the field.
 
 The field describes radius-aware routes between cell centers. Steering remains
-the actor's responsibility: unicorns align with the current cell's centerline
-before turning, then use `moveCircle` to enforce clearance while moving. Within
-the target cell they steer toward the player's exact position.
+the actor's responsibility. Spawned unicorns have independent profiles keyed by
+`[seed, id, 'movement']`, without consuming spawn or ranged-attack randomness.
+In visible open areas they cycle through 2.4 seconds of pursuit, 2.4 seconds of
+sinusoidal weaving, and 1.8 seconds of bursts (slow first, then full pace).
+Every pace is at or below the existing per-wave `unicorn.speed`. Bounded herd
+separation uses copied living positions taken before any actor moves, summed
+in ID order. Steering faces its actual displacement.
+
+The distance field remains the fallback for actors without profiles, nearby
+contact pursuit, hidden players, and any proposed step that `moveCircle` clips
+or slides. A rejected steering step leaves position/facing untouched and runs
+navigation in the same tick. After obstruction or entering contact range,
+steering defers for two tiles of navigation time to finish alignment and a
+cardinal step; this prevents
+opposing steering/alignment ticks from trapping an actor near a corner.
+On fallback unicorns align with the current cell's centerline before turning,
+then use `moveCircle` to enforce clearance. Within
+the target cell they steer toward the player's exact position. Geometry
+algorithms and cardinal tie-breaking are unchanged.
+
+Movement clocks advance in living idle simulation seconds even during fallback;
+windup/recovery freeze both clock and facing. Dead actors never steer or
+contribute to separation. Pause freezes state; zero-time movement neither
+initializes nor advances a profile. Identical fixed-tick histories replay
+exactly after restart. Different integration subdivisions are approximate:
+the open-area trajectory test allows **0.12 tiles** between 30/60/120 Hz runs
+over five seconds. This is a positional test tolerance, not a guarantee of
+identical phase-boundary, collision, or contact timing across step sizes.
 
 Spawn safety requires both field reachability and `circleCollides` clearance at
 the exact candidate position. These checks are complementary: the introductory

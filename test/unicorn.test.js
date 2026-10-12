@@ -7,6 +7,9 @@ import {
   PLAYER_SPAWN_DISTANCE, UNICORN_SPAWN_DISTANCE, CONTACT_DAMAGE, CONTACT_INVULNERABILITY,
 } from '../src/unicorn.js';
 import { arena as createArena } from './helpers/world.js';
+import { createMovementState, snapshotHerd, tryVariedMovement } from '../src/unicorn-steering.js';
+import { createRangedAttackState } from '../src/ranged-attacks.js';
+import { GameSession } from '../src/session.js';
 
 const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const near = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-8, `${actual} should be near ${expected}`);
@@ -130,11 +133,15 @@ test('navigation follows a moving target and handles long frames and unreachable
   assert.deepEqual(unicorn, before);
 });
 
-test('later waves move modestly faster and movement is consistent across time steps', () => {
+test('legacy navigation retains per-wave speed and exact straight time-step behavior', () => {
   const world = createWorld(1);
   const player = createPlayer(world.spawn);
   const first = spawnUnicorns(world, player, 1)[0];
   const later = { ...spawnUnicorns(world, player, 1, 2)[0], x: first.x, y: first.y };
+  // Profile-less consumers retain the historical navigation contract. Varied
+  // trajectories have their own documented subdivision tolerance below.
+  delete first.movement;
+  delete later.movement;
   const many = { ...first };
   updateUnicorns([first, later], world, player, 0.5);
   for (let tick = 0; tick < 30; tick++) updateUnicorns([many], world, player, 1 / 60);
@@ -142,6 +149,249 @@ test('later waves move modestly faster and movement is consistent across time st
   near(first.y, many.y);
   near(6.5 - first.x, UNICORN_SPEED * 0.5);
   near(first.x - later.x, WAVE_SPEED_INCREMENT * 0.5);
+});
+
+function steeringEnemy(id, x, y, movement = {}) {
+  return enemy(x, y, { id, movement: { ...createMovementState('steering', id), ...movement } });
+}
+
+test('movement profiles are fresh, seed/ID-derived, and preserve spawn and attack streams', () => {
+  const world = createWorld(1);
+  const player = createPlayer(world.spawn);
+  const herd = spawnUnicorns(world, player, 6);
+  assert.deepEqual(herd.map(({ x, y }) => [x, y]), [
+    [6.5, 12.5], [21.5, 21.5], [2.5, 21.5], [9.5, 4.5], [14.5, 10.5], [12.5, 21.5],
+  ]);
+  for (const unicorn of herd) {
+    assert.deepEqual(unicorn.movement, createMovementState('1:1', unicorn.id));
+    assert.deepEqual(unicorn.attack, createRangedAttackState('1:1', unicorn.id));
+  }
+  const replay = spawnUnicorns(world, player, 6);
+  assert.notEqual(herd[0].movement, replay[0].movement);
+  assert.notEqual(herd[0].movement, herd[1].movement);
+  assert.notDeepEqual(createMovementState(0, 'a'), createMovementState(0, 'b'));
+  assert.notDeepEqual(createMovementState(0, 'a'), createMovementState('0', 'a'));
+  for (const seed of [null, Infinity, NaN, {}]) assert.throws(() => createMovementState(seed, 'a'), TypeError);
+});
+
+test('all three phases steer visibly, burst accelerates, and accepted steps obey geometry/speed/facing', () => {
+  const world = createArena([], 30, 30);
+  const player = createPlayer({ x: 25.5, y: 15.5, angle: 0 });
+  const step = (phaseOffset, expectedPhase) => {
+    const unicorn = steeringEnemy('phase', 4.5, 15.5, {
+      phaseOffset, elapsed: 0, weaveAmplitude: 0.5, weaveFrequency: 0.6, weavePhase: 0,
+    });
+    const before = { x: unicorn.x, y: unicorn.y };
+    assert.equal(tryVariedMovement(unicorn, world, player, snapshotHerd([unicorn]), 0.1), true);
+    assert.equal(unicorn.movement.phase, expectedPhase);
+    near(unicorn.movement.elapsed, 0.1);
+    assert.ok(distance(before, unicorn) <= unicorn.speed * 0.1 + 1e-9);
+    assert.equal(circleCollides(world, unicorn, unicorn.radius), false);
+    near(unicorn.angle, Math.atan2(unicorn.y - before.y, unicorn.x - before.x));
+    return { unicorn, traveled: distance(before, unicorn) };
+  };
+  const pursuit = step(0, 'pursuit');
+  near(pursuit.unicorn.y, 15.5);
+  const weaving = step(2.8, 'weaving');
+  assert.ok(Math.abs(weaving.unicorn.y - 15.5) > 0.01, 'weaving has observable lateral displacement');
+  const slow = step(4.9, 'burst');
+  const fast = step(5.8, 'burst');
+  assert.ok(fast.traveled > slow.traveled * 1.5);
+  near(fast.traveled, fast.unicorn.speed * 0.1);
+
+  const bursting = steeringEnemy('burst-cycle', 4.5, 15.5, { phaseOffset: 4.8 });
+  const burstSteps = [];
+  for (let tick = 0; tick < 15; tick++) {
+    const before = { x: bursting.x, y: bursting.y };
+    updateUnicorns([bursting], world, player, 0.1);
+    assert.equal(bursting.movement.phase, 'burst');
+    burstSteps.push(distance(before, bursting));
+  }
+  assert.ok(burstSteps[12] > burstSteps[0] * 1.5, 'one actor accelerates after its slow burst portion');
+
+  const cycling = steeringEnemy('cycle', 4.5, 15.5, { phaseOffset: 0 });
+  const phases = new Set();
+  for (let tick = 0; tick < 420; tick++) {
+    const before = { x: cycling.x, y: cycling.y };
+    updateUnicorns([cycling], world, player, 1 / 60);
+    phases.add(cycling.movement.phase);
+    assert.ok(distance(before, cycling) <= cycling.speed / 60 + 1e-9);
+    assert.equal(circleCollides(world, cycling, cycling.radius), false);
+  }
+  assert.deepEqual([...phases], ['pursuit', 'weaving', 'burst']);
+  near(cycling.movement.elapsed, 7);
+  assert.equal(cycling.movement.phase, 'pursuit');
+});
+
+test('herd separation uses living copies, spreads overlaps, and is independent of actor order', () => {
+  const world = createArena([], 30, 30);
+  const player = createPlayer({ x: 25.5, y: 15.5, angle: 0 });
+  const herd = ['a', 'b', 'c'].map(id => steeringEnemy(id, 4.5, 15.5, { phaseOffset: 0 }));
+  const dead = steeringEnemy('dead', 4.5, 15.6);
+  dead.alive = false;
+  const deadBefore = structuredClone(dead);
+  herd.push(dead);
+  const snapshot = snapshotHerd(herd);
+  assert.deepEqual(snapshot.map(member => member.id), ['a', 'b', 'c']);
+  const reversed = structuredClone(herd).reverse();
+  updateUnicorns(herd, world, player, 1 / 60);
+  assert.equal(snapshot[0].x, 4.5, 'snapshot does not alias moving actors');
+  assert.ok(distance(herd[0], herd[2]) > 0, 'overlapping living actors spread apart');
+  updateUnicorns(reversed, world, player, 1 / 60);
+  for (let tick = 1; tick < 420; tick++) {
+    updateUnicorns(herd, world, player, 1 / 60);
+    updateUnicorns(reversed, world, player, 1 / 60);
+  }
+  assert.deepEqual(herd, reversed.reverse());
+  assert.deepEqual(dead, deadBefore);
+});
+
+test('blocked steering is atomic and falls back on the same tick, including repeated corner fallback', () => {
+  // The centerline is visible below this hedge, but a northward weave clips it.
+  const world = arena([[4, 3]]);
+  const player = createPlayer({ x: 7.5, y: 4.2, angle: 0 });
+  const unicorn = steeringEnemy('blocked', 3.7, 4.2, {
+    phaseOffset: 2.5, weaveAmplitude: 0.5, weaveFrequency: 0, weavePhase: -Math.PI / 2,
+  });
+  assert.equal(hasLineOfSight(world, unicorn, player), true);
+  const before = structuredClone(unicorn);
+  assert.equal(tryVariedMovement(unicorn, world, player, snapshotHerd([unicorn]), 0.2), false);
+  near(unicorn.x, before.x);
+  near(unicorn.y, before.y);
+  near(unicorn.angle, before.angle);
+  near(unicorn.movement.elapsed, 0.2);
+  const legacy = { ...before };
+  delete legacy.movement;
+  const integrated = structuredClone(before);
+  updateUnicorns([legacy], world, player, 0.2);
+  updateUnicorns([integrated], world, player, 0.2);
+  near(integrated.x, legacy.x);
+  near(integrated.y, legacy.y);
+  near(integrated.angle, legacy.angle);
+  for (let tick = 0; tick < 300; tick++) updateUnicorns([integrated], world, player, 1 / 60);
+  assert.ok(distance(integrated, player) <= integrated.radius + player.radius);
+});
+
+test('close and occluded pursuit use the field, while zero time and attack phases freeze steering', () => {
+  const world = arena([[4, 2], [4, 3], [4, 4]]);
+  const player = createPlayer({ x: 5.5, y: 3.5, angle: 0 });
+  for (const [x, y] of [[3.5, 3.5], [5.5, 4.3]]) {
+    const varied = steeringEnemy('fallback', x, y);
+    const legacy = { ...varied };
+    delete legacy.movement;
+    updateUnicorns([varied], world, player, 0.1);
+    updateUnicorns([legacy], world, player, 0.1);
+    near(varied.x, legacy.x);
+    near(varied.y, legacy.y);
+    near(varied.angle, legacy.angle);
+    near(varied.movement.elapsed, 0.1);
+  }
+  for (const phase of ['windup', 'recovery']) {
+    const frozen = steeringEnemy('frozen', 2.5, 6.5);
+    frozen.attack = { phase, remaining: 1, cooldownFor: 1, facing: 2, target: { ...player } };
+    const before = structuredClone(frozen);
+    updateUnicorns([frozen], world, player, 1);
+    assert.deepEqual(frozen, before);
+  }
+  const fixtures = [steeringEnemy('zero', 2.5, 6.5), enemy(2.5, 6.5)];
+  const before = structuredClone(fixtures);
+  updateUnicorns(fixtures, world, player, 0);
+  assert.deepEqual(fixtures, before);
+  for (const seconds of [-1, NaN, Infinity]) {
+    assert.throws(() => updateUnicorns(fixtures, world, player, seconds), RangeError);
+    assert.deepEqual(fixtures, before);
+  }
+  assert.equal(Object.hasOwn(fixtures[1], 'movement'), false);
+  const stale = buildDistanceField(world, player, UNICORN_RADIUS);
+  player.x += 1;
+  assert.throws(() => updateUnicorns(fixtures, world, player, 0.1, stale), RangeError);
+  assert.deepEqual(fixtures, before, 'field validation precedes movement clock mutation');
+});
+
+test('steering trajectories approximate different subdivisions within 0.12 tiles over five seconds', () => {
+  const world = createArena([], 30, 30);
+  const player = createPlayer({ x: 25.5, y: 15.5, angle: 0 });
+  const runs = [30, 60, 120].map(hz => {
+    const unicorn = steeringEnemy('subdivisions', 4.5, 15.5, { phaseOffset: 0 });
+    for (let tick = 0; tick < hz * 5; tick++) updateUnicorns([unicorn], world, player, 1 / hz);
+    near(unicorn.movement.elapsed, 5);
+    return unicorn;
+  });
+  for (const unicorn of runs) assert.ok(distance(unicorn, runs[1]) <= 0.12);
+});
+
+test('generated herds follow moving players through detours and eventually contact every actor', () => {
+  for (let seed = 0; seed < 5; seed++) {
+    const world = createWorld(seed);
+    const player = createPlayer(world.spawn);
+    const herd = spawnUnicorns(world, player, 12, 2);
+    for (let tick = 0; tick < 900; tick++) {
+      // Move within the protected corridor for 20 seconds, then hold position.
+      if (tick < 200) updatePlayer(player, world, { forward: Math.sin(tick / 20) }, 0.1);
+      const before = herd.map(({ x, y }) => ({ x, y }));
+      updateUnicorns(herd, world, player, 0.1);
+      herd.forEach((unicorn, i) => {
+        assert.equal(circleCollides(world, unicorn, unicorn.radius), false);
+        assert.ok(distance(before[i], unicorn) <= unicorn.speed * 0.1 + 1e-8);
+      });
+    }
+    for (const unicorn of herd) assert.ok(distance(unicorn, player) <= unicorn.radius + player.radius);
+  }
+});
+
+test('production spawn profiles retain per-ID trajectories when a moving-target herd is reordered each tick', () => {
+  for (const seed of [0, 42, 'rainbow']) {
+    const world = createWorld(seed);
+    const player = createPlayer(world.spawn);
+    const herd = spawnUnicorns(world, player, 12, 2);
+    const reordered = structuredClone(herd);
+    const otherPlayer = structuredClone(player);
+    const phases = new Set();
+    let fallbackTicks = 0;
+    for (let tick = 0; tick < 480; tick++) {
+      const input = { forward: Math.sin(tick / 30) * 0.25 };
+      updatePlayer(player, world, input, 1 / 60);
+      updatePlayer(otherPlayer, world, input, 1 / 60);
+      const before = new Map(herd.map(actor => [actor.id, { x: actor.x, y: actor.y }]));
+      updateUnicorns(herd, world, player, 1 / 60);
+      // Change traversal order repeatedly, rather than only comparing two starts.
+      reordered.reverse();
+      reordered.push(reordered.shift());
+      updateUnicorns(reordered, world, otherPlayer, 1 / 60);
+      for (const actor of herd) {
+        assert.deepEqual(actor, reordered.find(other => other.id === actor.id));
+        assert.ok(distance(before.get(actor.id), actor) <= actor.speed / 60 + 1e-8);
+        assert.equal(circleCollides(world, actor, actor.radius), false);
+        near(actor.movement.elapsed, (tick + 1) / 60);
+        phases.add(actor.movement.phase);
+        fallbackTicks += Number(actor.movement.navigationFor > 0);
+      }
+    }
+    assert.deepEqual([...phases].sort(), ['burst', 'pursuit', 'weaving']);
+    assert.ok(fallbackTicks > 0, 'generated maze actually exercised navigation fallback');
+  }
+});
+
+test('restart exactly replays profiles, steering state, actor positions, and event batches; pause freezes all', () => {
+  const session = new GameSession('steering-replay').start();
+  const play = () => {
+    const history = [{ state: structuredClone({ ...session }), events: session.drainEvents() }];
+    for (let tick = 0; tick < 600; tick++) {
+      session.update(1 / 60, { turn: Math.sin(tick / 60), fire: tick % 20 < 10, strafe: tick % 120 < 60 ? 0.2 : -0.2 });
+      history.push({ state: structuredClone({ ...session }), events: session.drainEvents() });
+      if (tick === 120) {
+        session.pause();
+        const before = structuredClone({ ...session });
+        session.update(10, { forward: 1, fire: true });
+        assert.deepEqual(structuredClone({ ...session }), before);
+        session.resume();
+      }
+    }
+    return history;
+  };
+  const first = play();
+  session.restart();
+  assert.deepEqual(play(), first);
 });
 
 test('a group emits one damage event, shares invulnerability, and never drives health negative', () => {

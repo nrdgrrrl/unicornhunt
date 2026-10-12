@@ -54,22 +54,26 @@ test('cakes and charms are distinct ground billboards; roses use simulated heigh
 });
 
 test('rear artwork and emitted rose share a pixel and depth at oblique camera angles and viewport sizes', () => {
-  for (const [width, height] of [[640, 360], [1001, 563], [401, 601]]) {
-    for (const angle of [0, 0.25, -0.25]) {
-      for (const phase of ['windup', 'recovery']) {
-        const frame = createCameraFrame(width, height, { ...camera, angle });
-        const buffer = new Float64Array(width).fill(Infinity);
-        const unicorn = { id: 'z-source', x: 6.5, y: 12.9, angle: 0.6, alive: true, attack: { phase } };
-        const rose = { ...rearSocket(unicorn), id: 'a-rose', source: unicorn.id, z: 0.5, remaining: 3 };
-        const session = { ...scene(), unicorns: [unicorn], roses: [rose] };
-        const [rear, emitted] = presentSprites(session, art, point => project(frame, point, buffer));
-        assert.equal(rear.sprite, art.unicornRear);
-        assert.equal(emitted.sprite, art.rose);
-        const rumpX = rear.left + UNICORN_REAR_RUMP_ANCHOR.x / 128 * rear.width;
-        const rumpY = rear.top + UNICORN_REAR_RUMP_ANCHOR.y / 160 * rear.height;
-        near(rumpX, emitted.left + emitted.width / 2);
-        near(rumpY, emitted.top + emitted.height / 2);
-        assert.equal(rear.screen.depth, emitted.screen.depth);
+  for (const scale of [1, 4]) {
+    const atlas = Object.fromEntries(Object.entries(art).map(([name, sprite]) =>
+      [name, { ...sprite, width: sprite.width * scale, height: sprite.height * scale }]));
+    for (const [width, height] of [[640, 360], [1001, 563], [401, 601], [1920, 1080]]) {
+      for (const angle of [0, 0.25, -0.25]) {
+        for (const phase of ['windup', 'recovery']) {
+          const frame = createCameraFrame(width, height, { ...camera, angle });
+          const buffer = new Float64Array(width).fill(Infinity);
+          const unicorn = { id: 'z-source', x: 6.5, y: 12.9, angle: 0.6, alive: true, attack: { phase } };
+          const rose = { ...rearSocket(unicorn), id: 'a-rose', source: unicorn.id, z: 0.5, remaining: 3 };
+          const session = { ...scene(), unicorns: [unicorn], roses: [rose] };
+          const [rear, emitted] = presentSprites(session, atlas, point => project(frame, point, buffer));
+          assert.equal(rear.sprite, atlas.unicornRear);
+          assert.equal(emitted.sprite, atlas.rose);
+          const rumpX = rear.left + UNICORN_REAR_RUMP_ANCHOR.x / 128 * rear.width;
+          const rumpY = rear.top + UNICORN_REAR_RUMP_ANCHOR.y / 160 * rear.height;
+          near(rumpX, emitted.left + emitted.width / 2);
+          near(rumpY, emitted.top + emitted.height / 2);
+          assert.equal(rear.screen.depth, emitted.screen.depth);
+        }
       }
     }
   }

@@ -1,0 +1,1133 @@
+{
+  "browserRunStartedAt": "2026-10-12T00:06:53.434Z",
+  "testedHeadCommit": "1cf6b5b56cf38fec61368df4d4988812e1e23c8a",
+  "checkout": "HEAD plus uncommitted issue 108 changes; final commit assigned by automation",
+  "node": "v22.23.2",
+  "playwright": "1.64.0",
+  "host": {
+    "platform": "linux",
+    "arch": "x64",
+    "release": "7.0.0-38-generic",
+    "cpuModel": "AMD Ryzen 7 8745HS w/ Radeon 780M Graphics",
+    "logicalCpuCount": 9,
+    "availableParallelism": 4,
+    "memoryBytes": 17145618432
+  },
+  "sourceSHA256": {
+    "browser/app.spec.js": "c229a80872f242fb30a122c57b9db5f396e6206f6f192c362923b132d9d99bbc",
+    "browser/art.spec.js": "3b3f0126f6a87c86d17ecdc29f20cdee570a57460df29e098ce7c0035953132b",
+    "browser/audio.spec.js": "ff6fd678709dcc4f52c5246fbf49c14b2a28d41b01674a44fa8896724fb91818",
+    "browser/boot.spec.js": "12cd5785ef265d38c191ba9cd14141a3f274be68e1597ca0256a8bba8f878084",
+    "browser/effects.spec.js": "012e50ca496aceec178d0c584090d096002ff8e21fc1e00175916b4fa0373f3f",
+    "browser/fixtures.js": "79087cc4f9dd20f5a795b9dbb0011875329476c378f820c97a4dca7edb453146",
+    "browser/hud.spec.js": "396751221a1988af3e4bccb212c0f86bfdb28bb4b8b91878e66da6d231e68f5b",
+    "browser/input.spec.js": "d081052aac102176b20997c1e0cc7c56f12cd7228d34ed3fa24c2908f84bf91e",
+    "browser/render-resolution.spec.js": "592d10b03c22d28f6165867aa8c42c89b69bb99e7f0150a0fafc00c7fe24df1d",
+    "browser/renderer.spec.js": "5286ae0def1748b1fca1bde3e5e1ccda26882c5a00a19eb43ee635e000364dd4",
+    "browser/smoke.spec.js": "f67d833166baea44dece36ed834ba563bfd63113a35ab94d9db0358c7237539b",
+    "browser/survival.spec.js": "faa3cc6f47d0efc64b4a6860396eec003a92ff13d5f8b2bea0f34fa24c6a525d",
+    "browser/vector-art.spec.js": "91a1af1ef41f032533454fea84a829db6f36eda2c6401130a660b39a5e7d26b5",
+    "index.html": "a28c31b9edc3e01b75a78b71670d53f1da4efc6363e8a1623115e6f1ca71b186",
+    "jsconfig.json": "7aba35105eb7166ffbb52dff1ffba70ef6ebc68264c08272a694d3a49bba4ba3",
+    "main.js": "e7ff3775c2f6815c4c1527df7c9a4e671c59f22f70724fd1ad374649e1bc131f",
+    "package-lock.json": "55486e47d5529c497af48fb25cc9a409c8cc48e02959ef4e3f762c0772ae9286",
+    "package.json": "f133b2470d5a6763789cacb72476e4bde5bcd9889d5d138b129ee8b16c17b0dd",
+    "playwright.config.js": "036c3cf928c97b426693787e36040fa95f34671194dbfe91e263b3b67a6ee49b",
+    "src/app.js": "f8719e86ce4811e75d1cc987c7da3bd5597ef252e47eba2347fdeda41371c4eb",
+    "src/art.js": "32e1ce416af96d42aa757c79b84399c8eb39c586c739f6b31a3e508c096cb887",
+    "src/audio-platform.js": "1e72881aa5f5e8bcc99741ee27dcef10e41156097949c8e854568c55e5f950fa",
+    "src/audio.js": "7a8b9385bb0f13f3e3d57fb55e87ac42cf42e599d239d32644eb8eb820c2a1eb",
+    "src/bootstrap.js": "51900571b0129d813390b5bb5dc96b742f2425232fb8a48caa085c24f96adfa5",
+    "src/clock.js": "0b44936735f17630c00e13d870cbca847178910b828b80e21d46e0a16904c6c0",
+    "src/combat.js": "95acd0181baa9976cf4d0673403f8c9412db86ec1ceb7c79b536319081598cfc",
+    "src/config.js": "f10a74b25c818abe0fc9e0525647617dce50b85c67fe0492ce930544e554e1f1",
+    "src/contracts.js": "c66ec020ecb6ca7a3fb343abb45c74720fa571d7309d6d5d6d934635485a9035",
+    "src/effects-renderer.js": "0ad1efd08800c4014a8b8c2a3a8aa134377db06c03f9fa9e2ef3f72651ff4d5c",
+    "src/effects-state.js": "f3de4b43ada6da14882ff52d6174026c1df220170a41234296051dcb80149126",
+    "src/effects.js": "3412d7c8044c25a0325055ad3c3c8e547171e8a2ac2027301ec3777e7be513d4",
+    "src/geometry.js": "57de26952dde39fa9fa75dc880055a84d463ddd72c7f53afd3831574cf0506c0",
+    "src/hud.js": "2be782e8d334c9c782c932849e89c28b20ab51fffd2753d97abcab3ac317af46",
+    "src/input.js": "add35c3612d239a37f8d624c86234a33b668bad3f7ac817fe2d59f8a86e7cdcc",
+    "src/math.js": "4c527b63921ea9e841f84b5544324e6364e53361a72a3f684f45c90c59751cb5",
+    "src/pickups.js": "9c3f006854be126bc561b2b561aca8884665995d028422f64c66ff3325d3dda2",
+    "src/player.js": "fa8e887b2a7c3fe4884052cacb35b7e96b8f52693814ee7cb4b194ec0c7449c2",
+    "src/projectiles.js": "9e520313caaa29b8bb0d04c9af84f3ba3dfbe2053a9fe325d2edcf4676f8652e",
+    "src/projection.js": "4fe8e8669f25694b2de1ded176459e54e2f3e144e42748882932d012a9793108",
+    "src/ranged-attacks.js": "c01b4c5e42b9915fb79f51c83c5d0c4bf23696e34156261314fc27f31ce3b132",
+    "src/render-resolution.js": "3982cd507327d14278845ef08aa0c68c1a7bd165303899d6f7eaf9970aa9f80f",
+    "src/renderer.js": "2880a7b199c237b7250c001c13d03644ea2f2202050bdf813e7cedd996fef290",
+    "src/session.js": "8bdd895bd1ccc4f2a33681271b963e7bed493e956c8e792e42e004bd2a4d356a",
+    "src/snapshot.js": "7f4566a30085c4f05c466eb193fc6f364ec6197d44b1d7299d956d146ca6be21",
+    "src/sprite-presentation.js": "d418a6b6a579cfe78189a08325ca4fc3d29060066cacd9058607beeac264022d",
+    "src/survival.js": "1501afca8a4e8bb15e36fe0d82d80b402a304d17253baf43ac9486b480766c01",
+    "src/unicorn-steering.js": "bedae6e5c5643bce7d64b342ace01c1b2f75a3515bf4610b8824a52413310792",
+    "src/unicorn.js": "50718372cee9b531fa5b508ba941077aeb24fa5c9f18d0e2c3ff8af2bdf6732d",
+    "src/vector-art.js": "44575d134f05a370c8a5bbfb4b336764a909c388cdd28ac31209d4522ec23264",
+    "src/world.js": "5d33da7901abbd36717536fb92b5161ded9ba9e00cd7c395ad1071973ddeec7d",
+    "styles.css": "e5a6c4f7ba65693023ff32bb0ff618061f283eb715ffa822d2d6557f38fd7b21",
+    "test/audio-races.test.js": "9685f83f71898b55b950d139bc4c522f5f811fa1af072f262efef9b80a1777fb",
+    "test/audio.test.js": "3bd558003ae92b3b20a2df0fbb6883163174d58305d8353e7d86c6c5bd5aaba0",
+    "test/clock.test.js": "6181eac39ae87857362bf782a7d05cfd06707c8ffc4049a2a01b49ca7a20a493",
+    "test/combat-timing.test.js": "87c4772856e838b099fbc67ce64ce011a851663dc70916da5f93343d2b802941",
+    "test/combat.test.js": "4b2c3e6a64a0d8e84c453e233497f19238e6754eb64033ccf4ed4be26b723364",
+    "test/effects-state.test.js": "18d8ae79835c1b5db58aa40e4271628f75fc97c86ed57f9c1efa0f1c72b3538b",
+    "test/effects.test.js": "6249e29a4c2e4969cf22f83363075e4442088b57aeedeafb588d7a6516a83268",
+    "test/geometry.test.js": "b89ed79205c69a9ba8e68437fd3a7ffc886af75b2a7cd6f311c3cbe1e2158b1c",
+    "test/helpers/simulation.js": "0ab90ab0f12145d0cb8b18d55f169b9ff2068856733f9693c163ea44802c5a66",
+    "test/helpers/world.js": "8017a9969ec33e397ad7d3c66afa0d5695e281f3fc0e68c646a8728fd79dc545",
+    "test/input.test.js": "689fe47db45ba9a9adb5656588b243b9196325b9b0a34c417eda902dfe79d8c4",
+    "test/pickups.test.js": "e076b7b23bd7b3a663074b45785190128fe26caeab73b289b4bb5bfb4f572ef4",
+    "test/player.test.js": "06656ddaf3cd8ca2293ba9588889b42eeaa123d1c1bb8934274a7efd883532df",
+    "test/projectiles.test.js": "8f8fc052a05a2428fcb8251a511f922c2117383c9e2bf0c683927d3f86366775",
+    "test/projection.test.js": "86cbcb5536a0e23083fa238843c0686b28383e4546d70fb53f5e98befa30c87c",
+    "test/ranged-attacks.test.js": "f0a754f6773b03baee7987857d7072b4d4bc6c6f224376ea12ef1415622cebf3",
+    "test/render-resolution.test.js": "54a27cc5a20497518e66945f3985a159cb250badd517e5ee811ba56e9f6f8f69",
+    "test/session.test.js": "57c98791fbff97d576d664ea8a0396539533f00d27799f5eb330654445aea81b",
+    "test/simulation.test.js": "5ba23b4a45343a99916753bc98c7afaf9a3f1ad680b6604881983f3ba60d3d02",
+    "test/snapshot.test.js": "3b2131b2be2487f2d54be047304ab148601856f6c9a1021926c980c8585d0b8d",
+    "test/sprite-presentation.test.js": "9b2e72070a84efd64c4385f9022b1380762000895414ac944b8500803cca3f13",
+    "test/survival.test.js": "a8600dfb6ceaedb6298cfdf9280fa8064ef7b36a1e37ecabc3ba79fbd5a41ee5",
+    "test/unicorn.test.js": "fdb07e8a0508adb24959aab1b69c8e854c386357d62b822952fd5c174b04e8d9",
+    "test/world.test.js": "bd0850f1f58f46518cec1fcd50f7537ef8f8179f47442d736af01fb27626ba89"
+  },
+  "browserRunFinishedAt": "2026-10-12T00:14:57.775371+00:00",
+  "commands": {
+    "typecheck": "npm run typecheck",
+    "node": "npm test",
+    "browser": "PLAYWRIGHT_JSON_OUTPUT_FILE=docs/evidence/artwork-movement-2026-10-12/browser-report.json npm run test:browser -- --reporter=list,html,json"
+  },
+  "results": {
+    "typecheck": {
+      "exitCode": 0
+    },
+    "node": {
+      "passed": 269,
+      "failed": 0,
+      "exitCode": 0
+    },
+    "browser": {
+      "startTime": "2026-10-12T00:06:53.969Z",
+      "duration": 480649.979,
+      "expected": 87,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0,
+      "browserHealthFailures": 0,
+      "exitCode": 0
+    }
+  },
+  "seeds": {
+    "screenshotsStressAndBrowserRounds": 1,
+    "movementOrdering": [
+      0,
+      42,
+      "rainbow"
+    ],
+    "sessionAttackClock": 0,
+    "completeSessionVictoryAndDefeatReplay": 42
+  },
+  "artwork": [
+    {
+      "seed": 1,
+      "devicePixelRatio": 1,
+      "distanceName": "normal",
+      "distanceTiles": 3,
+      "fixture": "isolated production renderer in a controlled clearing",
+      "scenes": [
+        {
+          "kind": "unicorn",
+          "drawn": [
+            "unicorn",
+            "weapon"
+          ],
+          "css": {
+            "width": 640,
+            "height": 360
+          },
+          "backing": {
+            "width": 640,
+            "height": 360
+          },
+          "roses": []
+        },
+        {
+          "kind": "rear-emission",
+          "drawn": [
+            "rose",
+            "unicornRear",
+            "weapon"
+          ],
+          "css": {
+            "width": 640,
+            "height": 360
+          },
+          "backing": {
+            "width": 640,
+            "height": 360
+          },
+          "roses": [
+            {
+              "id": "rose:0",
+              "source": "1:0",
+              "x": 6.5,
+              "y": 12.5,
+              "z": 0.5,
+              "vx": -3.5,
+              "vy": 0,
+              "remaining": 3
+            }
+          ]
+        },
+        {
+          "kind": "supplies",
+          "drawn": [
+            "armorCharm",
+            "healthCake",
+            "weapon"
+          ],
+          "css": {
+            "width": 640,
+            "height": 360
+          },
+          "backing": {
+            "width": 640,
+            "height": 360
+          },
+          "roses": []
+        },
+        {
+          "kind": "airborne-rose",
+          "drawn": [
+            "rose",
+            "weapon"
+          ],
+          "css": {
+            "width": 640,
+            "height": 360
+          },
+          "backing": {
+            "width": 640,
+            "height": 360
+          },
+          "roses": [
+            {
+              "id": "rose:0",
+              "source": "1:0",
+              "x": 6.5,
+              "y": 12.5,
+              "z": 0.5,
+              "vx": -3.5,
+              "vy": 0,
+              "remaining": 2.95
+            }
+          ]
+        }
+      ],
+      "atlas": {
+        "width": 512,
+        "height": 640
+      },
+      "humanThemeReview": "pending",
+      "humanRecognitionReview": "pending",
+      "browser": "154.0.8037.92"
+    },
+    {
+      "seed": 1,
+      "devicePixelRatio": 1,
+      "distanceName": "close",
+      "distanceTiles": 1.8,
+      "fixture": "isolated production renderer in a controlled clearing",
+      "scenes": [
+        {
+          "kind": "unicorn",
+          "drawn": [
+            "unicorn",
+            "weapon"
+          ],
+          "css": {
+            "width": 640,
+            "height": 360
+          },
+          "backing": {
+            "width": 640,
+            "height": 360
+          },
+          "roses": []
+        },
+        {
+          "kind": "rear-emission",
+          "drawn": [
+            "rose",
+            "unicornRear",
+            "weapon"
+          ],
+          "css": {
+            "width": 640,
+            "height": 360
+          },
+          "backing": {
+            "width": 640,
+            "height": 360
+          },
+          "roses": [
+            {
+              "id": "rose:0",
+              "source": "1:0",
+              "x": 5.3,
+              "y": 12.5,
+              "z": 0.5,
+              "vx": -3.5,
+              "vy": 0,
+              "remaining": 3
+            }
+          ]
+        },
+        {
+          "kind": "supplies",
+          "drawn": [
+            "armorCharm",
+            "healthCake",
+            "weapon"
+          ],
+          "css": {
+            "width": 640,
+            "height": 360
+          },
+          "backing": {
+            "width": 640,
+            "height": 360
+          },
+          "roses": []
+        },
+        {
+          "kind": "airborne-rose",
+          "drawn": [
+            "rose",
+            "weapon"
+          ],
+          "css": {
+            "width": 640,
+            "height": 360
+          },
+          "backing": {
+            "width": 640,
+            "height": 360
+          },
+          "roses": [
+            {
+              "id": "rose:0",
+              "source": "1:0",
+              "x": 5.3,
+              "y": 12.5,
+              "z": 0.5,
+              "vx": -3.5,
+              "vy": 0,
+              "remaining": 2.95
+            }
+          ]
+        }
+      ],
+      "atlas": {
+        "width": 512,
+        "height": 640
+      },
+      "humanThemeReview": "pending",
+      "humanRecognitionReview": "pending",
+      "browser": "154.0.8037.92"
+    },
+    {
+      "seed": 1,
+      "devicePixelRatio": 2,
+      "distanceName": "normal",
+      "distanceTiles": 3,
+      "fixture": "isolated production renderer in a controlled clearing",
+      "scenes": [
+        {
+          "kind": "unicorn",
+          "drawn": [
+            "unicorn",
+            "weapon"
+          ],
+          "css": {
+            "width": 640,
+            "height": 360
+          },
+          "backing": {
+            "width": 1280,
+            "height": 720
+          },
+          "roses": []
+        },
+        {
+          "kind": "rear-emission",
+          "drawn": [
+            "rose",
+            "unicornRear",
+            "weapon"
+          ],
+          "css": {
+            "width": 640,
+            "height": 360
+          },
+          "backing": {
+            "width": 1280,
+            "height": 720
+          },
+          "roses": [
+            {
+              "id": "rose:0",
+              "source": "1:0",
+              "x": 6.5,
+              "y": 12.5,
+              "z": 0.5,
+              "vx": -3.5,
+              "vy": 0,
+              "remaining": 3
+            }
+          ]
+        },
+        {
+          "kind": "supplies",
+          "drawn": [
+            "armorCharm",
+            "healthCake",
+            "weapon"
+          ],
+          "css": {
+            "width": 640,
+            "height": 360
+          },
+          "backing": {
+            "width": 1280,
+            "height": 720
+          },
+          "roses": []
+        },
+        {
+          "kind": "airborne-rose",
+          "drawn": [
+            "rose",
+            "weapon"
+          ],
+          "css": {
+            "width": 640,
+            "height": 360
+          },
+          "backing": {
+            "width": 1280,
+            "height": 720
+          },
+          "roses": [
+            {
+              "id": "rose:0",
+              "source": "1:0",
+              "x": 6.5,
+              "y": 12.5,
+              "z": 0.5,
+              "vx": -3.5,
+              "vy": 0,
+              "remaining": 2.95
+            }
+          ]
+        }
+      ],
+      "atlas": {
+        "width": 512,
+        "height": 640
+      },
+      "humanThemeReview": "pending",
+      "humanRecognitionReview": "pending",
+      "browser": "154.0.8037.92"
+    },
+    {
+      "seed": 1,
+      "devicePixelRatio": 2,
+      "distanceName": "close",
+      "distanceTiles": 1.8,
+      "fixture": "isolated production renderer in a controlled clearing",
+      "scenes": [
+        {
+          "kind": "unicorn",
+          "drawn": [
+            "unicorn",
+            "weapon"
+          ],
+          "css": {
+            "width": 640,
+            "height": 360
+          },
+          "backing": {
+            "width": 1280,
+            "height": 720
+          },
+          "roses": []
+        },
+        {
+          "kind": "rear-emission",
+          "drawn": [
+            "rose",
+            "unicornRear",
+            "weapon"
+          ],
+          "css": {
+            "width": 640,
+            "height": 360
+          },
+          "backing": {
+            "width": 1280,
+            "height": 720
+          },
+          "roses": [
+            {
+              "id": "rose:0",
+              "source": "1:0",
+              "x": 5.3,
+              "y": 12.5,
+              "z": 0.5,
+              "vx": -3.5,
+              "vy": 0,
+              "remaining": 3
+            }
+          ]
+        },
+        {
+          "kind": "supplies",
+          "drawn": [
+            "armorCharm",
+            "healthCake",
+            "weapon"
+          ],
+          "css": {
+            "width": 640,
+            "height": 360
+          },
+          "backing": {
+            "width": 1280,
+            "height": 720
+          },
+          "roses": []
+        },
+        {
+          "kind": "airborne-rose",
+          "drawn": [
+            "rose",
+            "weapon"
+          ],
+          "css": {
+            "width": 640,
+            "height": 360
+          },
+          "backing": {
+            "width": 1280,
+            "height": 720
+          },
+          "roses": [
+            {
+              "id": "rose:0",
+              "source": "1:0",
+              "x": 5.3,
+              "y": 12.5,
+              "z": 0.5,
+              "vx": -3.5,
+              "vy": 0,
+              "remaining": 2.95
+            }
+          ]
+        }
+      ],
+      "atlas": {
+        "width": 512,
+        "height": 640
+      },
+      "humanThemeReview": "pending",
+      "humanRecognitionReview": "pending",
+      "browser": "154.0.8037.92"
+    }
+  ],
+  "combinedStress": [
+    {
+      "seed": 1,
+      "clock": "native requestAnimationFrame",
+      "fixture": "synthetic combined stress",
+      "warmupFrames": 30,
+      "samples": 180,
+      "medianMs": 50,
+      "p95Ms": 66.60000000000036,
+      "p99Ms": 66.70000000000073,
+      "maxMs": 66.80000000000018,
+      "over33Ms": 180,
+      "maxConsecutiveOver33Ms": 180,
+      "activeUnicorns": {
+        "min": 6,
+        "max": 6
+      },
+      "activeRoses": {
+        "min": 32,
+        "max": 32
+      },
+      "particles": {
+        "min": 144,
+        "max": 144
+      },
+      "healthSupplies": {
+        "min": 3,
+        "max": 3
+      },
+      "armorSupplies": {
+        "min": 5,
+        "max": 5
+      },
+      "expectedRoses": 32,
+      "expectedHealthSupplies": 3,
+      "expectedArmorSupplies": 5,
+      "state": "playing",
+      "intervalsMs": [
+        50,
+        50,
+        49.899999999999636,
+        50.100000000000364,
+        50,
+        50,
+        49.899999999999636,
+        50.100000000000364,
+        50,
+        33.29999999999973,
+        66.70000000000027,
+        50,
+        49.899999999999636,
+        50,
+        50.100000000000364,
+        49.899999999999636,
+        50.100000000000364,
+        50,
+        49.899999999999636,
+        50.100000000000364,
+        49.899999999999636,
+        50,
+        50,
+        66.69999999999982,
+        50,
+        50,
+        50,
+        50,
+        50,
+        49.900000000000546,
+        50.099999999999454,
+        50,
+        50,
+        49.900000000000546,
+        66.80000000000018,
+        49.899999999999636,
+        50,
+        50,
+        50,
+        50.100000000000364,
+        49.899999999999636,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50.100000000000364,
+        49.899999999999636,
+        50.100000000000364,
+        49.899999999999636,
+        50,
+        50,
+        50,
+        66.69999999999982,
+        49.900000000000546,
+        50.099999999999454,
+        49.900000000000546,
+        50.099999999999454,
+        66.60000000000036,
+        50,
+        50.099999999999454,
+        66.60000000000036,
+        50,
+        49.899999999999636,
+        50.100000000000364,
+        50,
+        49.899999999999636,
+        50,
+        50.100000000000364,
+        50,
+        50,
+        49.899999999999636,
+        50.100000000000364,
+        49.899999999999636,
+        50.100000000000364,
+        50,
+        49.899999999999636,
+        50.100000000000364,
+        49.899999999999636,
+        50,
+        50.100000000000364,
+        49.899999999999636,
+        50.100000000000364,
+        50,
+        49.899999999999636,
+        50,
+        50,
+        50.100000000000364,
+        50,
+        49.899999999999636,
+        50,
+        50,
+        50,
+        50.100000000000364,
+        49.899999999999636,
+        50,
+        50,
+        50.100000000000364,
+        49.899999999999636,
+        50.100000000000364,
+        49.899999999999636,
+        33.399999999999636,
+        49.900000000001455,
+        50.099999999998545,
+        49.900000000001455,
+        50.099999999998545,
+        50,
+        49.900000000001455,
+        50,
+        50,
+        50,
+        50.099999999998545,
+        66.60000000000036,
+        50,
+        50,
+        49.899999999999636,
+        50.100000000000364,
+        50,
+        50,
+        50,
+        49.899999999999636,
+        50,
+        50.100000000000364,
+        49.899999999999636,
+        50,
+        50,
+        50.100000000000364,
+        49.899999999999636,
+        50.100000000000364,
+        66.70000000000073,
+        49.899999999999636,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        33.29999999999927,
+        50,
+        66.70000000000073,
+        66.60000000000036,
+        50,
+        50.100000000000364,
+        50,
+        49.899999999999636,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        33.29999999999927,
+        50.100000000000364,
+        66.70000000000073,
+        50,
+        49.899999999999636,
+        66.69999999999891,
+        50,
+        49.900000000001455,
+        66.69999999999891,
+        50.100000000000364,
+        49.899999999999636,
+        50,
+        50,
+        50,
+        50.100000000000364,
+        49.899999999999636
+      ],
+      "backingSize": {
+        "width": 1100,
+        "height": 619
+      },
+      "displaySize": {
+        "width": 1100,
+        "height": 619
+      },
+      "devicePixelRatio": 1,
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+      "hardwareConcurrency": 9,
+      "browser": "154.0.8037.92"
+    },
+    {
+      "seed": 1,
+      "clock": "native requestAnimationFrame",
+      "fixture": "synthetic combined stress",
+      "warmupFrames": 30,
+      "samples": 180,
+      "medianMs": 116.70000000000073,
+      "p95Ms": 133.40000000000146,
+      "p99Ms": 133.40000000000146,
+      "maxMs": 150,
+      "over33Ms": 180,
+      "maxConsecutiveOver33Ms": 180,
+      "activeUnicorns": {
+        "min": 6,
+        "max": 6
+      },
+      "activeRoses": {
+        "min": 32,
+        "max": 32
+      },
+      "particles": {
+        "min": 144,
+        "max": 144
+      },
+      "healthSupplies": {
+        "min": 3,
+        "max": 3
+      },
+      "armorSupplies": {
+        "min": 5,
+        "max": 5
+      },
+      "expectedRoses": 32,
+      "expectedHealthSupplies": 3,
+      "expectedArmorSupplies": 5,
+      "state": "playing",
+      "intervalsMs": [
+        116.59999999999945,
+        133.30000000000018,
+        116.69999999999982,
+        133.30000000000018,
+        116.69999999999982,
+        116.69999999999982,
+        116.60000000000036,
+        133.39999999999964,
+        116.70000000000073,
+        116.60000000000036,
+        116.59999999999854,
+        116.80000000000109,
+        133.1999999999989,
+        116.70000000000073,
+        116.70000000000073,
+        133.29999999999927,
+        116.70000000000073,
+        116.59999999999854,
+        133.3000000000011,
+        116.69999999999891,
+        133.40000000000146,
+        116.59999999999854,
+        133.3000000000011,
+        133.39999999999964,
+        116.60000000000036,
+        116.69999999999891,
+        116.60000000000036,
+        133.39999999999964,
+        116.60000000000036,
+        116.70000000000073,
+        133.29999999999927,
+        116.70000000000073,
+        116.69999999999891,
+        133.3000000000011,
+        116.60000000000036,
+        116.69999999999891,
+        133.3000000000011,
+        116.69999999999891,
+        133.39999999999964,
+        133.3000000000011,
+        116.60000000000036,
+        133.29999999999927,
+        116.70000000000073,
+        116.69999999999891,
+        133.3000000000011,
+        116.69999999999891,
+        133.3000000000011,
+        116.69999999999891,
+        116.60000000000036,
+        133.39999999999964,
+        116.60000000000036,
+        133.29999999999927,
+        133.40000000000146,
+        116.69999999999891,
+        133.3000000000011,
+        116.59999999999854,
+        133.40000000000146,
+        116.59999999999854,
+        116.70000000000073,
+        133.29999999999927,
+        116.70000000000073,
+        116.60000000000036,
+        133.29999999999927,
+        116.70000000000073,
+        133.29999999999927,
+        116.70000000000073,
+        133.29999999999927,
+        116.60000000000036,
+        133.39999999999964,
+        116.70000000000073,
+        133.29999999999927,
+        116.70000000000073,
+        133.29999999999927,
+        133.3000000000011,
+        116.70000000000073,
+        116.59999999999854,
+        133.40000000000146,
+        116.59999999999854,
+        116.70000000000073,
+        133.29999999999927,
+        116.70000000000073,
+        133.29999999999927,
+        150,
+        133.29999999999927,
+        116.70000000000073,
+        116.59999999999854,
+        133.40000000000146,
+        116.70000000000073,
+        116.59999999999854,
+        133.40000000000146,
+        116.59999999999854,
+        133.29999999999927,
+        133.3000000000029,
+        116.69999999999709,
+        133.40000000000146,
+        116.59999999999854,
+        133.3000000000029,
+        133.39999999999782,
+        133.29999999999927,
+        133.40000000000146,
+        116.59999999999854,
+        116.70000000000073,
+        133.29999999999927,
+        116.60000000000218,
+        116.70000000000073,
+        133.29999999999927,
+        116.70000000000073,
+        100,
+        133.29999999999927,
+        116.70000000000073,
+        116.59999999999854,
+        133.40000000000146,
+        116.59999999999854,
+        116.70000000000073,
+        133.29999999999927,
+        116.70000000000073,
+        116.70000000000073,
+        133.29999999999927,
+        116.59999999999854,
+        116.70000000000073,
+        133.29999999999927,
+        133.40000000000146,
+        116.59999999999854,
+        116.70000000000073,
+        133.29999999999927,
+        133.40000000000146,
+        133.29999999999927,
+        116.59999999999854,
+        116.70000000000073,
+        133.29999999999927,
+        116.60000000000218,
+        133.39999999999782,
+        116.60000000000218,
+        116.70000000000073,
+        100,
+        133.39999999999782,
+        133.20000000000073,
+        116.70000000000073,
+        116.70000000000073,
+        116.69999999999709,
+        116.70000000000073,
+        133.29999999999927,
+        116.70000000000073,
+        116.60000000000218,
+        133.29999999999927,
+        133.29999999999927,
+        116.70000000000073,
+        133.39999999999782,
+        133.20000000000073,
+        116.70000000000073,
+        116.59999999999854,
+        116.70000000000073,
+        133.40000000000146,
+        133.29999999999927,
+        116.70000000000073,
+        133.20000000000073,
+        116.69999999999709,
+        133.3000000000029,
+        116.69999999999709,
+        116.70000000000073,
+        133.29999999999927,
+        116.70000000000073,
+        133.29999999999927,
+        116.70000000000073,
+        133.29999999999927,
+        116.70000000000073,
+        116.70000000000073,
+        133.20000000000073,
+        133.39999999999782,
+        133.3000000000029,
+        133.29999999999927,
+        116.70000000000073,
+        133.39999999999782,
+        133.29999999999927,
+        116.60000000000218,
+        116.70000000000073,
+        133.29999999999927,
+        116.70000000000073,
+        133.29999999999927,
+        116.59999999999854
+      ],
+      "backingSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "displaySize": {
+        "width": 1100,
+        "height": 619
+      },
+      "devicePixelRatio": 2,
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+      "hardwareConcurrency": 9,
+      "browser": "154.0.8037.92"
+    }
+  ],
+  "automatedRounds": [
+    {
+      "state": "victory",
+      "seed": 1,
+      "score": 5900,
+      "health": 4,
+      "armor": 0,
+      "elapsed": 36.38333333333255,
+      "conversions": [
+        "1:0",
+        "1:2",
+        "1:4",
+        "1:3",
+        "1:5",
+        "1:1",
+        "2:1",
+        "2:3",
+        "2:7",
+        "2:2",
+        "2:0",
+        "2:4",
+        "2:5",
+        "2:6",
+        "3:4",
+        "3:6",
+        "3:2",
+        "3:0",
+        "3:3",
+        "3:8",
+        "3:7",
+        "3:9",
+        "3:5",
+        "3:1"
+      ],
+      "waves": [
+        1,
+        2,
+        3
+      ],
+      "damage": [
+        {
+          "type": "damage",
+          "cause": "rose",
+          "source": "rose:0",
+          "amount": 1,
+          "resource": "health",
+          "health": 4,
+          "armor": 0,
+          "x": 3.9996444450063136,
+          "y": 12.300000316048633
+        }
+      ],
+      "pickups": [],
+      "rosesFired": 1,
+      "controls": "keyboard",
+      "browser": "154.0.8037.92",
+      "clock": "controlled 60 Hz",
+      "humanPlaytest": false
+    },
+    {
+      "state": "victory",
+      "seed": 1,
+      "score": 6300,
+      "health": 5,
+      "armor": 0,
+      "elapsed": 27.283333333333065,
+      "conversions": [
+        "1:0",
+        "1:2",
+        "1:1",
+        "1:4",
+        "1:3",
+        "1:5",
+        "2:1",
+        "2:3",
+        "2:7",
+        "2:2",
+        "2:6",
+        "2:0",
+        "2:4",
+        "2:5",
+        "3:4",
+        "3:6",
+        "3:2",
+        "3:0",
+        "3:8",
+        "3:3",
+        "3:7",
+        "3:9",
+        "3:5",
+        "3:1"
+      ],
+      "waves": [
+        1,
+        2,
+        3
+      ],
+      "damage": [],
+      "pickups": [],
+      "rosesFired": 0,
+      "controls": "mouse",
+      "browser": "154.0.8037.92",
+      "clock": "controlled 60 Hz",
+      "humanPlaytest": false
+    }
+  ],
+  "humanReview": {
+    "theme": "pending",
+    "recognition": "pending",
+    "headedStress": "pending",
+    "humanControlsAndAudio": "pending"
+  },
+  "priorAttempt": {
+    "log": "browser-attempt-1.txt",
+    "report": "browser-attempt-1.json",
+    "outcome": "Stopped after the ten-restart test exceeded its 30-second default deadline. Its deadline is now 90 seconds; all assertions retained.",
+    "passed": 37,
+    "failed": 1,
+    "interrupted": 1,
+    "notRun": 48,
+    "exitCode": 130
+  }
+}
