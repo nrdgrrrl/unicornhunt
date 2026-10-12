@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
     const { game } = await import('/main.js');
     game.destroy();
     const { createRenderer } = await import('/src/renderer.js');
-    const { createArt } = await import('/src/art.js');
+    const { createArt } = await import('/src/branch-art.js');
     const { createWorld } = await import('/src/world.js');
     const { createPlayer } = await import('/src/player.js');
     window.canvas = document.querySelector('#game');
@@ -206,13 +206,13 @@ test('all entity arrays have stable pixels including coincident depth ties', asy
 
 for (const [width, height] of [[640, 360], [1001, 563], [401, 601]]) {
   for (const angle of [0, 0.25, -0.25]) {
-    test(`emitted rose aligns visibly with the rear rump at ${width}×${height}, camera ${angle}`, async ({ page }) => {
+    test(`emitted rose aligns visibly with the attack mouth at ${width}×${height}, camera ${angle}`, async ({ page }) => {
       const result = await page.evaluate(async ({ width, height, angle }) => {
         canvas.width = width;
         canvas.height = height;
         session.player.angle = angle;
         const { rearSocket, updateRangedAttacks } = await import('/src/ranged-attacks.js');
-        const { UNICORN_REAR_RUMP_ANCHOR: anchor } = await import('/src/art.js');
+        const { UNICORN_REAR_RUMP_ANCHOR: anchor, INK } = await import('/src/branch-art.js');
         const unicorn = { id: 'source', x: 6.5, y: 12.9, angle: 0, alive: true,
           attack: { phase: 'windup', facing: Math.atan2(0.4, 3), remaining: 0.01, cooldownFor: 0, target: { x: 3.5, y: 12.5 } } };
         session.unicorns = [unicorn];
@@ -235,7 +235,7 @@ for (const [width, height] of [[640, 360], [1001, 563], [401, 601]]) {
         const rump = { x: rear.x + anchor.x / 128 * rear.width, y: rear.y + anchor.y / 160 * rear.height };
         const center = { x: rose.x + rose.width / 2, y: rose.y + rose.height / 2 };
         const socket = renderer.project({ ...rearSocket(unicorn), z: 0.5 });
-        // The petals visibly replace cream rump pixels above the exact origin.
+        // The petals visibly overlap the attack face above the exact origin.
         const sample = () => Array.from(renderer.ctx.getImageData(Math.floor(rose.x),
           Math.floor(rose.y), Math.ceil(rose.width), Math.ceil(rose.height / 2)).data);
         const withRose = sample();
@@ -248,25 +248,29 @@ for (const [width, height] of [[640, 360], [1001, 563], [401, 601]]) {
         session.roses = [];
         capture();
         const withoutRose = sample();
-        const exposedRump = Array.from(renderer.ctx.getImageData(Math.floor(rump.x), Math.floor(rump.y), 1, 1).data);
+        const exposedMouth = Array.from(renderer.ctx.getImageData(Math.floor(rump.x), Math.floor(rump.y), 1, 1).data);
+        const mouthColor = [1, 3, 5].map(index => parseInt(INK.slice(index, index + 2), 16));
         session.unicorns[0].attack.phase = 'idle';
         const idle = capture();
         session.unicorns[0].attack.phase = 'windup';
         const windup = capture();
+        session.unicorns[0].attack.phase = 'recovery';
+        const recovery = capture();
         return { order: drawn.slice(0, 2).map(item => item.name), rump, center, socket,
           visibleRose: withRose.some((value, i) => value !== withoutRose[i]),
           pinkPetals: withRose.filter((value, i) => i % 4 === 0 && value > 200
             && value > withRose[i + 1] * 1.2 && withRose[i + 2] > withRose[i + 1]).length,
-          exposedRump, reducedSame, reducedStill, unchanged, visibleWindup: windup !== idle };
+          exposedMouth, mouthColor, reducedSame, reducedStill, unchanged,
+          visibleWindup: windup !== idle, visibleRecovery: recovery === windup };
       }, { width, height, angle });
       expect(result.pinkPetals).toBeGreaterThan(10);
-      expect(result.exposedRump).toEqual([255, 248, 232, 255]);
+      expect(result.exposedMouth).toEqual([...result.mouthColor, 255]);
       expect(result.order).toEqual(['rear', 'rose']);
       expect(result.rump.x).toBeCloseTo(result.center.x, 8);
       expect(result.rump.y).toBeCloseTo(result.center.y, 8);
       expect(result.rump.x).toBeCloseTo(result.socket.x, 8);
       expect(result.rump.y).toBeCloseTo(result.socket.y, 8);
-      for (const property of ['visibleRose', 'reducedSame', 'reducedStill', 'unchanged', 'visibleWindup']) {
+      for (const property of ['visibleRose', 'reducedSame', 'reducedStill', 'unchanged', 'visibleWindup', 'visibleRecovery']) {
         expect(result[property], property).toBe(true);
       }
     });

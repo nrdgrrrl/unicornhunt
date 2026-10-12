@@ -1,4 +1,4 @@
-import { createArt, INK } from './art.js';
+import { createArt, INK } from './branch-art.js';
 import { createRng } from './math.js';
 import {
   CAMERA_HEIGHT, HORIZONTAL_FOV, createCameraFrame, columnRay,
