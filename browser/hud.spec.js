@@ -43,10 +43,15 @@ test('the focused primary action stays inside the scrollable panel on a narrow s
 test('all menu actions work with keyboard focus and no pointer lock', async ({ page }) => {
   const start = page.getByRole('button', { name: 'Start game', exact: true });
   await expect(start).toBeFocused();
+  await expect(page.getByRole('heading', { name: 'Unicorn Hunt', exact: true })).toBeVisible();
+  await expect(page.locator('#message')).toHaveText('Clear every face to win!');
+  await expect(page.locator('.hud dt').filter({ hasText: 'Faces remaining' })).toHaveCount(1);
   await expect(page.locator('#instructions')).toContainText('Clear three waves: 6, 8, then 10');
-  await expect(page.locator('#instructions')).toContainText('unlimited rainbows');
+  await expect(page.locator('#instructions')).toContainText('illustrated adult women’s faces');
+  await expect(page.locator('#instructions')).toContainText('unlimited cartoon penis-shaped shots');
+  await expect(page.locator('#instructions')).toContainText('Hits resolve immediately; the visible shot animation is cosmetic.');
   await expect(page.locator('#instructions')).toContainText('Armor absorbs');
-  await expect(page.locator('#instructions')).toContainText("unicorn's rear");
+  await expect(page.locator('#instructions')).toContainText('A changed attack expression warns you before a face fires a rose.');
   await expect(page.locator('#instructions')).toContainText('Rainbow cakes restore one health point');
   await expect(page.locator('#instructions')).toContainText('star-shield charms add one armor point');
   await expect(page.locator('.controls')).toContainText('Alt + ← / →');
@@ -58,6 +63,7 @@ test('all menu actions work with keyboard focus and no pointer lock', async ({ p
   await page.keyboard.press('Shift+Tab');
   await page.keyboard.press('Enter');
   await expect(page.locator('#game')).toBeFocused();
+  await expect(page.locator('#announcement')).toHaveText('Wave 1 of 3. 6 faces remaining.');
   expect(await page.evaluate(() => document.pointerLockElement)).toBeNull();
   await page.keyboard.down('Space');
   await step(page, 2);
@@ -120,8 +126,8 @@ test('frame updates preserve controls and focus and announce only meaningful tra
   expect(await page.locator('.hud').getAttribute('aria-live')).toBeNull();
   await page.evaluate(() => { game.session.unicorns.forEach(unicorn => { unicorn.alive = false; }); });
   await step(page, 41);
-  await expect(page.locator('#announcement')).toHaveText('Wave 2 of 3. 8 unicorns remaining.');
-  expect(await page.evaluate(() => announcements)).toEqual(['Wave 2 of 3. 8 unicorns remaining.']);
+  await expect(page.locator('#announcement')).toHaveText('Wave 2 of 3. 8 faces remaining.');
+  expect(await page.evaluate(() => announcements)).toEqual(['Wave 2 of 3. 8 faces remaining.']);
   await step(page, 5);
   expect(await page.evaluate(() => announcements.length)).toBe(1);
 });
@@ -134,8 +140,9 @@ test('victory and defeat announce final scores, focus restart, and begin a fresh
     await step(page, 42);
   }
   await expect(page.getByRole('heading', { name: 'Victory!' })).toBeVisible();
+  await expect(page.locator('#message')).toContainText('All faces cleared!');
   await expect(page.locator('#message')).toContainText('Final score: 400. Best score: 400.');
-  await expect(page.locator('#announcement')).toContainText('Victory!');
+  await expect(page.locator('#announcement')).toHaveText('Victory! All faces cleared! Final score: 400. Best score: 400.');
   await expect(page.getByRole('button', { name: 'Play again' })).toBeFocused();
   await step(page, 5);
   await expect(page.getByRole('button', { name: 'Play again' })).toBeFocused();

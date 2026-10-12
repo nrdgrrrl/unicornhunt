@@ -179,7 +179,7 @@ test('wave, damage, victory, and defeat transitions reach both feedback consumer
     await page.evaluate(() => { for (const unicorn of game.session.unicorns) unicorn.alive = false; });
     await expect.poll(() => page.evaluate(() => game.session.wave === 3 && game.state === 'victory' ? 4 : game.session.wave)).toBe(wave + 1);
   }
-  await expect(page.locator('#message')).toContainText('All unicorns glittered!');
+  await expect(page.locator('#message')).toContainText('All faces cleared!');
   const feedbackEvents = await page.evaluate(() => feedback);
   expect(feedbackEvents.audio).toEqual(feedbackEvents.effects);
   // Polling the real clock can let the newly enabled enemies fire before the
