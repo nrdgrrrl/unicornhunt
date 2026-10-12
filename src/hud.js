@@ -14,23 +14,26 @@ export function createHUD(root, { onStart, onResume, onRestart, onPause, onMute 
       <div class="badge"><dt>Health</dt><dd id="health">5 / 5</dd></div>
       <div class="badge"><dt>Armor</dt><dd id="armor">0 / 5</dd></div>
       <div class="badge"><dt>Wave</dt><dd id="wave">1 / 3</dd></div>
-      <div class="badge"><dt>Unicorns remaining</dt><dd id="remaining">6</dd></div>
+      <div class="badge"><dt>Faces remaining</dt><dd id="remaining">6</dd></div>
       <div class="badge"><dt>Combo</dt><dd id="combo">None</dd></div>
     </dl>
     <section class="panel" aria-labelledby="panel-title" aria-describedby="message">
       <h1 id="panel-title">Unicorn Hunt</h1>
-      <p id="message">Turn every unicorn into rainbow glitter to win!</p>
+      <p id="message">Clear every face to win!</p>
       <div class="panel-actions">
         <button id="start" type="button">Start game</button>
         <button id="restart" type="button" hidden>Restart game</button>
       </div>
       <div id="instructions">
         <h2>How to play</h2>
-        <p>Clear three waves: 6, 8, then 10 unicorns. Fire unlimited rainbows;
-          there is no ammunition limit. Each hit earns 100 points × your combo.
+        <p>Clear three waves: 6, 8, then 10 illustrated adult women’s faces.
+          Fire unlimited cartoon penis-shaped shots; there is no ammunition limit.
+          Hits resolve immediately; the visible shot animation is cosmetic.
+          Each hit earns 100 points × your combo.
           Hits within two seconds build a combo up to ×5.</p>
-        <p>You start with five health and no armor. Unicorn contact and roses
-          fired from a unicorn's rear deal one point of damage. Armor absorbs
+        <p>You start with five health and no armor. Enemy contact and roses
+          deal one point of damage. A changed attack expression warns you before
+          a face fires a rose. Armor absorbs
           hits first, with a brief shared grace period between hits.
           Zero health ends the game. Rainbow cakes restore one health point;
           star-shield charms add one armor point, each capped at five.
@@ -41,7 +44,7 @@ export function createHUD(root, { onStart, onResume, onRestart, onPause, onMute 
           <dt>Move forward / backward</dt><dd>W / S or ↑ / ↓</dd>
           <dt>Turn left / right</dt><dd>← / →</dd>
           <dt>Strafe left / right</dt><dd>A / D, comma / period, or Alt + ← / →</dd>
-          <dt>Fire rainbows</dt><dd>Space, Ctrl, or primary mouse button (hold to repeat)</dd>
+          <dt>Fire shots</dt><dd>Space, Ctrl, or primary mouse button (hold to repeat)</dd>
           <dt>Run</dt><dd>Hold Shift</dd>
           <dt>Pause</dt><dd>Escape or the Pause button</dd>
           <dt>Toggle sound</dt><dd>M during play or the sound button</dd>
@@ -127,7 +130,7 @@ export function createHUD(root, { onStart, onResume, onRestart, onPause, onMute 
         instructions.hidden = state === 'victory' || state === 'defeat';
         if (state === 'title') {
           setText(title, 'Unicorn Hunt');
-          setText(message, 'Turn every unicorn into rainbow glitter to win!');
+          setText(message, 'Clear every face to win!');
           setText(primary, 'Start game');
         } else if (state === 'paused') {
           setText(title, 'Game paused');
@@ -136,7 +139,7 @@ export function createHUD(root, { onStart, onResume, onRestart, onPause, onMute 
           setText(announcement, 'Game paused');
         } else if (state === 'victory' || state === 'defeat') {
           setText(title, state === 'victory' ? 'Victory!' : 'Defeat');
-          setText(message, `${state === 'victory' ? 'All unicorns glittered!' : 'Your health ran out.'} Final score: ${snapshot.score}. Best score: ${snapshot.bestScore}.`);
+          setText(message, `${state === 'victory' ? 'All faces cleared!' : 'Your health ran out.'} Final score: ${snapshot.score}. Best score: ${snapshot.bestScore}.`);
           setText(primary, 'Play again');
           setText(announcement, `${title.textContent} ${message.textContent}`);
         }
@@ -145,7 +148,7 @@ export function createHUD(root, { onStart, onResume, onRestart, onPause, onMute 
       }
       if (state === 'playing' && (changed || wave !== snapshot.wave)) {
         setText(announcement, previousState === 'paused' && wave === snapshot.wave
-          ? 'Game resumed' : `Wave ${snapshot.wave} of 3. ${snapshot.remaining} unicorns remaining.`);
+          ? 'Game resumed' : `Wave ${snapshot.wave} of 3. ${snapshot.remaining} faces remaining.`);
       }
       wave = snapshot.wave;
     },
