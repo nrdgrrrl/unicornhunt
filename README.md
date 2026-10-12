@@ -1,14 +1,20 @@
 # Unicorn Hunt
 
-Turn unicorns into rainbow glitter in a hand-drawn forest. Clear three waves
-before your health runs out. The game runs locally in a desktop browser; artwork
-is generated on canvas and all eight sound effects are synthesized with Web Audio.
+This branch uses illustrated adult women’s faces as enemies and cartoon
+penis-shaped player shots in a hand-drawn forest. Clear three waves before your
+health runs out. Hits resolve immediately; the visible shot animation is cosmetic.
+The product title remains **Unicorn Hunt**. The game runs locally in a desktop
+browser; artwork is generated on canvas and all eight sound effects are
+synthesized with Web Audio.
 
 ## Play
 
 Unicorn Hunt is a desktop-browser game.
 
 [Play Unicorn Hunt](https://nrdgrrrl.github.io/unicornhunt/)
+
+The hosted game may use a different version. Run this branch locally to see
+the face and player-shot artwork described here.
 
 See [Controls](#controls) below.
 
@@ -57,18 +63,21 @@ The hit indicator remains visible.
 
 ## Rules and tips
 
-- Clear **6, 8, then 10 unicorns**. Clearing wave three wins immediately.
-- Fire unlimited rainbows. Held fire repeats every 0.22 seconds, rounded to the
-  next simulation tick. A shot converts the nearest unicorn along your aim.
+- Clear **6, 8, then 10 faces**. Clearing wave three wins immediately.
+- Fire unlimited cartoon penis-shaped shots. Held fire repeats every 0.22 seconds,
+  rounded to the next simulation tick. A shot converts the nearest face along
+  your aim into rainbow glitter immediately; the visible shot animation is
+  cosmetic and does not delay hits or determine collisions.
   Hedges block shots and movement; flowers, rocks, and mushrooms are decoration.
 - A conversion earns **100 × combo** points. Hits within two seconds build the
   combo up to ×5. Misses give no points and do not extend the combo timer.
-- Start with **five health and no armor**. Contact and rear-fired roses deal one
+- Start with **five health and no armor**. Enemy contact and fired roses deal one
   point, absorbed by armor first, with 0.75 seconds of shared invulnerability.
   Rainbow cakes restore one health; star-shield charms add one armor, each capped
   at five. Walk over a supply to collect it; items for a full resource stay put.
   At zero health you lose, even on a cleared wave.
-- Unicorns stop and turn their rear toward you before firing a rose. The
+- Faces stop and change to an attack expression before firing a rose. The
+  narrowed eyes, angled brows, and open mouth warn you of the coming attack.
   windup lasts 0.55 seconds and locks their aim at your earlier position:
   strafe out of its path or take cover behind a hedge. Roses travel in a
   straight line and disappear on a hedge or player impact. Converting their
@@ -76,13 +85,13 @@ The hit indicator remains visible.
   expiry, or the wave clears.
 - Between waves you get a two-second break. You can still move/fire; the next
   wave restores one health, capped at five. Supplies remain collectible during
-  the break and are replaced for the next wave. Later unicorns move slightly faster.
-- The HUD shows score, best score, health, armor, wave, remaining unicorns, and combo.
+  the break and are replaced for the next wave. Later faces move slightly faster.
+- The HUD shows score, best score, health, armor, wave, remaining faces, and combo.
   Best score and mute preference survive reloads when local storage is available.
 
-The first unicorn is straight ahead: fire before moving to see a conversion.
-Keep space between yourself and the herd, strafe around hedges, and turn toward
-unicorns as they enter the clearing. Running helps you escape contact. Listen
+The first face is straight ahead: fire before moving to see a conversion.
+Keep space between yourself and the enemies, strafe around hedges, and turn toward
+faces as they enter the clearing. Running helps you escape contact. Listen
 for the shot, glitter, pickup, rose-fire, damage, new-wave, victory, and defeat cues.
 Look for layered rainbow cake slices to heal and pastel star-shield charms to
 build armor. Initial waves place three cakes and five charms; supply counts and
@@ -109,7 +118,9 @@ the app browser suite checks lifecycle behavior.
 See [geometry contracts and distance-field freshness](docs/geometry.md) for the
 shared collision, visibility, navigation, and rendering query boundary.
 See [survival implementation contracts](docs/survival-contracts.md) for point
-roses, rear socket alignment, seeded supplies, attack timing, and cleanup.
+roses, seeded supplies, attack timing, and cleanup. Internal compatibility names
+such as `unicorn`, `unicornRear`, and the rear socket remain unchanged; the branch
+draws normal and attack faces in those slots, with roses aligned to the open mouth.
 
 From a clean checkout:
 
@@ -159,10 +170,12 @@ Screenshots and JSON evidence are in `test-results/`; the browsable report is in
 CI runs typecheck before runtime and browser tests on pushes and pull requests
 targeting `1-epic-sketchbook-rainbow-lsd` or `36-epic-refactor-modularization-hpu`,
 and uploads the report/screenshots even on failure.
-See [current survival verification and remaining human checks](docs/survival-verification.md)
-for the actual browser versions, results, selected screenshots, and review steps.
-The [issue 13 verification record](docs/verification.md) and its original evidence
-are historical; their magic rules, counts, and timings do not describe this version.
+See [branch visual verification](docs/branch-visual-verification.md) for the tested
+revision, actual check results, visual inspection, and pending human checks.
+The [survival verification](docs/survival-verification.md),
+[issue 13 verification record](docs/verification.md), and existing files under
+`docs/evidence/` are historical records of earlier versions. Their screenshots,
+pass counts, and artwork descriptions are not evidence for this branch.
 
 ## Static hosting
 

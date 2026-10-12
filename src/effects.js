@@ -1,5 +1,5 @@
 import { createEffectsState } from './effects-state.js';
-import { renderEffects } from './effects-renderer.js';
+import { renderEffects } from './branch-effects-renderer.js';
 
 export { MAX_PARTICLES, REDUCED_PARTICLES, MAX_TRAILS } from './effects-state.js';
 

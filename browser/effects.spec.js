@@ -88,14 +88,19 @@ test('real canvas stars expand, stay multicolored, and are fully clipped behind 
     const effects = createEffects();
     const colors = RAINBOW.map(color => [1, 3, 5].map(index => parseInt(color.slice(index, index + 2), 16)));
     renderer.render(session);
+    const shotBefore = renderer.ctx.getImageData(0, 0, 640, 360).data;
     effects.consume([{ type: 'shot', x: 3.5, y: 12.5, angle: 0, distance: 2.75 }]);
     effects.render(renderer.ctx, renderer.project);
-    const ribbon = renderer.ctx.getImageData(0, 0, 640, 360).data;
-    const ribbonColors = new Set();
-    for (let y = 180; y < 275; y++) for (let x = 305; x < 335; x++) {
-      const i = (y * 640 + x) * 4;
+    const shotPixels = renderer.ctx.getImageData(0, 0, 640, 360).data;
+    const shotColors = new Set();
+    let shotFill = 0;
+    let shotOutline = 0;
+    for (let i = 0; i < shotPixels.length; i += 4) {
+      if ([0, 1, 2].every(c => shotBefore[i + c] === shotPixels[i + c])) continue;
+      if ([233, 173, 141].every((channel, c) => shotPixels[i + c] === channel)) shotFill++;
+      if ([48, 39, 54].every((channel, c) => shotPixels[i + c] === channel)) shotOutline++;
       colors.forEach((color, index) => {
-        if (color.every((channel, c) => Math.abs(channel - ribbon[i + c]) < 10)) ribbonColors.add(index);
+        if (color.every((channel, c) => Math.abs(channel - shotPixels[i + c]) < 10)) shotColors.add(index);
       });
     }
     effects.clear();
@@ -122,17 +127,24 @@ test('real canvas stars expand, stay multicolored, and are fully clipped behind 
     const wallBefore = canvas.toDataURL();
     effects.render(renderer.ctx, renderer.project);
     const wallAfter = canvas.toDataURL();
+    const hiddenShots = createEffects();
+    hiddenShots.consume([{ type: 'shot', x: 6.5, y: 12.5, angle: 0, distance: 2.75 }]);
+    hiddenShots.render(renderer.ctx, renderer.project);
+    const shotOccluded = wallAfter === canvas.toDataURL();
     const spans = renderer.project({ x: 4.5, y: 12.5, z: 0.5, size: 0.1 });
     const behind = renderer.project({ x: 6.5, y: 12.5, z: 0.5, size: 0.1 });
     return {
-      changed: changed.length, colors: found.size, ribbonColors: ribbonColors.size,
+      changed: changed.length, colors: found.size, shotColors: shotColors.size, shotFill, shotOutline, shotOccluded,
       spread: Math.max(...changed.map(point => point.x)) - Math.min(...changed.map(point => point.x)),
       occluded: wallBefore === wallAfter, frontVisible: !!spans, behindHidden: behind === null,
     };
   });
   expect(result.changed).toBeGreaterThan(100);
   expect(result.colors).toBe(6);
-  expect(result.ribbonColors).toBe(6);
+  expect(result.shotColors).toBe(0);
+  expect(result.shotOccluded).toBe(true);
+  expect(result.shotFill).toBeGreaterThan(100);
+  expect(result.shotOutline).toBeGreaterThan(20);
   expect(result.spread).toBeGreaterThan(40);
   expect(result.occluded).toBe(true);
   expect(result.frontVisible).toBe(true);
@@ -167,7 +179,7 @@ test('wave, damage, victory, and defeat transitions reach both feedback consumer
     await page.evaluate(() => { for (const unicorn of game.session.unicorns) unicorn.alive = false; });
     await expect.poll(() => page.evaluate(() => game.session.wave === 3 && game.state === 'victory' ? 4 : game.session.wave)).toBe(wave + 1);
   }
-  await expect(page.locator('#message')).toContainText('All unicorns glittered!');
+  await expect(page.locator('#message')).toContainText('All faces cleared!');
   const feedbackEvents = await page.evaluate(() => feedback);
   expect(feedbackEvents.audio).toEqual(feedbackEvents.effects);
   // Polling the real clock can let the newly enabled enemies fire before the
