@@ -126,7 +126,8 @@ test('keyboard movement slides along a hedge, shots stop there, and a detour rea
 
 for (const controls of ['keyboard', 'mouse']) {
   test(`three generated waves are winnable through ${controls} input without changing game state`, async ({ page, browser }, testInfo) => {
-    test.setTimeout(120_000);
+    // Native high-resolution drawing can take longer on software-rendered hosts.
+    test.setTimeout(240_000);
     await controlledClock(page);
     await load(page);
     await page.evaluate(() => {
@@ -221,102 +222,111 @@ test('generated unicorn contact causes defeat and keyboard Play again resets the
   await expect(page.locator('#health')).toHaveText('5 / 5');
 });
 
-test('combined roses, supplies, and maximum glitter record frame times and reduced-motion presentation', async ({ page, browser }, testInfo) => {
-  await load(page);
-  await page.keyboard.press('Enter');
-  // Synthetic stress fixture, never used for balance/playthrough claims. Keep
-  // the generated world and production clock, simulation, renderer, and RAF.
-  const result = await page.evaluate(async () => {
-    const { spawnRose } = await import('/src/projectiles.js');
-    const { MAX_ROSES, HEALTH_PICKUPS_PER_WAVE, ARMOR_PICKUPS_PER_WAVE } = await import('/src/config.js');
-    const session = game.session;
-    // Stop the generated herd from ending the sample. The protected spawn
-    // corridor already provides hedge-free space for all eight real supplies.
-    for (const unicorn of session.unicorns) {
-      unicorn.speed = 0;
-      unicorn.attack.cooldownFor = 600;
-    }
-    session.pickups.forEach((pickup, i) => {
-      pickup.x = 5 + (i % 4) * 0.6;
-      pickup.y = 11.65 + Math.floor(i / 4) * 1.7;
-    });
-    const consume = game.effects.consume;
-    const replenish = () => {
-      while (session.roses.length < MAX_ROSES) {
-        const i = session.nextRoseId % MAX_ROSES;
-        spawnRose(session, { id: 'stress-fixture', x: 4.75 + (i % 8) * 0.45,
-          y: 11.65 + Math.floor(i / 8) * 0.5 }, { x: 1, y: 0 });
-      }
-      const { x, y, angle } = session.player;
-      consume.call(game.effects, Array.from({ length: 6 }, () => ({
-        type: 'glitter', x: x + 2 * Math.cos(angle), y: y + 2 * Math.sin(angle),
-      })));
-    };
-    // App event consumption runs after simulation and before drawing. Refill
-    // there so every measured render has moving roses and the full star cap.
-    game.effects.consume = events => { consume.call(game.effects, events); replenish(); };
-    window.finishBusySample = () => { game.effects.consume = consume; };
-    replenish();
-    return new Promise(resolve => {
-      const intervals = [];
-      const counts = [];
-      let previous;
-      let warmup = 30;
-      function measure(now) {
-        if (previous !== undefined && warmup === 0) {
-          intervals.push(now - previous);
-          counts.push({ roses: session.roses.length, particles: game.effects.particleCount,
-            healthSupplies: session.pickups.filter(item => item.kind === 'health').length,
-            armorSupplies: session.pickups.filter(item => item.kind === 'armor').length });
+for (const dpr of [1, 2]) {
+  test.describe(`combined stress at DPR ${dpr}`, () => {
+    test.use({ deviceScaleFactor: dpr });
+    test('combined roses, supplies, and maximum glitter record frame times and reduced-motion presentation', async ({ page, browser }, testInfo) => {
+      test.setTimeout(90_000);
+      await load(page);
+      await page.keyboard.press('Enter');
+      // Synthetic stress fixture, never used for balance/playthrough claims. Keep
+      // the generated world and production clock, simulation, renderer, and RAF.
+      const result = await page.evaluate(async () => {
+        const { spawnRose } = await import('/src/projectiles.js');
+        const { MAX_ROSES, HEALTH_PICKUPS_PER_WAVE, ARMOR_PICKUPS_PER_WAVE } = await import('/src/config.js');
+        const session = game.session;
+        // Stop the generated herd from ending the sample. The protected spawn
+        // corridor already provides hedge-free space for all eight real supplies.
+        for (const unicorn of session.unicorns) {
+          unicorn.speed = 0;
+          unicorn.attack.cooldownFor = 600;
         }
-        if (warmup > 0) warmup--;
-        previous = now;
-        if (intervals.length < 180) requestAnimationFrame(measure);
-        else {
-          const sorted = [...intervals].sort((a, b) => a - b);
-          const percentile = fraction => sorted[Math.ceil(sorted.length * fraction) - 1];
-          const range = key => ({ min: Math.min(...counts.map(sample => sample[key])),
-            max: Math.max(...counts.map(sample => sample[key])) });
-          let streak = 0;
-          let maxStreak = 0;
-          for (const ms of intervals) { streak = ms > 33 ? streak + 1 : 0; maxStreak = Math.max(maxStreak, streak); }
-          resolve({ seed: session.seed, clock: 'native requestAnimationFrame', fixture: 'synthetic combined stress',
-            warmupFrames: 30, samples: intervals.length, medianMs: percentile(0.5),
-            p95Ms: percentile(0.95), p99Ms: percentile(0.99), maxMs: sorted.at(-1),
-            over33Ms: intervals.filter(ms => ms > 33).length, maxConsecutiveOver33Ms: maxStreak,
-            activeRoses: range('roses'), particles: range('particles'),
-            healthSupplies: range('healthSupplies'), armorSupplies: range('armorSupplies'),
-            expectedRoses: MAX_ROSES, expectedHealthSupplies: HEALTH_PICKUPS_PER_WAVE,
-            expectedArmorSupplies: ARMOR_PICKUPS_PER_WAVE,
-            state: game.state, intervalsMs: intervals,
-            backingSize: { width: document.querySelector('#game').width, height: document.querySelector('#game').height },
-            displaySize: { width: document.querySelector('#game').clientWidth, height: document.querySelector('#game').clientHeight },
-            devicePixelRatio: window.devicePixelRatio,
-            userAgent: navigator.userAgent, hardwareConcurrency: navigator.hardwareConcurrency });
-        }
-      }
-      requestAnimationFrame(measure);
+        session.pickups.forEach((pickup, i) => {
+          pickup.x = 5 + (i % 4) * 0.6;
+          pickup.y = 11.65 + Math.floor(i / 4) * 1.7;
+        });
+        const consume = game.effects.consume;
+        const replenish = () => {
+          while (session.roses.length < MAX_ROSES) {
+            const i = session.nextRoseId % MAX_ROSES;
+            spawnRose(session, { id: 'stress-fixture', x: 4.75 + (i % 8) * 0.45,
+              y: 11.65 + Math.floor(i / 8) * 0.5 }, { x: 1, y: 0 });
+          }
+          const { x, y, angle } = session.player;
+          consume.call(game.effects, Array.from({ length: 6 }, () => ({
+            type: 'glitter', x: x + 2 * Math.cos(angle), y: y + 2 * Math.sin(angle),
+          })));
+        };
+        // App event consumption runs after simulation and before drawing. Refill
+        // there so every measured render has moving roses and the full star cap.
+        game.effects.consume = events => { consume.call(game.effects, events); replenish(); };
+        window.finishBusySample = () => { game.effects.consume = consume; };
+        replenish();
+        return new Promise(resolve => {
+          const intervals = [];
+          const counts = [];
+          let previous;
+          let warmup = 30;
+          function measure(now) {
+            if (previous !== undefined && warmup === 0) {
+              intervals.push(now - previous);
+              counts.push({ unicorns: session.unicorns.filter(unicorn => unicorn.alive).length,
+                roses: session.roses.length, particles: game.effects.particleCount,
+                healthSupplies: session.pickups.filter(item => item.kind === 'health').length,
+                armorSupplies: session.pickups.filter(item => item.kind === 'armor').length });
+            }
+            if (warmup > 0) warmup--;
+            previous = now;
+            if (intervals.length < 180) requestAnimationFrame(measure);
+            else {
+              const sorted = [...intervals].sort((a, b) => a - b);
+              const percentile = fraction => sorted[Math.ceil(sorted.length * fraction) - 1];
+              const range = key => ({ min: Math.min(...counts.map(sample => sample[key])),
+                max: Math.max(...counts.map(sample => sample[key])) });
+              let streak = 0;
+              let maxStreak = 0;
+              for (const ms of intervals) { streak = ms > 33 ? streak + 1 : 0; maxStreak = Math.max(maxStreak, streak); }
+              resolve({ seed: session.seed, clock: 'native requestAnimationFrame', fixture: 'synthetic combined stress',
+                warmupFrames: 30, samples: intervals.length, medianMs: percentile(0.5),
+                p95Ms: percentile(0.95), p99Ms: percentile(0.99), maxMs: sorted.at(-1),
+                over33Ms: intervals.filter(ms => ms > 33).length, maxConsecutiveOver33Ms: maxStreak,
+                activeUnicorns: range('unicorns'), activeRoses: range('roses'), particles: range('particles'),
+                healthSupplies: range('healthSupplies'), armorSupplies: range('armorSupplies'),
+                expectedRoses: MAX_ROSES, expectedHealthSupplies: HEALTH_PICKUPS_PER_WAVE,
+                expectedArmorSupplies: ARMOR_PICKUPS_PER_WAVE,
+                state: game.state, intervalsMs: intervals,
+                backingSize: { width: document.querySelector('#game').width, height: document.querySelector('#game').height },
+                displaySize: { width: document.querySelector('#game').clientWidth, height: document.querySelector('#game').clientHeight },
+                devicePixelRatio: window.devicePixelRatio,
+                userAgent: navigator.userAgent, hardwareConcurrency: navigator.hardwareConcurrency });
+            }
+          }
+          requestAnimationFrame(measure);
+        });
+      });
+      expect(result.state).toBe('playing');
+      expect(result.devicePixelRatio).toBe(dpr);
+      expect(result.activeUnicorns).toEqual({ min: 6, max: 6 });
+      expect(result.activeRoses).toEqual({ min: result.expectedRoses, max: result.expectedRoses });
+      expect(result.particles).toEqual({ min: 144, max: 144 });
+      expect(result.healthSupplies).toEqual({ min: result.expectedHealthSupplies, max: result.expectedHealthSupplies });
+      expect(result.armorSupplies).toEqual({ min: result.expectedArmorSupplies, max: result.expectedArmorSupplies });
+      await attachJSON(testInfo, 'combined-busy-performance', { ...result, browser: browser.version() });
+      // Host performance varies; report slow streaks for investigation, not a flaky CI gate.
+      await capture(page, testInfo, 'combined-busy-scene');
+      await page.evaluate(() => window.finishBusySample());
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await expect.poll(() => page.evaluate(() => game.effects.reducedMotion)).toBe(true);
+      await page.keyboard.press('Escape');
+      await page.keyboard.press('Tab');
+      await page.keyboard.press('Enter');
+      await page.keyboard.down('Space');
+      await expect(page.locator('#score')).toHaveText('100');
+      await page.keyboard.up('Space');
+      await capture(page, testInfo, 'reduced-motion-scene');
+      await page.keyboard.press('Escape');
+      expect(await page.evaluate(() => game.effects.particleCount)).toBeLessThanOrEqual(6);
+      await capture(page, testInfo, 'reduced-motion-conversion');
     });
   });
-  expect(result.state).toBe('playing');
-  expect(result.activeRoses).toEqual({ min: result.expectedRoses, max: result.expectedRoses });
-  expect(result.particles).toEqual({ min: 144, max: 144 });
-  expect(result.healthSupplies).toEqual({ min: result.expectedHealthSupplies, max: result.expectedHealthSupplies });
-  expect(result.armorSupplies).toEqual({ min: result.expectedArmorSupplies, max: result.expectedArmorSupplies });
-  await attachJSON(testInfo, 'combined-busy-performance', { ...result, browser: browser.version() });
-  // Host performance varies; report slow streaks for investigation, not a flaky CI gate.
-  await capture(page, testInfo, 'combined-busy-scene');
-  await page.evaluate(() => window.finishBusySample());
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await expect.poll(() => page.evaluate(() => game.effects.reducedMotion)).toBe(true);
-  await page.keyboard.press('Escape');
-  await page.keyboard.press('Tab');
-  await page.keyboard.press('Enter');
-  await page.keyboard.down('Space');
-  await expect(page.locator('#score')).toHaveText('100');
-  await page.keyboard.up('Space');
-  await capture(page, testInfo, 'reduced-motion-scene');
-  await page.keyboard.press('Escape');
-  expect(await page.evaluate(() => game.effects.particleCount)).toBeLessThanOrEqual(6);
-  await capture(page, testInfo, 'reduced-motion-conversion');
-});
+}

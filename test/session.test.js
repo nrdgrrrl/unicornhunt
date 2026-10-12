@@ -10,8 +10,100 @@ import { spawnRose } from '../src/projectiles.js';
 import { spawnPickups } from '../src/pickups.js';
 import { rearSocket } from '../src/ranged-attacks.js';
 import { ROSE_RECOVERY, ROSE_COOLDOWN, PICKUP_RADIUS, DAMAGE_INVULNERABILITY } from '../src/config.js';
+import { circleCollides, hasLineOfSight } from '../src/world.js';
 
 const near = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-9, `${actual} should be near ${expected}`);
+
+test('production movement clocks freeze for whole attack ticks and pause, then resume idle steering', () => {
+  const session = new GameSession(0).start();
+  const actor = session.unicorns[0];
+  const phases = new Set();
+  let frozenTicks = 0;
+  let idleTicks = 0;
+  let emissions = 0;
+  for (let tick = 0; tick < 360 && session.state === 'playing'; tick++) {
+    const phase = actor.attack.phase;
+    const before = structuredClone(actor);
+    session.update(STEP);
+    phases.add(actor.attack.phase);
+    if (phase === 'idle') {
+      near(actor.movement.elapsed, before.movement.elapsed + STEP);
+      idleTicks++;
+    } else {
+      // Includes the tick that ends recovery: movement precedes attack updates.
+      assert.deepEqual(actor.movement, before.movement);
+      assert.equal(actor.x, before.x);
+      assert.equal(actor.y, before.y);
+      frozenTicks++;
+    }
+    emissions += session.drainEvents().filter(event => event.type === 'rose-fired').length;
+    if (actor.attack.phase !== 'idle') {
+      session.pause();
+      const paused = snapshot(session);
+      session.update(20, { forward: 1, fire: true });
+      assert.deepEqual(snapshot(session), paused);
+      session.resume();
+    }
+  }
+  assert.deepEqual([...phases].sort(), ['idle', 'recovery', 'windup']);
+  assert.ok(frozenTicks > 0 && idleTicks > 0 && emissions > 0);
+});
+
+test('complete generated victories and natural defeats replay every fixed-tick state and event after restart', () => {
+  for (const outcome of ['won', 'lost']) {
+    const session = new GameSession(42).start();
+    const history = [];
+    const phases = new Set();
+    const events = [];
+    const initial = snapshot(session);
+    for (let tick = 0; tick < 7200 && session.state === 'playing'; tick++) {
+      // Read positions to aim; never replace the generated world or entities.
+      const player = session.player;
+      const target = session.unicorns.filter(actor => hasLineOfSight(session.world, player, actor))
+        .sort((a, b) => Math.hypot(a.x - player.x, a.y - player.y)
+          - Math.hypot(b.x - player.x, b.y - player.y))[0];
+      const input = outcome === 'won' ? {
+        fire: tick >= 60,
+        look: target ? Math.atan2(target.y - player.y, target.x - player.x) - player.angle : 0,
+      } : {};
+      session.update(STEP, input);
+      for (const actor of session.unicorns) {
+        assert.ok(actor.movement, 'production actor keeps its seeded profile');
+        assert.equal(circleCollides(session.world, actor, actor.radius), false);
+        phases.add(actor.attack.phase);
+      }
+      const batch = session.drainEvents();
+      events.push(...batch);
+      // The immutable map is checked separately; retain all evolving session data.
+      const { world, ...state } = snapshot(session);
+      history.push({ input, batch, state });
+    }
+    assert.equal(session.state, outcome);
+    assert.ok(events.some(event => event.type === 'rose-fired'));
+    assert.deepEqual([...phases].sort(), ['idle', 'recovery', 'windup']);
+    if (outcome === 'won') {
+      assert.equal(events.filter(event => event.type === 'glitter').length, 24);
+      assert.deepEqual(events.filter(event => event.type === 'wave').map(event => event.wave), [1, 2, 3]);
+      assert.equal(events.at(-1).type, 'victory');
+    } else {
+      assert.equal(session.player.health, 0);
+      assert.ok(events.some(event => event.type === 'damage'));
+      assert.equal(events.at(-1).type, 'defeat');
+    }
+    session.restart();
+    assert.deepEqual(snapshot(session), initial);
+    for (const frame of history) {
+      session.update(STEP, frame.input);
+      assert.deepEqual(session.drainEvents(), frame.batch);
+      const { world, ...state } = snapshot(session);
+      assert.deepEqual(state, frame.state);
+    }
+    assert.deepEqual(session.world, initial.world);
+    const terminal = snapshot(session);
+    session.update(10, { forward: 1, fire: true });
+    assert.deepEqual(snapshot(session), terminal);
+  }
+});
 
 test('ready prepares six seeded unicorns and ignores simulation until started', () => {
   const session = new GameSession('rainbow');

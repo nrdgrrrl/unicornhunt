@@ -185,6 +185,9 @@ for (const cause of ['Escape', 'hidden tab', 'focus loss', 'pointer-lock loss'])
 }
 
 test('ten restarts retain one loop and audio context, clear cosmetics, and preserve firing rate', async ({ page }) => {
+  // Eleven rounds draw 660 responsive frames; software-rendered hosts need
+  // room beyond the default deadline without weakening lifecycle assertions.
+  test.setTimeout(90_000);
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   await start(page);

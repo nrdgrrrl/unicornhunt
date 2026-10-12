@@ -339,6 +339,39 @@ test('generated herds follow moving players through detours and eventually conta
   }
 });
 
+test('production spawn profiles retain per-ID trajectories when a moving-target herd is reordered each tick', () => {
+  for (const seed of [0, 42, 'rainbow']) {
+    const world = createWorld(seed);
+    const player = createPlayer(world.spawn);
+    const herd = spawnUnicorns(world, player, 12, 2);
+    const reordered = structuredClone(herd);
+    const otherPlayer = structuredClone(player);
+    const phases = new Set();
+    let fallbackTicks = 0;
+    for (let tick = 0; tick < 480; tick++) {
+      const input = { forward: Math.sin(tick / 30) * 0.25 };
+      updatePlayer(player, world, input, 1 / 60);
+      updatePlayer(otherPlayer, world, input, 1 / 60);
+      const before = new Map(herd.map(actor => [actor.id, { x: actor.x, y: actor.y }]));
+      updateUnicorns(herd, world, player, 1 / 60);
+      // Change traversal order repeatedly, rather than only comparing two starts.
+      reordered.reverse();
+      reordered.push(reordered.shift());
+      updateUnicorns(reordered, world, otherPlayer, 1 / 60);
+      for (const actor of herd) {
+        assert.deepEqual(actor, reordered.find(other => other.id === actor.id));
+        assert.ok(distance(before.get(actor.id), actor) <= actor.speed / 60 + 1e-8);
+        assert.equal(circleCollides(world, actor, actor.radius), false);
+        near(actor.movement.elapsed, (tick + 1) / 60);
+        phases.add(actor.movement.phase);
+        fallbackTicks += Number(actor.movement.navigationFor > 0);
+      }
+    }
+    assert.deepEqual([...phases].sort(), ['burst', 'pursuit', 'weaving']);
+    assert.ok(fallbackTicks > 0, 'generated maze actually exercised navigation fallback');
+  }
+});
+
 test('restart exactly replays profiles, steering state, actor positions, and event batches; pause freezes all', () => {
   const session = new GameSession('steering-replay').start();
   const play = () => {

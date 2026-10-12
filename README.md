@@ -2,7 +2,9 @@
 
 Turn unicorns into rainbow glitter in a hand-drawn forest. Clear three waves
 before your health runs out. The game runs locally in a desktop browser; artwork
-is generated on canvas and all eight sound effects are synthesized with Web Audio.
+uses local SVG-path geometry cached on canvas, and all eight sound effects are
+synthesized with Web Audio. The display buffer follows the stage size and device
+pixel ratio within a 1920 × 1080 cap.
 
 ## Play
 
@@ -77,6 +79,9 @@ The hit indicator remains visible.
 - Between waves you get a two-second break. You can still move/fire; the next
   wave restores one health, capped at five. Supplies remain collectible during
   the break and are replaced for the next wave. Later unicorns move slightly faster.
+- In clear areas, unicorns cycle through pursuit, lateral weaving, and a slow
+  then fast burst, with seeded staggering and herd separation. Blocked paths
+  fall back to maze navigation. Attacks and pause freeze their movement clocks.
 - The HUD shows score, best score, health, armor, wave, remaining unicorns, and combo.
   Best score and mute preference survive reloads when local storage is available.
 
@@ -110,6 +115,9 @@ See [geometry contracts and distance-field freshness](docs/geometry.md) for the
 shared collision, visibility, navigation, and rendering query boundary.
 See [survival implementation contracts](docs/survival-contracts.md) for point
 roses, rear socket alignment, seeded supplies, attack timing, and cleanup.
+See [artwork resolution and movement contracts](docs/artwork-movement.md) for
+SVG sources, finite raster caches, responsive resolution caps, seeded steering,
+and exact fixed-tick replay versus different-step numerical integration.
 
 From a clean checkout:
 
@@ -159,8 +167,11 @@ Screenshots and JSON evidence are in `test-results/`; the browsable report is in
 CI runs typecheck before runtime and browser tests on pushes and pull requests
 targeting `1-epic-sketchbook-rainbow-lsd` or `36-epic-refactor-modularization-hpu`,
 and uploads the report/screenshots even on failure.
-See [current survival verification and remaining human checks](docs/survival-verification.md)
-for the actual browser versions, results, selected screenshots, and review steps.
+See [fresh artwork and movement verification](docs/artwork-movement-verification-2026-10-12.md)
+for current results, DPR 1/2 normal and close screenshots, timing observations,
+and pending human review. The [survival-92 record](docs/survival-verification.md)
+contains historical survival evidence and additional human review steps; its
+timings predate the upgraded renderer.
 The [issue 13 verification record](docs/verification.md) and its original evidence
 are historical; their magic rules, counts, and timings do not describe this version.
 

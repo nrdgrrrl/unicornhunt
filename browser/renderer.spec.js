@@ -250,7 +250,10 @@ for (const [width, height] of [[640, 360], [1001, 563], [401, 601]]) {
         session.roses = [];
         capture();
         const withoutRose = sample();
-        const exposedRump = Array.from(renderer.ctx.getImageData(Math.floor(rump.x), Math.floor(rump.y), 1, 1).data);
+        // Sample cream above the socket; the vector tail lies to its right.
+        // Keep the independent socket calculation above in logical 128 × 160 units.
+        const exposedRump = Array.from(renderer.ctx.getImageData(Math.floor(rump.x),
+          Math.floor(rear.y + 94 / 160 * rear.height), 1, 1).data);
         session.unicorns[0].attack.phase = 'idle';
         const idle = capture();
         session.unicorns[0].attack.phase = 'windup';

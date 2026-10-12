@@ -1,0 +1,3072 @@
+{
+  "config": {
+    "argv": [
+      "/usr/local/bin/node",
+      "/home/node/workspace/node_modules/.bin/playwright",
+      "test",
+      "--reporter=list,html,json"
+    ],
+    "configFile": "/home/node/workspace/playwright.config.js",
+    "rootDir": "/home/node/workspace/browser",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/node/workspace/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/home/node/workspace/browser",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/home/node/workspace/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "chromium",
+        "testDir": "/home/node/workspace/browser",
+        "snapshotDir": "/home/node/workspace/browser",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4174",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "launchOptions": {
+            "executablePath": "/usr/bin/chromium"
+          },
+          "screenshot": "on",
+          "trace": "retain-on-failure",
+          "browserName": "chromium"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "html"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.0",
+    "workers": 1,
+    "webServer": {
+      "command": "npm start",
+      "env": {
+        "PORT": "4174"
+      },
+      "url": "http://127.0.0.1:4174",
+      "reuseExistingServer": false,
+      "timeout": 10000
+    }
+  },
+  "suites": [
+    {
+      "title": "app.spec.js",
+      "file": "app.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "simulation uses 60 Hz steps, bounds delayed frames, and consumes mouse motion once",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 895,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:05:07.060Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/app-simulation-uses-60-Hz--dfdda--consumes-mouse-motion-once-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/app-simulation-uses-60-Hz--dfdda--consumes-mouse-motion-once-chromium/attachments/browser-health-cf4efcadc092f89523d83be9610e0d1bf85aac95.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-1366ce0806a5fb39301e",
+          "file": "app.spec.js",
+          "line": 43,
+          "column": 1
+        },
+        {
+          "title": "a movement tick drains pickup-before-damage feedback once to effects and audio and updates the HUD",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 732,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:05:08.130Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/app-a-movement-tick-drains-4141a-d-audio-and-updates-the-HUD-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/app-a-movement-tick-drains-4141a-d-audio-and-updates-the-HUD-chromium/attachments/browser-health-4965590654cfc71ac34afcf8147f59f724b46933.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-b20af8c8474b9b9629df",
+          "file": "app.spec.js",
+          "line": 69,
+          "column": 1
+        },
+        {
+          "title": "Escape freezes play until explicit Resume and discards held input and elapsed time",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 950,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:05:08.876Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/app-Escape-freezes-play-un-178e4-held-input-and-elapsed-time-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/app-Escape-freezes-play-un-178e4-held-input-and-elapsed-time-chromium/attachments/browser-health-5926ca218ece1ff3aaedfdecc80bae24602dffbd.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-d8547e000e7dbc3d3187",
+          "file": "app.spec.js",
+          "line": 122,
+          "column": 3
+        },
+        {
+          "title": "hidden tab freezes play until explicit Resume and discards held input and elapsed time",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 924,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:05:09.837Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/app-hidden-tab-freezes-pla-13252-held-input-and-elapsed-time-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/app-hidden-tab-freezes-pla-13252-held-input-and-elapsed-time-chromium/attachments/browser-health-9a60c0bba2cbde5d2c1f85990a5fef027d48dae4.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-982c0d069077d9bb0711",
+          "file": "app.spec.js",
+          "line": 122,
+          "column": 3
+        },
+        {
+          "title": "focus loss freezes play until explicit Resume and discards held input and elapsed time",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 937,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:05:10.773Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/app-focus-loss-freezes-pla-6f883-held-input-and-elapsed-time-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/app-focus-loss-freezes-pla-6f883-held-input-and-elapsed-time-chromium/attachments/browser-health-669ff243c382075db77fca7bc5b634d784d031d0.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-bcb311d33bb289dd5af9",
+          "file": "app.spec.js",
+          "line": 122,
+          "column": 3
+        },
+        {
+          "title": "pointer-lock loss freezes play until explicit Resume and discards held input and elapsed time",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 908,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:05:11.719Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/app-pointer-lock-loss-free-b19f8-held-input-and-elapsed-time-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/app-pointer-lock-loss-free-b19f8-held-input-and-elapsed-time-chromium/attachments/browser-health-fb8879dddcbb6407a6fa8ee6bb063c88337539e3.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-ba5dba1206867f565d35",
+          "file": "app.spec.js",
+          "line": 122,
+          "column": 3
+        },
+        {
+          "title": "ten restarts retain one loop and audio context, clear cosmetics, and preserve firing rate",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "timedOut",
+                  "duration": 30308,
+                  "error": {
+                    "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                    "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:05:12.637Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/app-ten-restarts-retain-on-7fb7e-cs-and-preserve-firing-rate-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/app-ten-restarts-retain-on-7fb7e-cs-and-preserve-firing-rate-chromium/attachments/browser-health-bd5a8d60eab48217cf2afaca345a8c139aba4b11.json"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/node/workspace/test-results/app-ten-restarts-retain-on-7fb7e-cs-and-preserve-firing-rate-chromium/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/node/workspace/test-results/app-ten-restarts-retain-on-7fb7e-cs-and-preserve-firing-rate-chromium/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-7b368ca70fdbf0d5ba1b",
+          "file": "app.spec.js",
+          "line": 187,
+          "column": 1
+        },
+        {
+          "title": "both results stop simulation, persist each new record once, and support another run",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11478,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:05:43.631Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/app-both-results-stop-simu-1d14a-nce-and-support-another-run-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/app-both-results-stop-simu-1d14a-nce-and-support-another-run-chromium/attachments/browser-health-b1fb6da81d8aab15ae3561635ad2ffcdedcdae0f.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-bca4c9baebddaa222687",
+          "file": "app.spec.js",
+          "line": 248,
+          "column": 1
+        },
+        {
+          "title": "access denied, rejected audio, and rejected pointer capture preserve keyboard play",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 906,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:05:55.286Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/app-access-denied-rejected-93038-ture-preserve-keyboard-play-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/app-access-denied-rejected-93038-ture-preserve-keyboard-play-chromium/attachments/browser-health-8d307e5bc9318a9b2312c15e9a18c54ec7f9ba5f.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-900a6f108c6d41b09033",
+          "file": "app.spec.js",
+          "line": 278,
+          "column": 3
+        },
+        {
+          "title": "write denied, rejected audio, and rejected pointer capture preserve keyboard play",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 918,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:05:56.203Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/app-write-denied-rejected--ad362-ture-preserve-keyboard-play-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/app-write-denied-rejected--ad362-ture-preserve-keyboard-play-chromium/attachments/browser-health-bac221a5b8a6ce4db979e9380ec74fc159b0c2c6.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-c6cbdc95da5c4d259a5f",
+          "file": "app.spec.js",
+          "line": 278,
+          "column": 3
+        },
+        {
+          "title": "numeric seed ?seed=0 produces a reproducible run",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 858,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:05:57.130Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/app-numeric-seed-seed-0-produces-a-reproducible-run-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/app-numeric-seed-seed-0-produces-a-reproducible-run-chromium/attachments/browser-health-ee5b817b9e13ac3a36a7f233d5e3a1fa1129da94.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-d687efdf334efbf404be",
+          "file": "app.spec.js",
+          "line": 308,
+          "column": 3
+        },
+        {
+          "title": "numeric seed ?seed=-12.5 produces a reproducible run",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 871,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:05:57.998Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/app-numeric-seed-seed--12-5-produces-a-reproducible-run-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/app-numeric-seed-seed--12-5-produces-a-reproducible-run-chromium/attachments/browser-health-c60e9af4b10ce6f182e463383fde52e3dfccc9d3.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-2160911467e4dd2b5bf9",
+          "file": "app.spec.js",
+          "line": 308,
+          "column": 3
+        },
+        {
+          "title": "numeric seed ?seed=1e3 produces a reproducible run",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 822,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:05:58.881Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/app-numeric-seed-seed-1e3-produces-a-reproducible-run-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/app-numeric-seed-seed-1e3-produces-a-reproducible-run-chromium/attachments/browser-health-f3ef25ab613529780600d39553643077a25eb5f2.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-5baaddfe01fc532f7dc4",
+          "file": "app.spec.js",
+          "line": 308,
+          "column": 3
+        },
+        {
+          "title": "numeric seed ?seed=invalid produces a reproducible run",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 823,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:05:59.715Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/app-numeric-seed-seed-invalid-produces-a-reproducible-run-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/app-numeric-seed-seed-invalid-produces-a-reproducible-run-chromium/attachments/browser-health-d50d22d6b6356ded7bd0ecf399a1608f4f362343.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-bee46ee71eb9e2e621a0",
+          "file": "app.spec.js",
+          "line": 308,
+          "column": 3
+        },
+        {
+          "title": "numeric seed ?seed= produces a reproducible run",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 833,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:00.547Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/app-numeric-seed-seed-produces-a-reproducible-run-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/app-numeric-seed-seed-produces-a-reproducible-run-chromium/attachments/browser-health-50776de0f659565a0a1af171e7a69c3159e0f6ad.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-f9aaaf2a0cfb8ae40a7e",
+          "file": "app.spec.js",
+          "line": 308,
+          "column": 3
+        },
+        {
+          "title": "numeric seed ?seed=Infinity produces a reproducible run",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 848,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:01.390Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/app-numeric-seed-seed-Infinity-produces-a-reproducible-run-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/app-numeric-seed-seed-Infinity-produces-a-reproducible-run-chromium/attachments/browser-health-4b005bafcaf1cc18ac9113845e4e0453bafb9ee3.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-ebb1611b1f7e4f001a4f",
+          "file": "app.spec.js",
+          "line": 308,
+          "column": 3
+        },
+        {
+          "title": "startup reports missing canvas without uncaught errors or a leftover loop",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 430,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:02.249Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/app-startup-reports-missin-f7087-t-errors-or-a-leftover-loop-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/app-startup-reports-missin-f7087-t-errors-or-a-leftover-loop-chromium/attachments/browser-health-4b6b67802ed1878f2ba043bbfdbe2ce7fc7aab6c.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-08fa010142a2dd3213ec",
+          "file": "app.spec.js",
+          "line": 325,
+          "column": 3
+        },
+        {
+          "title": "startup reports missing menus without uncaught errors or a leftover loop",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 423,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:02.689Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/app-startup-reports-missin-72dde-t-errors-or-a-leftover-loop-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/app-startup-reports-missin-72dde-t-errors-or-a-leftover-loop-chromium/attachments/browser-health-1796421768067fe1f71c0c93e4dc42a8be1d7fd2.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-c53d77e4676e77da8214",
+          "file": "app.spec.js",
+          "line": 325,
+          "column": 3
+        },
+        {
+          "title": "startup reports unavailable canvas without uncaught errors or a leftover loop",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 421,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:03.123Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/app-startup-reports-unavai-8f92e-t-errors-or-a-leftover-loop-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/app-startup-reports-unavai-8f92e-t-errors-or-a-leftover-loop-chromium/attachments/browser-health-dd163977182a5a194224cda1febd5dbbc62bd88d.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-657841b79a117fdcb1d1",
+          "file": "app.spec.js",
+          "line": 325,
+          "column": 3
+        },
+        {
+          "title": "startup reports failed initial render without uncaught errors or a leftover loop",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 443,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:03.554Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/app-startup-reports-failed-ffbb8-t-errors-or-a-leftover-loop-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/app-startup-reports-failed-ffbb8-t-errors-or-a-leftover-loop-chromium/attachments/browser-health-e262772fad4f9d44d1c4238162716fe4bdd4e0a1.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a510cc93a867214a2ea0-74a5b21350996e07bf7a",
+          "file": "app.spec.js",
+          "line": 325,
+          "column": 3
+        }
+      ]
+    },
+    {
+      "title": "art.spec.js",
+      "file": "art.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "legacy artwork is cached, local, and uses transparent sprite surfaces",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1144,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:04.015Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/art-legacy-artwork-is-cach-951d7-transparent-sprite-surfaces-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/art-legacy-artwork-is-cach-951d7-transparent-sprite-surfaces-chromium/attachments/browser-health-7bfba3a148a5ccf22d07d8cd08d1fef64109be42.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d7faa14610f1ba3511d4-fb9b335e6d7f95963382",
+          "file": "art.spec.js",
+          "line": 8,
+          "column": 3
+        },
+        {
+          "title": "legacy survival sprites keep their identifying colors and a visible rear attack anchor",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1090,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:05.173Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/art-legacy-survival-sprite-7d194--visible-rear-attack-anchor-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/art-legacy-survival-sprite-7d194--visible-rear-attack-anchor-chromium/attachments/browser-health-dfd6b98060dd465af31c13bff1561b076159a4e0.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d7faa14610f1ba3511d4-e1e2280d8dca3452e97d",
+          "file": "art.spec.js",
+          "line": 68,
+          "column": 3
+        },
+        {
+          "title": "legacy fresh loads produce identical pixels for every asset",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1519,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:06.271Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/art-legacy-fresh-loads-pro-0e27f-ical-pixels-for-every-asset-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/art-legacy-fresh-loads-pro-0e27f-ical-pixels-for-every-asset-chromium/attachments/browser-health-4616609ef9c4829ef82e01eb60015fa08be5974b.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d7faa14610f1ba3511d4-003b1e5700dcd3136164",
+          "file": "art.spec.js",
+          "line": 122,
+          "column": 3
+        },
+        {
+          "title": "legacy small unicorn keeps four separate legs and rainbow accents",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1104,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:07.800Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/art-legacy-small-unicorn-k-18b21-te-legs-and-rainbow-accents-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/art-legacy-small-unicorn-k-18b21-te-legs-and-rainbow-accents-chromium/attachments/browser-health-243903a42079f4918f4a22c6829fdd40bfe68878.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d7faa14610f1ba3511d4-52444dc379339c747d2c",
+          "file": "art.spec.js",
+          "line": 133,
+          "column": 3
+        },
+        {
+          "title": "vector artwork is cached, local, and uses transparent sprite surfaces",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1249,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:08.914Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/art-vector-artwork-is-cach-ba8b4-transparent-sprite-surfaces-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/art-vector-artwork-is-cach-ba8b4-transparent-sprite-surfaces-chromium/attachments/browser-health-18ea950391efabcd565d038e7468332b31403e92.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d7faa14610f1ba3511d4-31671ed3de73309eb37c",
+          "file": "art.spec.js",
+          "line": 8,
+          "column": 3
+        },
+        {
+          "title": "vector survival sprites keep their identifying colors and a visible rear attack anchor",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1207,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:10.174Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/art-vector-survival-sprite-a0b5e--visible-rear-attack-anchor-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/art-vector-survival-sprite-a0b5e--visible-rear-attack-anchor-chromium/attachments/browser-health-acc0898f817591c3f567886e14d47ecdfbc3077d.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d7faa14610f1ba3511d4-84a5d4c22d6e1488f018",
+          "file": "art.spec.js",
+          "line": 68,
+          "column": 3
+        },
+        {
+          "title": "vector fresh loads produce identical pixels for every asset",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1699,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:11.389Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/art-vector-fresh-loads-pro-24736-ical-pixels-for-every-asset-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/art-vector-fresh-loads-pro-24736-ical-pixels-for-every-asset-chromium/attachments/browser-health-2578511a265df2974e1cdbd3b82dad6cbe144248.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d7faa14610f1ba3511d4-0e0b3ba86cd392bf5b5f",
+          "file": "art.spec.js",
+          "line": 122,
+          "column": 3
+        },
+        {
+          "title": "vector small unicorn keeps four separate legs and rainbow accents",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1055,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:13.096Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/art-vector-small-unicorn-k-07de2-te-legs-and-rainbow-accents-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/art-vector-small-unicorn-k-07de2-te-legs-and-rainbow-accents-chromium/attachments/browser-health-67248316db297608c6ff124e09405ea232bcf0e8.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d7faa14610f1ba3511d4-3545e2607cf11c042389",
+          "file": "art.spec.js",
+          "line": 133,
+          "column": 3
+        }
+      ]
+    },
+    {
+      "title": "audio.spec.js",
+      "file": "audio.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "all eight effects render non-silent, unclipped audio and produce audition clips",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2837,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:14.166Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "sound-shot",
+                      "contentType": "audio/wav",
+                      "path": "/home/node/workspace/test-results/audio-all-eight-effects-re-a982c--and-produce-audition-clips-chromium/attachments/sound-shot-4f806a35349b7a47b0f5929abc205f346973808e.wav"
+                    },
+                    {
+                      "name": "sound-glitter",
+                      "contentType": "audio/wav",
+                      "path": "/home/node/workspace/test-results/audio-all-eight-effects-re-a982c--and-produce-audition-clips-chromium/attachments/sound-glitter-6c60afe7ca379e30074bbfd7ee9c12a33a3cf4e0.wav"
+                    },
+                    {
+                      "name": "sound-damage",
+                      "contentType": "audio/wav",
+                      "path": "/home/node/workspace/test-results/audio-all-eight-effects-re-a982c--and-produce-audition-clips-chromium/attachments/sound-damage-904b591ba917f301c5695c124ddc54568e29dce7.wav"
+                    },
+                    {
+                      "name": "sound-wave",
+                      "contentType": "audio/wav",
+                      "path": "/home/node/workspace/test-results/audio-all-eight-effects-re-a982c--and-produce-audition-clips-chromium/attachments/sound-wave-1be8a41669c04561f4bf1c80ec730f493d06e3a7.wav"
+                    },
+                    {
+                      "name": "sound-victory",
+                      "contentType": "audio/wav",
+                      "path": "/home/node/workspace/test-results/audio-all-eight-effects-re-a982c--and-produce-audition-clips-chromium/attachments/sound-victory-c84db5e02f16b876a832c4d9d56d8864d4a90341.wav"
+                    },
+                    {
+                      "name": "sound-defeat",
+                      "contentType": "audio/wav",
+                      "path": "/home/node/workspace/test-results/audio-all-eight-effects-re-a982c--and-produce-audition-clips-chromium/attachments/sound-defeat-298d5c87950348b09c7e07e5fd054a6c57430a92.wav"
+                    },
+                    {
+                      "name": "sound-pickup",
+                      "contentType": "audio/wav",
+                      "path": "/home/node/workspace/test-results/audio-all-eight-effects-re-a982c--and-produce-audition-clips-chromium/attachments/sound-pickup-f6d29137f730835a1fa69c3e71634d37838f41ae.wav"
+                    },
+                    {
+                      "name": "sound-rose-fired",
+                      "contentType": "audio/wav",
+                      "path": "/home/node/workspace/test-results/audio-all-eight-effects-re-a982c--and-produce-audition-clips-chromium/attachments/sound-rose-fired-498eac59fc85aacaaaa94246d303d9ca4a57a220.wav"
+                    },
+                    {
+                      "name": "audio-samples",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/audio-all-eight-effects-re-a982c--and-produce-audition-clips-chromium/attachments/audio-samples-e9583ee0a8e33330ce63e75440c855772c90d00e.json"
+                    },
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/audio-all-eight-effects-re-a982c--and-produce-audition-clips-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/audio-all-eight-effects-re-a982c--and-produce-audition-clips-chromium/attachments/browser-health-9fa1374e20c9bfdf9c618056ad73f46c388bf730.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d21a978bbf7c0effe3cc-804e14ab6289b7f224bf",
+          "file": "audio.spec.js",
+          "line": 4,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "boot.spec.js",
+      "file": "boot.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "both boot paths export the same function without scheduling another loop",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 430,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:17.015Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/boot-both-boot-paths-expor-8531b-out-scheduling-another-loop-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/boot-both-boot-paths-expor-8531b-out-scheduling-another-loop-chromium/attachments/browser-health-ecc5b188f4b5b37411248ba4dcdcac66f9ebed8f.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "3628cf5e6301d6674337-f8c2ba6567e002385402",
+          "file": "boot.spec.js",
+          "line": 14,
+          "column": 1
+        },
+        {
+          "title": "importing /src/app.js before main does not create a game",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 500,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:17.455Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/boot-importing-src-app-js-before-main-does-not-create-a-game-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/boot-importing-src-app-js-before-main-does-not-create-a-game-chromium/attachments/browser-health-4c52190137778d5bf99012fad89be30ccc46e98a.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "3628cf5e6301d6674337-7c4814655b0281b7ccd6",
+          "file": "boot.spec.js",
+          "line": 27,
+          "column": 3
+        },
+        {
+          "title": "importing /src/bootstrap.js before main does not create a game",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 504,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:17.966Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/boot-importing-src-bootstr-99bee-main-does-not-create-a-game-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/boot-importing-src-bootstr-99bee-main-does-not-create-a-game-chromium/attachments/browser-health-41196afb45a289bfa4a29360957f995cab30057f.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "3628cf5e6301d6674337-a3874f46f56812618ade",
+          "file": "boot.spec.js",
+          "line": 27,
+          "column": 3
+        },
+        {
+          "title": "repeated main imports share one game and destroy cancels its only callback",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 483,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:18.479Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/boot-repeated-main-imports-b98cb-y-cancels-its-only-callback-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/boot-repeated-main-imports-b98cb-y-cancels-its-only-callback-chromium/attachments/browser-health-505320660f16ed3fe38a5d26c0b308661cd020a4.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "3628cf5e6301d6674337-28e6cf0f7b2a5fc1168d",
+          "file": "boot.spec.js",
+          "line": 56,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "effects.spec.js",
+      "file": "effects.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "the game gates audio on Start, drains a conversion, and freezes/silences on pause",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4373,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:18.981Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/effects-the-game-gates-aud-07432-d-freezes-silences-on-pause-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/effects-the-game-gates-aud-07432-d-freezes-silences-on-pause-chromium/attachments/browser-health-fa6436246ec91e402259b96de8b1338b92e26758.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5bacfc8aa9888e3aaf3f-02782c38853cf1797d7c",
+          "file": "effects.spec.js",
+          "line": 15,
+          "column": 1
+        },
+        {
+          "title": "muting stops current sources, persists on reload, and bounds real audio sources",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3693,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:23.363Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/effects-muting-stops-curre-e2f63-d-bounds-real-audio-sources-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/effects-muting-stops-curre-e2f63-d-bounds-real-audio-sources-chromium/attachments/browser-health-f810f7036381a7ab18eb798c1a092d3ea51cb8dc.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5bacfc8aa9888e3aaf3f-e677c0d1647bfeb03452",
+          "file": "effects.spec.js",
+          "line": 48,
+          "column": 1
+        },
+        {
+          "title": "live reduced-motion preference keeps conversions visible with six stars",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2629,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:27.066Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/effects-live-reduced-motio-e514f-ions-visible-with-six-stars-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/effects-live-reduced-motio-e514f-ions-visible-with-six-stars-chromium/attachments/browser-health-4cd73691f7215db2115e07d177b5190e30df732d.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5bacfc8aa9888e3aaf3f-43b7b3f2353518e5ae13",
+          "file": "effects.spec.js",
+          "line": 65,
+          "column": 1
+        },
+        {
+          "title": "real canvas stars expand, stay multicolored, and are fully clipped behind a hedge",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1024,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:29.707Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/effects-real-canvas-stars--97199-ully-clipped-behind-a-hedge-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/effects-real-canvas-stars--97199-ully-clipped-behind-a-hedge-chromium/attachments/browser-health-1813860f0054df6d27a8c0e72d1370ef059d7445.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5bacfc8aa9888e3aaf3f-63f51d321fafd04af997",
+          "file": "effects.spec.js",
+          "line": 75,
+          "column": 1
+        },
+        {
+          "title": "unavailable Web Audio leaves a playable, silent game",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3074,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:30.742Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/effects-unavailable-Web-Audio-leaves-a-playable-silent-game-chromium/test-finished-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/effects-unavailable-Web-Audio-leaves-a-playable-silent-game-chromium/attachments/browser-health-4db93bcb753fdef64aae1f08131674a4fe45ce79.json"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5bacfc8aa9888e3aaf3f-5fd15468b3c5b01f56d6",
+          "file": "effects.spec.js",
+          "line": 144,
+          "column": 1
+        },
+        {
+          "title": "wave, damage, victory, and defeat transitions reach both feedback consumers",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "interrupted",
+                  "duration": 1436,
+                  "error": {
+                    "message": "Error: locator.click: Test ended.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Start game', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"start\" type=\"button\">Start game</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - performing click action\u001b[22m\n",
+                    "stack": "Error: locator.click: Test ended.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Start game', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"start\" type=\"button\">Start game</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - performing click action\u001b[22m\n\n    at /home/node/workspace/browser/effects.spec.js:167:71",
+                    "location": {
+                      "file": "/home/node/workspace/browser/effects.spec.js",
+                      "column": 71,
+                      "line": 167
+                    },
+                    "snippet": "  165 |     }\n  166 |   });\n> 167 |   await page.getByRole('button', { name: 'Start game', exact: true }).click();\n      |                                                                       ^\n  168 |   for (let wave = 1; wave <= 3; wave++) {\n  169 |     await page.evaluate(() => { for (const unicorn of game.session.unicorns) unicorn.alive = false; });\n  170 |     await expect.poll(() => page.evaluate(() => game.session.wave === 3 && game.state === 'victory' ? 4 : game.session.wave)).toBe(wave + 1);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/node/workspace/browser/effects.spec.js",
+                        "column": 71,
+                        "line": 167
+                      },
+                      "message": "Error: locator.click: Test ended.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Start game', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"start\" type=\"button\">Start game</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - performing click action\u001b[22m\n\n\n  165 |     }\n  166 |   });\n> 167 |   await page.getByRole('button', { name: 'Start game', exact: true }).click();\n      |                                                                       ^\n  168 |   for (let wave = 1; wave <= 3; wave++) {\n  169 |     await page.evaluate(() => { for (const unicorn of game.session.unicorns) unicorn.alive = false; });\n  170 |     await expect.poll(() => page.evaluate(() => game.session.wave === 3 && game.state === 'victory' ? 4 : game.session.wave)).toBe(wave + 1);\n    at /home/node/workspace/browser/effects.spec.js:167:71"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-12T00:06:33.826Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/node/workspace/test-results/effects-wave-damage-victor-35f4a-ach-both-feedback-consumers-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "browser-health",
+                      "contentType": "application/json",
+                      "path": "/home/node/workspace/test-results/effects-wave-damage-victor-35f4a-ach-both-feedback-consumers-chromium/attachments/browser-health-8042256ae503597c40ad1ce8b9ee3ea2f52654a2.json"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/node/workspace/test-results/effects-wave-damage-victor-35f4a-ach-both-feedback-consumers-chromium/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/node/workspace/test-results/effects-wave-damage-victor-35f4a-ach-both-feedback-consumers-chromium/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/node/workspace/browser/effects.spec.js",
+                    "column": 71,
+                    "line": 167
+                  }
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "5bacfc8aa9888e3aaf3f-68c0ea6b7d0e4308be0a",
+          "file": "effects.spec.js",
+          "line": 159,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "hud.spec.js",
+      "file": "hud.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "the focused primary action stays inside the scrollable panel on a narrow screen",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "b90bf59a659fb98a5bb0-137625fc780e0d3c7248",
+          "file": "hud.spec.js",
+          "line": 10,
+          "column": 1
+        },
+        {
+          "title": "all menu actions work with keyboard focus and no pointer lock",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "b90bf59a659fb98a5bb0-8945ad0e236c5c56ac7e",
+          "file": "hud.spec.js",
+          "line": 43,
+          "column": 1
+        },
+        {
+          "title": "frame updates preserve controls and focus and announce only meaningful transitions",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "b90bf59a659fb98a5bb0-418668aede54fbc9bcb4",
+          "file": "hud.spec.js",
+          "line": 95,
+          "column": 1
+        },
+        {
+          "title": "victory and defeat announce final scores, focus restart, and begin a fresh game",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "b90bf59a659fb98a5bb0-5a4bf6bb1f9ff5b1ebf3",
+          "file": "hud.spec.js",
+          "line": 129,
+          "column": 1
+        },
+        {
+          "title": "silent mode reports unsupported audio and preserves mute preference",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "b90bf59a659fb98a5bb0-0cf3bb4be2df3560106e",
+          "file": "hud.spec.js",
+          "line": 165,
+          "column": 3
+        },
+        {
+          "title": "silent mode reports activation failure audio and preserves mute preference",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "b90bf59a659fb98a5bb0-441797fefae71b7b351e",
+          "file": "hud.spec.js",
+          "line": 165,
+          "column": 3
+        },
+        {
+          "title": "blocked storage still supports best score and restart during this visit",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "b90bf59a659fb98a5bb0-8e4c41bf83e1dda0d514",
+          "file": "hud.spec.js",
+          "line": 187,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "input.spec.js",
+      "file": "input.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "real keyboard input moves, normalizes diagonals, runs, strafes, fires, and invokes commands",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "815cc0b4fa1310bfa376-b1a244c2fce5ee2d1332",
+          "file": "input.spec.js",
+          "line": 28,
+          "column": 1
+        },
+        {
+          "title": "focus loss clears held keys and firing; auto-repeat cannot restore them",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "815cc0b4fa1310bfa376-296b701c76b0c8337fd5",
+          "file": "input.spec.js",
+          "line": 62,
+          "column": 1
+        },
+        {
+          "title": "rejected mouse capture never rejects globally and leaves keyboard play usable",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "815cc0b4fa1310bfa376-beef6c7cd7c6941e13d1",
+          "file": "input.spec.js",
+          "line": 86,
+          "column": 1
+        },
+        {
+          "title": "locked mouse movement consumes horizontal aim once, and lock loss pauses without keydown",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "815cc0b4fa1310bfa376-d7b09a5bdf61f6b137fb",
+          "file": "input.spec.js",
+          "line": 103,
+          "column": 1
+        },
+        {
+          "title": "Escape pauses after a real pointer lock request",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "815cc0b4fa1310bfa376-0a1a182edf7243686fea",
+          "file": "input.spec.js",
+          "line": 135,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "render-resolution.spec.js",
+      "file": "render-resolution.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "the live application resizes with its stage and device pixel ratio",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "e97da124de606d5da4aa-e54852a8b09450ee359b",
+          "file": "render-resolution.spec.js",
+          "line": 3,
+          "column": 1
+        },
+        {
+          "title": "responsive sizing is opt-in and the floor raster stays bounded after resizing",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "e97da124de606d5da4aa-30664f7d00ed208b64af",
+          "file": "render-resolution.spec.js",
+          "line": 29,
+          "column": 1
+        }
+      ],
+      "suites": [
+        {
+          "title": "native DPR 2 display",
+          "file": "render-resolution.spec.js",
+          "line": 67,
+          "column": 6,
+          "specs": [
+            {
+              "title": "the live app handles odd CSS sizes and proportional caps without changing simulation state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e97da124de606d5da4aa-74bc09067fa4e16469e7",
+              "file": "render-resolution.spec.js",
+              "line": 70,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "renderer.spec.js",
+      "file": "renderer.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "perpendicular wall depth keeps planar hedges straight while turning",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "1f10420b3b7aa48b04c9-737f2309186d7e775d0c",
+          "file": "renderer.spec.js",
+          "line": 25,
+          "column": 1
+        },
+        {
+          "title": "70 degree projection and 0.65 tile eye height survive odd sizes and aspect changes",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "1f10420b3b7aa48b04c9-a4cd6bab0048bee52c62",
+          "file": "renderer.spec.js",
+          "line": 52,
+          "column": 1
+        },
+        {
+          "title": "hedges hide unicorns and clip partially visible billboard columns",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "1f10420b3b7aa48b04c9-c7181ead2ccceec4a47e",
+          "file": "renderer.spec.js",
+          "line": 76,
+          "column": 1
+        },
+        {
+          "title": "near unicorns and decorative props draw over farther billboards regardless of input order",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "1f10420b3b7aa48b04c9-851af7fc99acac345269",
+          "file": "renderer.spec.js",
+          "line": 109,
+          "column": 1
+        },
+        {
+          "title": "hedges fully hide cakes, charms, rear poses, and roses and clip their visible edge without leaks",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "1f10420b3b7aa48b04c9-c82e2b0a392b28e724a3",
+          "file": "renderer.spec.js",
+          "line": 138,
+          "column": 1
+        },
+        {
+          "title": "all entity arrays have stable pixels including coincident depth ties",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "1f10420b3b7aa48b04c9-f6adf29cfd915b049257",
+          "file": "renderer.spec.js",
+          "line": 185,
+          "column": 1
+        },
+        {
+          "title": "emitted rose aligns visibly with the rear rump at 640×360, camera 0",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "1f10420b3b7aa48b04c9-fae830464c638a2ca8fd",
+          "file": "renderer.spec.js",
+          "line": 211,
+          "column": 5
+        },
+        {
+          "title": "emitted rose aligns visibly with the rear rump at 640×360, camera 0.25",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "1f10420b3b7aa48b04c9-5b527eab31d7fc305865",
+          "file": "renderer.spec.js",
+          "line": 211,
+          "column": 5
+        },
+        {
+          "title": "emitted rose aligns visibly with the rear rump at 640×360, camera -0.25",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "1f10420b3b7aa48b04c9-8769a91dedd365243e41",
+          "file": "renderer.spec.js",
+          "line": 211,
+          "column": 5
+        },
+        {
+          "title": "emitted rose aligns visibly with the rear rump at 1001×563, camera 0",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "1f10420b3b7aa48b04c9-0dad1d1b940884f2b98a",
+          "file": "renderer.spec.js",
+          "line": 211,
+          "column": 5
+        },
+        {
+          "title": "emitted rose aligns visibly with the rear rump at 1001×563, camera 0.25",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "1f10420b3b7aa48b04c9-219061bc10cbd76a7479",
+          "file": "renderer.spec.js",
+          "line": 211,
+          "column": 5
+        },
+        {
+          "title": "emitted rose aligns visibly with the rear rump at 1001×563, camera -0.25",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "1f10420b3b7aa48b04c9-531b41f990d747e87dde",
+          "file": "renderer.spec.js",
+          "line": 211,
+          "column": 5
+        },
+        {
+          "title": "emitted rose aligns visibly with the rear rump at 401×601, camera 0",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "1f10420b3b7aa48b04c9-7e8c028da946bff1c8b4",
+          "file": "renderer.spec.js",
+          "line": 211,
+          "column": 5
+        },
+        {
+          "title": "emitted rose aligns visibly with the rear rump at 401×601, camera 0.25",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "1f10420b3b7aa48b04c9-5e78cde6add25409434f",
+          "file": "renderer.spec.js",
+          "line": 211,
+          "column": 5
+        },
+        {
+          "title": "emitted rose aligns visibly with the rear rump at 401×601, camera -0.25",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "1f10420b3b7aa48b04c9-db2d69e36bcc20e54d53",
+          "file": "renderer.spec.js",
+          "line": 211,
+          "column": 5
+        },
+        {
+          "title": "cached paper, trees, grass, and sprites stay still; walking and recoil change only the weapon",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "1f10420b3b7aa48b04c9-409ae7cdabd87a80c42c",
+          "file": "renderer.spec.js",
+          "line": 281,
+          "column": 1
+        },
+        {
+          "title": "the running game freezes walking on pause and observes live reduced motion",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "1f10420b3b7aa48b04c9-222529d9f7faf5487391",
+          "file": "renderer.spec.js",
+          "line": 305,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "smoke.spec.js",
+      "file": "smoke.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "startup renders a playable scene; conversion, pause, sound, restart, and denied capture work",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "2c14808d47b386fba9eb-148ab1c023237b20fd1a",
+          "file": "smoke.spec.js",
+          "line": 17,
+          "column": 1
+        },
+        {
+          "title": "keyboard movement slides along a hedge, shots stop there, and a detour reaches its far side",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "2c14808d47b386fba9eb-7c5293b02eec8f981ca7",
+          "file": "smoke.spec.js",
+          "line": 76,
+          "column": 1
+        },
+        {
+          "title": "three generated waves are winnable through keyboard input without changing game state",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "2c14808d47b386fba9eb-2c5599382e8cc056efb3",
+          "file": "smoke.spec.js",
+          "line": 128,
+          "column": 3
+        },
+        {
+          "title": "three generated waves are winnable through mouse input without changing game state",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "2c14808d47b386fba9eb-dcd2f6537b71b78498a8",
+          "file": "smoke.spec.js",
+          "line": 128,
+          "column": 3
+        },
+        {
+          "title": "generated unicorn contact causes defeat and keyboard Play again resets the round",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "2c14808d47b386fba9eb-9043d783aaf82026e000",
+          "file": "smoke.spec.js",
+          "line": 209,
+          "column": 1
+        }
+      ],
+      "suites": [
+        {
+          "title": "combined stress at DPR 1",
+          "file": "smoke.spec.js",
+          "line": 226,
+          "column": 8,
+          "specs": [
+            {
+              "title": "combined roses, supplies, and maximum glitter record frame times and reduced-motion presentation",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "2c14808d47b386fba9eb-3b096248ca8528a49c7c",
+              "file": "smoke.spec.js",
+              "line": 228,
+              "column": 5
+            }
+          ]
+        },
+        {
+          "title": "combined stress at DPR 2",
+          "file": "smoke.spec.js",
+          "line": 226,
+          "column": 8,
+          "specs": [
+            {
+              "title": "combined roses, supplies, and maximum glitter record frame times and reduced-motion presentation",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "2c14808d47b386fba9eb-52396924633128cd1688",
+              "file": "smoke.spec.js",
+              "line": 228,
+              "column": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "survival.spec.js",
+      "file": "survival.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "walking over the visible cake and armor charm collects each once and updates the HUD",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "fa00a7fba9dc0eba06a8-5d15370c990176e4c183",
+          "file": "survival.spec.js",
+          "line": 77,
+          "column": 1
+        },
+        {
+          "title": "a complete rear windup emits a real rose; impacts consume armor before health and remove the rose",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "fa00a7fba9dc0eba06a8-a518ca21e6af71df8cfa",
+          "file": "survival.spec.js",
+          "line": 116,
+          "column": 1
+        },
+        {
+          "title": "keyboard strafing after emission dodges the locked rose trajectory",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "fa00a7fba9dc0eba06a8-231719fe0cc0491a91a2",
+          "file": "survival.spec.js",
+          "line": 172,
+          "column": 1
+        },
+        {
+          "title": "pause freezes windup, recovery, cooldown, and airborne roses; keyboard restart clears the attack",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "fa00a7fba9dc0eba06a8-f3b5a0afb4909d65c86b",
+          "file": "survival.spec.js",
+          "line": 195,
+          "column": 1
+        },
+        {
+          "title": "reduced motion changes the canvas presentation while rose trajectories and impact ticks stay identical",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "fa00a7fba9dc0eba06a8-9d35bc4922a2465b85e7",
+          "file": "survival.spec.js",
+          "line": 240,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "vector-art.spec.js",
+      "file": "vector-art.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "production artwork at DPR 1",
+          "file": "vector-art.spec.js",
+          "line": 4,
+          "column": 8,
+          "specs": [
+            {
+              "title": "normal survival artwork and rear emission",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "3c8baab93fbeb703d55c-207588c55072a6335ec2",
+              "file": "vector-art.spec.js",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "close survival artwork and rear emission",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "3c8baab93fbeb703d55c-5c43bcf6f2f8c9acb42b",
+              "file": "vector-art.spec.js",
+              "line": 9,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "production artwork at DPR 2",
+          "file": "vector-art.spec.js",
+          "line": 4,
+          "column": 8,
+          "specs": [
+            {
+              "title": "normal survival artwork and rear emission",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "3c8baab93fbeb703d55c-802ff0afbf21f6315697",
+              "file": "vector-art.spec.js",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "close survival artwork and rear emission",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "3c8baab93fbeb703d55c-bd5bb628149fec84ab84",
+              "file": "vector-art.spec.js",
+              "line": 9,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-12T00:05:06.116Z",
+    "duration": 89374.039,
+    "expected": 37,
+    "skipped": 49,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "seed": 1,
+  "devicePixelRatio": 1,
+  "distanceName": "close",
+  "distanceTiles": 1.8,
+  "fixture": "isolated production renderer in a controlled clearing",
+  "scenes": [
+    {
+      "kind": "unicorn",
+      "drawn": [
+        "unicorn",
+        "weapon"
+      ],
+      "css": {
+        "width": 640,
+        "height": 360
+      },
+      "backing": {
+        "width": 640,
+        "height": 360
+      },
+      "roses": []
+    },
+    {
+      "kind": "rear-emission",
+      "drawn": [
+        "rose",
+        "unicornRear",
+        "weapon"
+      ],
+      "css": {
+        "width": 640,
+        "height": 360
+      },
+      "backing": {
+        "width": 640,
+        "height": 360
+      },
+      "roses": [
+        {
+          "id": "rose:0",
+          "source": "1:0",
+          "x": 5.3,
+          "y": 12.5,
+          "z": 0.5,
+          "vx": -3.5,
+          "vy": 0,
+          "remaining": 3
+        }
+      ]
+    },
+    {
+      "kind": "supplies",
+      "drawn": [
+        "armorCharm",
+        "healthCake",
+        "weapon"
+      ],
+      "css": {
+        "width": 640,
+        "height": 360
+      },
+      "backing": {
+        "width": 640,
+        "height": 360
+      },
+      "roses": []
+    },
+    {
+      "kind": "airborne-rose",
+      "drawn": [
+        "rose",
+        "weapon"
+      ],
+      "css": {
+        "width": 640,
+        "height": 360
+      },
+      "backing": {
+        "width": 640,
+        "height": 360
+      },
+      "roses": [
+        {
+          "id": "rose:0",
+          "source": "1:0",
+          "x": 5.3,
+          "y": 12.5,
+          "z": 0.5,
+          "vx": -3.5,
+          "vy": 0,
+          "remaining": 2.95
+        }
+      ]
+    }
+  ],
+  "atlas": {
+    "width": 512,
+    "height": 640
+  },
+  "humanThemeReview": "pending",
+  "humanRecognitionReview": "pending",
+  "browser": "154.0.8037.92"
+}

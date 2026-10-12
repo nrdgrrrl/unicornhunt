@@ -1,0 +1,58 @@
+{
+  "state": "victory",
+  "seed": 1,
+  "score": 5900,
+  "health": 4,
+  "armor": 0,
+  "elapsed": 36.38333333333255,
+  "conversions": [
+    "1:0",
+    "1:2",
+    "1:4",
+    "1:3",
+    "1:5",
+    "1:1",
+    "2:1",
+    "2:3",
+    "2:7",
+    "2:2",
+    "2:0",
+    "2:4",
+    "2:5",
+    "2:6",
+    "3:4",
+    "3:6",
+    "3:2",
+    "3:0",
+    "3:3",
+    "3:8",
+    "3:7",
+    "3:9",
+    "3:5",
+    "3:1"
+  ],
+  "waves": [
+    1,
+    2,
+    3
+  ],
+  "damage": [
+    {
+      "type": "damage",
+      "cause": "rose",
+      "source": "rose:0",
+      "amount": 1,
+      "resource": "health",
+      "health": 4,
+      "armor": 0,
+      "x": 3.9996444450063136,
+      "y": 12.300000316048633
+    }
+  ],
+  "pickups": [],
+  "rosesFired": 1,
+  "controls": "keyboard",
+  "browser": "154.0.8037.92",
+  "clock": "controlled 60 Hz",
+  "humanPlaytest": false
+}
