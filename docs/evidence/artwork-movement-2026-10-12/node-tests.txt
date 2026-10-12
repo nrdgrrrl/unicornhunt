@@ -1,0 +1,1628 @@
+
+> unicornhunt@1.0.0 test
+> node --test
+
+TAP version 13
+# Subtest: a stale resume rejection does not silence a newer activation
+ok 1 - a stale resume rejection does not silence a newer activation
+  ---
+  duration_ms: 1.148261
+  type: 'test'
+  ...
+# Subtest: a stale suspension rejection does not silence a newer activation
+ok 2 - a stale suspension rejection does not silence a newer activation
+  ---
+  duration_ms: 4.564631
+  type: 'test'
+  ...
+# Subtest: an activation rejection after destroy is ignored
+ok 3 - an activation rejection after destroy is ignored
+  ---
+  duration_ms: 0.363098
+  type: 'test'
+  ...
+# Subtest: a current activation rejection still enters silent mode and closes the context
+ok 4 - a current activation rejection still enters silent mode and closes the context
+  ---
+  duration_ms: 0.321131
+  type: 'test'
+  ...
+# Subtest: a current suspension rejection still enters silent mode and closes the context
+ok 5 - a current suspension rejection still enters silent mode and closes the context
+  ---
+  duration_ms: 2.5242
+  type: 'test'
+  ...
+# Subtest: audio is lazy and discards events before Start/Resume and while paused
+ok 6 - audio is lazy and discards events before Start/Resume and while paused
+  ---
+  duration_ms: 1.593249
+  type: 'test'
+  ...
+# Subtest: all eight event sounds use distinct local synthesis and expire/disconnect
+ok 7 - all eight event sounds use distinct local synthesis and expire/disconnect
+  ---
+  duration_ms: 0.568876
+  type: 'test'
+  ...
+# Subtest: sustained firing and collection bound sources and muting immediately stops all of them
+ok 8 - sustained firing and collection bound sources and muting immediately stops all of them
+  ---
+  duration_ms: 8.586865
+  type: 'test'
+  ...
+# Subtest: pickup and rose-fired events vanish before activation, during resume, while paused, and while muted
+ok 9 - pickup and rose-fired events vanish before activation, during resume, while paused, and while muted
+  ---
+  duration_ms: 0.397901
+  type: 'test'
+  ...
+# Subtest: only successful health and armor collections play one pickup cue each
+ok 10 - only successful health and armor collections play one pickup cue each
+  ---
+  duration_ms: 0.889095
+  type: 'test'
+  ...
+# Subtest: actual rose emissions play once without player shot effects; both damage resources retain feedback
+ok 11 - actual rose emissions play once without player shot effects; both damage resources retain feedback
+  ---
+  duration_ms: 2.075185
+  type: 'test'
+  ...
+# Subtest: a pending resume cannot reactivate audio after pause or destroy
+ok 12 - a pending resume cannot reactivate audio after pause or destroy
+  ---
+  duration_ms: 0.321281
+  type: 'test'
+  ...
+# Subtest: the latest resume wins when earlier activation promises resolve out of order
+ok 13 - the latest resume wins when earlier activation promises resolve out of order
+  ---
+  duration_ms: 0.240322
+  type: 'test'
+  ...
+# Subtest: a synchronous void resume runs before activate returns its promise
+ok 14 - a synchronous void resume runs before activate returns its promise
+  ---
+  duration_ms: 0.409644
+  type: 'test'
+  ...
+# Subtest: blocked storage access or methods preserve activation and mute behavior
+ok 15 - blocked storage access or methods preserve activation and mute behavior
+  ---
+  duration_ms: 0.601075
+  type: 'test'
+  ...
+# Subtest: unavailable context, rejected resume, and inaccessible storage fail silently
+ok 16 - unavailable context, rejected resume, and inaccessible storage fail silently
+  ---
+  duration_ms: 0.450809
+  type: 'test'
+  ...
+# Subtest: a synchronous throwing resume enters silent mode even when close fails
+ok 17 - a synchronous throwing resume enters silent mode even when close fails
+  ---
+  duration_ms: 12.892681
+  type: 'test'
+  ...
+# Subtest: throwing or rejected suspend enters silent mode and attempts close
+ok 18 - throwing or rejected suspend enters silent mode and attempts close
+  ---
+  duration_ms: 0.795382
+  type: 'test'
+  ...
+# Subtest: partial synthesis allocation failure releases the oscillator and enters silent mode
+ok 19 - partial synthesis allocation failure releases the oscillator and enters silent mode
+  ---
+  duration_ms: 0.261211
+  type: 'test'
+  ...
+# Subtest: destroy stops and disconnects active audio and prevents reactivation
+ok 20 - destroy stops and disconnects active audio and prevents reactivation
+  ---
+  duration_ms: 0.183998
+  type: 'test'
+  ...
+# Subtest: destroy attempts every cleanup and close despite throwing disconnects
+ok 21 - destroy attempts every cleanup and close despite throwing disconnects
+  ---
+  duration_ms: 1.53913
+  type: 'test'
+  ...
+# Subtest: clock exports the shared 60 Hz step and five-step limit
+ok 22 - clock exports the shared 60 Hz step and five-step limit
+  ---
+  duration_ms: 1.671933
+  type: 'test'
+  ...
+# Subtest: first frame is only a timestamp baseline, even at a large timestamp
+ok 23 - first frame is only a timestamp baseline, even at a large timestamp
+  ---
+  duration_ms: 1.279482
+  type: 'test'
+  ...
+# Subtest: two 120 Hz intervals produce exactly one 1/60-second tick
+ok 24 - two 120 Hz intervals produce exactly one 1/60-second tick
+  ---
+  duration_ms: 0.251573
+  type: 'test'
+  ...
+# Subtest: fractional time carries across frames and each complete step gets a callback
+ok 25 - fractional time carries across frames and each complete step gets a callback
+  ---
+  duration_ms: 0.140208
+  type: 'test'
+  ...
+# Subtest: rounding epsilon accepts tiny deficits but not a meaningfully short step
+ok 26 - rounding epsilon accepts tiny deficits but not a meaningfully short step
+  ---
+  duration_ms: 0.254789
+  type: 'test'
+  ...
+# Subtest: sixty-second delay accepts only five steps and leaves no full tick queued
+ok 27 - sixty-second delay accepts only five steps and leaves no full tick queued
+  ---
+  duration_ms: 0.248877
+  type: 'test'
+  ...
+# Subtest: backlog including a previous fractional step is also capped at five steps
+ok 28 - backlog including a previous fractional step is also capped at five steps
+  ---
+  duration_ms: 0.13082
+  type: 'test'
+  ...
+# Subtest: reset discards fractional and complete backlog and makes a fresh baseline
+ok 29 - reset discards fractional and complete backlog and makes a fresh baseline
+  ---
+  duration_ms: 0.141531
+  type: 'test'
+  ...
+# Subtest: result transition during the first catch-up tick prevents further ticks
+ok 30 - result transition during the first catch-up tick prevents further ticks
+  ---
+  duration_ms: 0.3214
+  type: 'test'
+  ...
+# Subtest: reset inside a tick immediately stops catch-up even when still active
+ok 31 - reset inside a tick immediately stops catch-up even when still active
+  ---
+  duration_ms: 0.362947
+  type: 'test'
+  ...
+# Subtest: inactive frames return bounded cosmetic time without accumulating ticks
+ok 32 - inactive frames return bounded cosmetic time without accumulating ticks
+  ---
+  duration_ms: 0.208434
+  type: 'test'
+  ...
+# Subtest: custom configuration uses seconds for ticks and bounds both frame and backlog
+ok 33 - custom configuration uses seconds for ticks and bounds both frame and backlog
+  ---
+  duration_ms: 0.139026
+  type: 'test'
+  ...
+# Subtest: equal and backward timestamps accept zero elapsed time
+ok 34 - equal and backward timestamps accept zero elapsed time
+  ---
+  duration_ms: 0.140929
+  type: 'test'
+  ...
+# Subtest: rounding allowance cannot create ticks from zero or half of a tiny custom step
+ok 35 - rounding allowance cannot create ticks from zero or half of a tiny custom step
+  ---
+  duration_ms: 0.115332
+  type: 'test'
+  ...
+# Subtest: invalid clock configuration is rejected
+ok 36 - invalid clock configuration is rejected
+  ---
+  duration_ms: 0.550803
+  type: 'test'
+  ...
+# Subtest: nonfinite timestamps are rejected without changing the baseline or backlog
+ok 37 - nonfinite timestamps are rejected without changing the baseline or backlog
+  ---
+  duration_ms: 0.350925
+  type: 'test'
+  ...
+# Subtest: invalid callbacks fail before modifying clock time
+ok 38 - invalid callbacks fail before modifying clock time
+  ---
+  duration_ms: 0.131482
+  type: 'test'
+  ...
+# Subtest: fixed-step hits preserve the inclusive combo boundary at different timestamps
+ok 39 - fixed-step hits preserve the inclusive combo boundary at different timestamps
+  ---
+  duration_ms: 4.434112
+  type: 'test'
+  ...
+# Subtest: idle combat retains the combo through tick 120 and expires it at tick 121
+ok 40 - idle combat retains the combo through tick 120 and expires it at tick 121
+  ---
+  duration_ms: 0.703553
+  type: 'test'
+  ...
+# Subtest: a hit one microsecond beyond the combo window starts a fresh combo
+ok 41 - a hit one microsecond beyond the combo window starts a fresh combo
+  ---
+  duration_ms: 0.165364
+  type: 'test'
+  ...
+# Subtest: the first hit starts a combo when there is no previous hit
+ok 42 - the first hit starts a combo when there is no previous hit
+  ---
+  duration_ms: 0.142672
+  type: 'test'
+  ...
+# Subtest: the generated opening unicorn converts immediately, scores, and emits separate feedback events
+ok 43 - the generated opening unicorn converts immediately, scores, and emits separate feedback events
+  ---
+  duration_ms: 6.845765
+  type: 'test'
+  ...
+# Subtest: empty shots emit rainbow/sound data to the first hedge without points or ammo limits
+ok 44 - empty shots emit rainbow/sound data to the first hedge without points or ammo limits
+  ---
+  duration_ms: 1.423627
+  type: 'test'
+  ...
+# Subtest: held firing waits 0.22 seconds and is ready at the exact subdivided cooldown boundary
+ok 45 - held firing waits 0.22 seconds and is ready at the exact subdivided cooldown boundary
+  ---
+  duration_ms: 0.309308
+  type: 'test'
+  ...
+# Subtest: releasing fire advances cooldown without shooting; a new press does not bypass it
+ok 46 - releasing fire advances cooldown without shooting; a new press does not bypass it
+  ---
+  duration_ms: 0.23975
+  type: 'test'
+  ...
+# Subtest: a long tick fires only once at the current aim instead of replaying overdue shots
+ok 47 - a long tick fires only once at the current aim instead of replaying overdue shots
+  ---
+  duration_ms: 0.322453
+  type: 'test'
+  ...
+# Subtest: aligned unicorns convert one shot at a time, nearest first regardless of array order
+ok 48 - aligned unicorns convert one shot at a time, nearest first regardless of array order
+  ---
+  duration_ms: 0.371082
+  type: 'test'
+  ...
+# Subtest: the closest ray intersection wins even when its center is farther away
+ok 49 - the closest ray intersection wins even when its center is farther away
+  ---
+  duration_ms: 0.205658
+  type: 'test'
+  ...
+# Subtest: the first hedge blocks targets behind it and wins a tie at its surface
+ok 50 - the first hedge blocks targets behind it and wins a tie at its surface
+  ---
+  duration_ms: 0.223451
+  type: 'test'
+  ...
+# Subtest: targets before a hedge convert but targets beyond it remain alive
+ok 51 - targets before a hedge convert but targets beyond it remain alive
+  ---
+  duration_ms: 0.367195
+  type: 'test'
+  ...
+# Subtest: hedges adjacent to an exact diagonal corner also block combat rays
+ok 52 - hedges adjacent to an exact diagonal corner also block combat rays
+  ---
+  duration_ms: 0.382113
+  type: 'test'
+  ...
+# Subtest: off-ray, behind-player, and already converted unicorns do not intercept shots
+ok 53 - off-ray, behind-player, and already converted unicorns do not intercept shots
+  ---
+  duration_ms: 0.213923
+  type: 'test'
+  ...
+# Subtest: circle tangency and a circle overlapping the muzzle are valid intersections
+ok 54 - circle tangency and a circle overlapping the muzzle are valid intersections
+  ---
+  duration_ms: 0.247475
+  type: 'test'
+  ...
+# Subtest: aiming works on every cardinal axis and diagonal using the current player heading
+ok 55 - aiming works on every cardinal axis and diagonal using the current player heading
+  ---
+  duration_ms: 0.357808
+  type: 'test'
+  ...
+# Subtest: a successful hit exactly two seconds later continues the combo, including a first hit at time zero
+ok 56 - a successful hit exactly two seconds later continues the combo, including a first hit at time zero
+  ---
+  duration_ms: 0.149074
+  type: 'test'
+  ...
+# Subtest: combo expiration resets scoring and expires while idle even without another shot
+ok 57 - combo expiration resets scoring and expires while idle even without another shot
+  ---
+  duration_ms: 0.154153
+  type: 'test'
+  ...
+# Subtest: a miss neither scores nor extends the successful-hit combo window
+ok 58 - a miss neither scores nor extends the successful-hit combo window
+  ---
+  duration_ms: 0.467519
+  type: 'test'
+  ...
+# Subtest: a miss between timely successful hits preserves the combo
+ok 59 - a miss between timely successful hits preserves the combo
+  ---
+  duration_ms: 0.125511
+  type: 'test'
+  ...
+# Subtest: combo multipliers cap at five and each glitter event carries its awarded points and total
+ok 60 - combo multipliers cap at five and each glitter event carries its awarded points and total
+  ---
+  duration_ms: 0.241534
+  type: 'test'
+  ...
+# Subtest: converted unicorns cannot move or deal contact damage later in the same tick
+ok 61 - converted unicorns cannot move or deal contact damage later in the same tick
+  ---
+  duration_ms: 0.491013
+  type: 'test'
+  ...
+# Subtest: core runs headlessly and produces 24 seeded stars with six color indices
+ok 62 - core runs headlessly and produces 24 seeded stars with six color indices
+  ---
+  duration_ms: 25.910022
+  type: 'test'
+  ...
+# Subtest: equal seeds and event histories reproduce particles in both motion modes
+ok 63 - equal seeds and event histories reproduce particles in both motion modes
+  ---
+  duration_ms: 3.776592
+  type: 'test'
+  ...
+# Subtest: reduced motion produces six slower stars and keeps all color indices and indicators
+ok 64 - reduced motion produces six slower stars and keeps all color indices and indicators
+  ---
+  duration_ms: 0.348991
+  type: 'test'
+  ...
+# Subtest: sustained bursts keep the newest particles and trails at the 144/24/8 caps
+ok 65 - sustained bursts keep the newest particles and trails at the 144/24/8 caps
+  ---
+  duration_ms: 17.711601
+  type: 'test'
+  ...
+# Subtest: enabling reduced motion trims old stars and scales retained velocity only once
+ok 66 - enabling reduced motion trims old stars and scales retained velocity only once
+  ---
+  duration_ms: 0.781657
+  type: 'test'
+  ...
+# Subtest: particles and trails expire at the inclusive 0.8/0.14-second boundaries
+ok 67 - particles and trails expire at the inclusive 0.8/0.14-second boundaries
+  ---
+  duration_ms: 0.407339
+  type: 'test'
+  ...
+# Subtest: hit and damage indicators decay independently, refresh on events, and clamp at zero
+ok 68 - hit and damage indicators decay independently, refresh on events, and clamp at zero
+  ---
+  duration_ms: 0.425532
+  type: 'test'
+  ...
+# Subtest: invalid elapsed time throws before changing state and zero time is allowed
+ok 69 - invalid elapsed time throws before changing state and zero time is allowed
+  ---
+  duration_ms: 0.939117
+  type: 'test'
+  ...
+# Subtest: snapshots copy and freeze all records and arrays and survive subsequent state changes
+ok 70 - snapshots copy and freeze all records and arrays and survive subsequent state changes
+  ---
+  duration_ms: 0.900826
+  type: 'test'
+  ...
+# Subtest: consumption copies event data without freezing or retaining caller objects
+ok 71 - consumption copies event data without freezing or retaining caller objects
+  ---
+  duration_ms: 0.527099
+  type: 'test'
+  ...
+# Subtest: clear empties feedback while retaining reduced motion and continuing the RNG stream
+ok 72 - clear empties feedback while retaining reduced motion and continuing the RNG stream
+  ---
+  duration_ms: 0.812063
+  type: 'test'
+  ...
+# Subtest: snapshots expose hedge-aware movement, including wall contact and sliding
+ok 73 - snapshots expose hedge-aware movement, including wall contact and sliding
+  ---
+  duration_ms: 2.678745
+  type: 'test'
+  ...
+# Subtest: conversion stars start at the unicorn and expand in multiple colors
+ok 74 - conversion stars start at the unicorn and expand in multiple colors
+  ---
+  duration_ms: 3.751807
+  type: 'test'
+  ...
+# Subtest: particle/trail capacity remains bounded under sustained bursts, then expires
+ok 75 - particle/trail capacity remains bounded under sustained bursts, then expires
+  ---
+  duration_ms: 17.008888
+  type: 'test'
+  ...
+# Subtest: reduced motion keeps colorful stars and hit feedback with fewer, slower particles
+ok 76 - reduced motion keeps colorful stars and hit feedback with fewer, slower particles
+  ---
+  duration_ms: 1.083071
+  type: 'test'
+  ...
+# Subtest: world-space stars cannot move through hedge geometry
+ok 77 - world-space stars cannot move through hedge geometry
+  ---
+  duration_ms: 3.504202
+  type: 'test'
+  ...
+# Subtest: projection controls occlusion, including clipping partial stars; trails have six colors
+ok 78 - projection controls occlusion, including clipping partial stars; trails have six colors
+  ---
+  duration_ms: 1.514454
+  type: 'test'
+  ...
+# Subtest: direct and facade rendering preserve snapshots and future seeded simulation
+ok 79 - direct and facade rendering preserve snapshots and future seeded simulation
+  ---
+  duration_ms: 6.966668
+  type: 'test'
+  ...
+# Subtest: snapshot stars draw far to near with palette colors and reduced-motion rotation
+ok 80 - snapshot stars draw far to near with palette colors and reduced-motion rotation
+  ---
+  duration_ms: 0.583583
+  type: 'test'
+  ...
+# Subtest: hit and damage indicators draw with hidden world effects and clear with state
+ok 81 - hit and damage indicators draw with hidden world effects and clear with state
+  ---
+  duration_ms: 0.270037
+  type: 'test'
+  ...
+# Subtest: public hedge queries are the authoritative world function objects
+ok 82 - public hedge queries are the authoritative world function objects
+  ---
+  duration_ms: 0.880409
+  type: 'test'
+  ...
+# Subtest: ray-circle distances normalize direction and include tangency
+ok 83 - ray-circle distances normalize direction and include tangency
+  ---
+  duration_ms: 0.524804
+  type: 'test'
+  ...
+# Subtest: ray-circle queries handle muzzle overlap, rear targets, point circles, and zero direction
+ok 84 - ray-circle queries handle muzzle overlap, rear targets, point circles, and zero direction
+  ---
+  duration_ms: 0.216628
+  type: 'test'
+  ...
+# Subtest: ray-circle queries reject invalid positions, directions, and radii
+ok 85 - ray-circle queries reject invalid positions, directions, and radii
+  ---
+  duration_ms: 1.507842
+  type: 'test'
+  ...
+# Subtest: distance queries use field dimensions and never wrap rows or accept fractional cells
+ok 86 - distance queries use field dimensions and never wrap rows or accept fractional cells
+  ---
+  duration_ms: 0.54956
+  type: 'test'
+  ...
+# Subtest: distance queries retain solid, unreachable, and radius clearance semantics
+ok 87 - distance queries retain solid, unreachable, and radius clearance semantics
+  ---
+  duration_ms: 0.818224
+  type: 'test'
+  ...
+# Subtest: next distance cell preserves every right/left/down/up tie and returns integer cells
+ok 88 - next distance cell preserves every right/left/down/up tie and returns integer cells
+  ---
+  duration_ms: 1.46321
+  type: 'test'
+  ...
+# Subtest: next distance cell stops at targets and map edges without wrapping rows
+ok 89 - next distance cell stops at targets and map edges without wrapping rows
+  ---
+  duration_ms: 0.251493
+  type: 'test'
+  ...
+# Subtest: field validation accepts same-tile movement and rejects stale targets, sizes, and radii
+ok 90 - field validation accepts same-tile movement and rejects stale targets, sizes, and radii
+  ---
+  duration_ms: 0.71266
+  type: 'test'
+  ...
+# Subtest: 100 seeded maps reproduce all geometry and safely spawn every reachable wave
+ok 91 - 100 seeded maps reproduce all geometry and safely spawn every reachable wave
+  ---
+  duration_ms: 186.085313
+  type: 'test'
+  ...
+# Subtest: horizontal and vertical rays return exact first-wall distances and endpoints
+ok 92 - horizontal and vertical rays return exact first-wall distances and endpoints
+  ---
+  duration_ms: 0.301494
+  type: 'test'
+  ...
+# Subtest: circle edges and corners permit tangency and sliding in either axis without tunneling
+ok 93 - circle edges and corners permit tangency and sliding in either axis without tunneling
+  ---
+  duration_ms: 2.901515
+  type: 'test'
+  ...
+# Subtest: diagonal movement has the same walking and running speed at different headings
+ok 94 - diagonal movement has the same walking and running speed at different headings
+  ---
+  duration_ms: 0.759998
+  type: 'test'
+  ...
+# Subtest: impossible spawn requests terminate and navigation detours through the only hedge opening
+ok 95 - impossible spawn requests terminate and navigation detours through the only hedge opening
+  ---
+  duration_ms: 48.639547
+  type: 'test'
+  ...
+# Subtest: test/helpers/simulation.js
+ok 9 - test/helpers/simulation.js
+  ---
+  duration_ms: 57.099822
+  type: 'test'
+  ...
+# Subtest: test/helpers/world.js
+ok 10 - test/helpers/world.js
+  ---
+  duration_ms: 33.546579
+  type: 'test'
+  ...
+# Subtest: all classic controls and alternatives work without pointer lock
+ok 98 - all classic controls and alternatives work without pointer lock
+  ---
+  duration_ms: 26.938593
+  type: 'test'
+  ...
+# Subtest: Alt switches held arrows from turn to strafe and back
+ok 99 - Alt switches held arrows from turn to strafe and back
+  ---
+  duration_ms: 0.41337
+  type: 'test'
+  ...
+# Subtest: aliases do not add speed and releasing one held binding preserves the other
+ok 100 - aliases do not add speed and releasing one held binding preserves the other
+  ---
+  duration_ms: 0.28312
+  type: 'test'
+  ...
+# Subtest: mouse only turns horizontally under this canvas lock, and is consumed once
+ok 101 - mouse only turns horizontally under this canvas lock, and is consumed once
+  ---
+  duration_ms: 0.33201
+  type: 'test'
+  ...
+# Subtest: blur, canvas blur, hidden page, pause, and lock loss clear every held input
+ok 102 - blur, canvas blur, hidden page, pause, and lock loss clear every held input
+  ---
+  duration_ms: 1.817982
+  type: 'test'
+  ...
+# Subtest: pause clears before the callback and mute is a single command per press
+ok 103 - pause clears before the callback and mute is a single command per press
+  ---
+  duration_ms: 0.57068
+  type: 'test'
+  ...
+# Subtest: canvas lock loss pauses without Escape keydown and stays suspended until resumed
+ok 104 - canvas lock loss pauses without Escape keydown and stays suspended until resumed
+  ---
+  duration_ms: 0.391209
+  type: 'test'
+  ...
+# Subtest: Escape and canvas lock loss request pause once in either event order
+ok 105 - Escape and canvas lock loss request pause once in either event order
+  ---
+  duration_ms: 0.203865
+  type: 'test'
+  ...
+# Subtest: unfocused game and editable/menu elements keep browser key behavior
+ok 106 - unfocused game and editable/menu elements keep browser key behavior
+  ---
+  duration_ms: 0.312775
+  type: 'test'
+  ...
+# Subtest: pointer lock absence, synchronous refusal, promise rejection, and legacy APIs are safe
+ok 107 - pointer lock absence, synchronous refusal, promise rejection, and legacy APIs are safe
+  ---
+  duration_ms: 7.118467
+  type: 'test'
+  ...
+# Subtest: pause and destroy suppress requests, and concurrent pointer lock requests are coalesced
+ok 108 - pause and destroy suppress requests, and concurrent pointer lock requests are coalesced
+  ---
+  duration_ms: 0.344083
+  type: 'test'
+  ...
+# Subtest: legacy lock requests wait for browser events and can be cancelled by lifecycle cleanup
+ok 109 - legacy lock requests wait for browser events and can be cancelled by lifecycle cleanup
+  ---
+  duration_ms: 0.223691
+  type: 'test'
+  ...
+# Subtest: keyboard-only input drives the player; tab/pause transitions stop movement and fire
+ok 110 - keyboard-only input drives the player; tab/pause transitions stop movement and fire
+  ---
+  duration_ms: 2.067961
+  type: 'test'
+  ...
+# Subtest: generated forests supply deterministic, distinct, reachable cakes and armor each wave
+ok 111 - generated forests supply deterministic, distinct, reachable cakes and armor each wave
+  ---
+  duration_ms: 250.832903
+  type: 'test'
+  ...
+# Subtest: generated pickup centers have traversable paths for the player circle
+ok 112 - generated pickup centers have traversable paths for the player circle
+  ---
+  duration_ms: 33.855488
+  type: 'test'
+  ...
+# Subtest: disconnected pockets and cells without clearance for a larger player are excluded
+ok 113 - disconnected pockets and cells without clearance for a larger player are excluded
+  ---
+  duration_ms: 0.709504
+  type: 'test'
+  ...
+# Subtest: capacity exhaustion returns fewer pickups, including none, without throwing
+ok 114 - capacity exhaustion returns fewer pickups, including none, without throwing
+  ---
+  duration_ms: 0.40837
+  type: 'test'
+  ...
+# Subtest: off-center player overlap is excluded and dead unicorns do not reserve cells
+ok 115 - off-center player overlap is excluded and dead unicorns do not reserve cells
+  ---
+  duration_ms: 0.208383
+  type: 'test'
+  ...
+# Subtest: a fresh wave replaces leftovers and restarting recreates initial items and IDs
+ok 116 - a fresh wave replaces leftovers and restarting recreates initial items and IDs
+  ---
+  duration_ms: 6.043911
+  type: 'test'
+  ...
+# Subtest: full health still collects armor, and full armor still collects health
+ok 117 - full health still collects armor, and full armor still collects health
+  ---
+  duration_ms: 0.513774
+  type: 'test'
+  ...
+# Subtest: one successful item emits once and disappears on subsequent collection ticks
+ok 118 - one successful item emits once and disappears on subsequent collection ticks
+  ---
+  duration_ms: 0.240853
+  type: 'test'
+  ...
+# Subtest: collection caps resources during a tick and retains excess items for later damage
+ok 119 - collection caps resources during a tick and retains excess items for later damage
+  ---
+  duration_ms: 0.493998
+  type: 'test'
+  ...
+# Subtest: overlap requires line of sight, including blocked hedge corners
+ok 120 - overlap requires line of sight, including blocked hedge corners
+  ---
+  duration_ms: 0.669431
+  type: 'test'
+  ...
+# Subtest: visible distant items stay until player movement reaches overlap; tangency counts
+ok 121 - visible distant items stay until player movement reaches overlap; tangency counts
+  ---
+  duration_ms: 0.260339
+  type: 'test'
+  ...
+# Subtest: dead players cannot collect either kind, even with armor remaining
+ok 122 - dead players cannot collect either kind, even with armor remaining
+  ---
+  duration_ms: 0.172076
+  type: 'test'
+  ...
+# Subtest: armor collected before an attack protects health later in that tick
+ok 123 - armor collected before an attack protects health later in that tick
+  ---
+  duration_ms: 0.158472
+  type: 'test'
+  ...
+# Subtest: collection accepts frozen inputs without mutating authoritative data
+ok 124 - collection accepts frozen inputs without mutating authoritative data
+  ---
+  duration_ms: 0.205187
+  type: 'test'
+  ...
+# Subtest: wave and seed validation follows simulation conventions
+ok 125 - wave and seed validation follows simulation conventions
+  ---
+  duration_ms: 1.416013
+  type: 'test'
+  ...
+# Subtest: player spawns from world coordinates and only has horizontal aim
+ok 126 - player spawns from world coordinates and only has horizontal aim
+  ---
+  duration_ms: 4.752257
+  type: 'test'
+  ...
+# Subtest: forward/backward and left/right strafe follow the horizontal heading
+ok 127 - forward/backward and left/right strafe follow the horizontal heading
+  ---
+  duration_ms: 1.597957
+  type: 'test'
+  ...
+# Subtest: diagonals never gain speed, and running has a fixed multiplier in every direction
+ok 128 - diagonals never gain speed, and running has a fixed multiplier in every direction
+  ---
+  duration_ms: 1.933445
+  type: 'test'
+  ...
+# Subtest: keyboard turning uses elapsed seconds; mouse look is a one-frame angle delta
+ok 129 - keyboard turning uses elapsed seconds; mouse look is a one-frame angle delta
+  ---
+  duration_ms: 0.275166
+  type: 'test'
+  ...
+# Subtest: movement is consistent across time steps in an open area
+ok 130 - movement is consistent across time steps in an open area
+  ---
+  duration_ms: 0.85433
+  type: 'test'
+  ...
+# Subtest: running into walls slides without penetration, even with a long frame
+ok 131 - running into walls slides without penetration, even with a long frame
+  ---
+  duration_ms: 8.436679
+  type: 'test'
+  ...
+# Subtest: invalid player configuration and input fail explicitly
+ok 132 - invalid player configuration and input fail explicitly
+  ---
+  duration_ms: 0.976074
+  type: 'test'
+  ...
+# Subtest: session owns independent projectile storage and restart resets projectiles and IDs
+ok 133 - session owns independent projectile storage and restart resets projectiles and IDs
+  ---
+  duration_ms: 17.313009
+  type: 'test'
+  ...
+# Subtest: spawning normalizes direction to 3.5 tiles/second with three seconds of life
+ok 134 - spawning normalizes direction to 3.5 tiles/second with three seconds of life
+  ---
+  duration_ms: 0.423098
+  type: 'test'
+  ...
+# Subtest: 32-rose cap rejects new shots; freed capacity uses a fresh monotonic ID
+ok 135 - 32-rose cap rejects new shots; freed capacity uses a fresh monotonic ID
+  ---
+  duration_ms: 2.523188
+  type: 'test'
+  ...
+# Subtest: a rose crossing an entire player in one update hits exactly once
+ok 136 - a rose crossing an entire player in one update hits exactly once
+  ---
+  duration_ms: 0.541686
+  type: 'test'
+  ...
+# Subtest: rose damage uses the shared armor-first rule and projectile identity
+ok 137 - rose damage uses the shared armor-first rule and projectile identity
+  ---
+  duration_ms: 0.305532
+  type: 'test'
+  ...
+# Subtest: hedges block a full long sweep, exact surface ties, and rounding-near ties
+ok 138 - hedges block a full long sweep, exact surface ties, and rounding-near ties
+  ---
+  duration_ms: 0.188837
+  type: 'test'
+  ...
+# Subtest: hedge collision at the movement endpoint and at a corner consumes the rose
+ok 139 - hedge collision at the movement endpoint and at a corner consumes the rose
+  ---
+  duration_ms: 0.230324
+  type: 'test'
+  ...
+# Subtest: player contact before a later hedge still damages
+ok 140 - player contact before a later hedge still damages
+  ---
+  duration_ms: 0.133776
+  type: 'test'
+  ...
+# Subtest: hedge and moving-player collisions compare times rather than different ray distances
+ok 141 - hedge and moving-player collisions compare times rather than different ray distances
+  ---
+  duration_ms: 0.305211
+  type: 'test'
+  ...
+# Subtest: a moving player crossing a stationary rose is hit even when both endpoints miss
+ok 142 - a moving player crossing a stationary rose is hit even when both endpoints miss
+  ---
+  duration_ms: 0.373377
+  type: 'test'
+  ...
+# Subtest: simultaneously moving roses and player collide along their relative sweep
+ok 143 - simultaneously moving roses and player collide along their relative sweep
+  ---
+  duration_ms: 0.188477
+  type: 'test'
+  ...
+# Subtest: crossing spatial paths at different times is a miss
+ok 144 - crossing spatial paths at different times is a miss
+  ---
+  duration_ms: 0.121784
+  type: 'test'
+  ...
+# Subtest: equal-velocity motion handles initial overlap and separation without a relative ray
+ok 145 - equal-velocity motion handles initial overlap and separation without a relative ray
+  ---
+  duration_ms: 0.129067
+  type: 'test'
+  ...
+# Subtest: stationary relative contact includes floating-point tangency with no decorative radius
+ok 146 - stationary relative contact includes floating-point tangency with no decorative radius
+  ---
+  duration_ms: 0.162449
+  type: 'test'
+  ...
+# Subtest: invulnerable and defeated impacts consume roses without damage events or cooldown changes
+ok 147 - invulnerable and defeated impacts consume roses without damage events or cooldown changes
+  ---
+  duration_ms: 0.135959
+  type: 'test'
+  ...
+# Subtest: multiple impacts share one damage cooldown while all contacted roses are consumed
+ok 148 - multiple impacts share one damage cooldown while all contacted roses are consumed
+  ---
+  duration_ms: 0.15761
+  type: 'test'
+  ...
+# Subtest: point collision includes tangency but height and petals do not enlarge the shape
+ok 149 - point collision includes tangency but height and petals do not enlarge the shape
+  ---
+  duration_ms: 0.166226
+  type: 'test'
+  ...
+# Subtest: remaining lifetime clips both projectile travel and player motion within a long tick
+ok 150 - remaining lifetime clips both projectile travel and player motion within a long tick
+  ---
+  duration_ms: 0.154494
+  type: 'test'
+  ...
+# Subtest: expired roses cannot hit, and contact at the exact lifetime endpoint still counts
+ok 151 - expired roses cannot hit, and contact at the exact lifetime endpoint still counts
+  ---
+  duration_ms: 0.17422
+  type: 'test'
+  ...
+# Subtest: survivors advance position and lifetime; 180 fractional steps expire three-second roses
+ok 152 - survivors advance position and lifetime; 180 fractional steps expire three-second roses
+  ---
+  duration_ms: 1.70811
+  type: 'test'
+  ...
+# Subtest: zero-time updates resolve initial contact and solid origins without moving or aging
+ok 153 - zero-time updates resolve initial contact and solid origins without moving or aging
+  ---
+  duration_ms: 0.145478
+  type: 'test'
+  ...
+# Subtest: advancement accepts frozen inputs and does not mutate projectile, player, world, or survival data
+ok 154 - advancement accepts frozen inputs and does not mutate projectile, player, world, or survival data
+  ---
+  duration_ms: 0.267242
+  type: 'test'
+  ...
+# Subtest: invalid elapsed times fail explicitly, even without projectiles, without changing data
+ok 155 - invalid elapsed times fail explicitly, even without projectiles, without changing data
+  ---
+  duration_ms: 0.45668
+  type: 'test'
+  ...
+# Subtest: invalid spawn data fails without enqueueing or consuming IDs
+ok 156 - invalid spawn data fails without enqueueing or consuming IDs
+  ---
+  duration_ms: 0.399514
+  type: 'test'
+  ...
+# Subtest: projection imports in Node without browser globals or canvas mocks
+ok 157 - projection imports in Node without browser globals or canvas mocks
+  ---
+  duration_ms: 0.806323
+  type: 'test'
+  ...
+# Subtest: literal 70 degree horizontal FOV and 0.65 tile eye height at all browser viewport sizes
+ok 158 - literal 70 degree horizontal FOV and 0.65 tile eye height at all browser viewport sizes
+  ---
+  duration_ms: 1.261609
+  type: 'test'
+  ...
+# Subtest: column rays sample pixel centers and recover perpendicular depth across a planar wall
+ok 159 - column rays sample pixel centers and recover perpendicular depth across a planar wall
+  ---
+  duration_ms: 0.497064
+  type: 'test'
+  ...
+# Subtest: floor rows map raster sample centers back to the lower half of each viewport
+ok 160 - floor rows map raster sample centers back to the lower half of each viewport
+  ---
+  duration_ms: 0.518463
+  type: 'test'
+  ...
+# Subtest: position uses camera-forward depth, default height, and the inclusive 0.08 near plane
+ok 161 - position uses camera-forward depth, default height, and the inclusive 0.08 near plane
+  ---
+  duration_ms: 0.22847
+  type: 'test'
+  ...
+# Subtest: wall visibility is strict and position remains available for occluded or offscreen forest art
+ok 162 - wall visibility is strict and position remains available for occluded or offscreen forest art
+  ---
+  duration_ms: 0.172126
+  type: 'test'
+  ...
+# Subtest: partially occluded footprints produce exact separate spans even when the center is hidden
+ok 163 - partially occluded footprints produce exact separate spans even when the center is hidden
+  ---
+  duration_ms: 1.01724
+  type: 'test'
+  ...
+# Subtest: two pixel padding, default radius, viewport clipping, and the final column use exclusive ends
+ok 164 - two pixel padding, default radius, viewport clipping, and the final column use exclusive ends
+  ---
+  duration_ms: 0.263284
+  type: 'test'
+  ...
+# Subtest: frames snapshot player state and helpers leave all inputs and depth buffers unchanged
+ok 165 - frames snapshot player state and helpers leave all inputs and depth buffers unchanged
+  ---
+  duration_ms: 0.50035
+  type: 'test'
+  ...
+# Subtest: seeded initial staggering repeats exactly and stays independent of actor order
+ok 166 - seeded initial staggering repeats exactly and stays independent of actor order
+  ---
+  duration_ms: 6.675682
+  type: 'test'
+  ...
+# Subtest: spawned waves own fresh seeded attack state without sharing timers or aim samples
+ok 167 - spawned waves own fresh seeded attack state without sharing timers or aim samples
+  ---
+  duration_ms: 3.380063
+  type: 'test'
+  ...
+# Subtest: no shot before the full 0.55-second windup; recovery holds for 0.25 seconds
+ok 168 - no shot before the full 0.55-second windup; recovery holds for 0.25 seconds
+  ---
+  duration_ms: 1.190109
+  type: 'test'
+  ...
+# Subtest: a new windup waits a full 2.6-second cooldown measured from emission
+ok 169 - a new windup waits a full 2.6-second cooldown measured from emission
+  ---
+  duration_ms: 0.424761
+  type: 'test'
+  ...
+# Subtest: rear socket and velocity point opposite forward facing for every heading
+ok 170 - rear socket and velocity point opposite forward facing for every heading
+  ---
+  duration_ms: 1.171794
+  type: 'test'
+  ...
+# Subtest: moving target cannot change sampled aim, locked facing, or straight projectile velocity
+ok 171 - moving target cannot change sampled aim, locked facing, or straight projectile velocity
+  ---
+  duration_ms: 0.54407
+  type: 'test'
+  ...
+# Subtest: range endpoints are inclusive; near, distant, and hidden targets never start attacks
+ok 172 - range endpoints are inclusive; near, distant, and hidden targets never start attacks
+  ---
+  duration_ms: 0.408982
+  type: 'test'
+  ...
+# Subtest: visibility loss and leaving either range boundary cancel windup without firing
+ok 173 - visibility loss and leaving either range boundary cancel windup without firing
+  ---
+  duration_ms: 0.361625
+  type: 'test'
+  ...
+# Subtest: a blocked rear socket cancels even when the current target remains visible
+ok 174 - a blocked rear socket cancels even when the current target remains visible
+  ---
+  duration_ms: 0.35372
+  type: 'test'
+  ...
+# Subtest: converted unicorns cannot begin or complete windup
+ok 175 - converted unicorns cannot begin or complete windup
+  ---
+  duration_ms: 0.475995
+  type: 'test'
+  ...
+# Subtest: cap rejection at readiness or emission preserves existing roses and spends a cooldown
+ok 176 - cap rejection at readiness or emission preserves existing roses and spends a cooldown
+  ---
+  duration_ms: 0.708082
+  type: 'test'
+  ...
+# Subtest: group emission obeys the shared cap and produces events only for admitted roses
+ok 177 - group emission obeys the shared cap and produces events only for admitted roses
+  ---
+  duration_ms: 0.276378
+  type: 'test'
+  ...
+# Subtest: large updates never catch up shots or skip a newly started telegraph/recovery
+ok 178 - large updates never catch up shots or skip a newly started telegraph/recovery
+  ---
+  duration_ms: 0.150817
+  type: 'test'
+  ...
+# Subtest: advancing old projectiles before firing leaves new roses at their muzzle
+ok 179 - advancing old projectiles before firing leaves new roses at their muzzle
+  ---
+  duration_ms: 0.250791
+  type: 'test'
+  ...
+# Subtest: invalid times and seeds fail explicitly without changing attack/projectile state
+ok 180 - invalid times and seeds fail explicitly without changing attack/projectile state
+  ---
+  duration_ms: 0.622585
+  type: 'test'
+  ...
+# Subtest: display resolution follows DPR, caps both axes proportionally, and rounds odd sizes
+ok 181 - display resolution follows DPR, caps both axes proportionally, and rounds odd sizes
+  ---
+  duration_ms: 1.970182
+  type: 'test'
+  ...
+# Subtest: unchanged or hidden canvases keep their buffers; resize follows display and live DPR
+ok 182 - unchanged or hidden canvases keep their buffers; resize follows display and live DPR
+  ---
+  duration_ms: 0.323024
+  type: 'test'
+  ...
+# Subtest: production movement clocks freeze for whole attack ticks and pause, then resume idle steering
+ok 183 - production movement clocks freeze for whole attack ticks and pause, then resume idle steering
+  ---
+  duration_ms: 123.320516
+  type: 'test'
+  ...
+# Subtest: complete generated victories and natural defeats replay every fixed-tick state and event after restart
+ok 184 - complete generated victories and natural defeats replay every fixed-tick state and event after restart
+  ---
+  duration_ms: 1181.34402
+  type: 'test'
+  ...
+# Subtest: ready prepares six seeded unicorns and ignores simulation until started
+ok 185 - ready prepares six seeded unicorns and ignores simulation until started
+  ---
+  duration_ms: 1.567952
+  type: 'test'
+  ...
+# Subtest: three full waves use exactly two-second intermissions and win once without a final delay
+ok 186 - three full waves use exactly two-second intermissions and win once without a final delay
+  ---
+  duration_ms: 12.017753
+  type: 'test'
+  ...
+# Subtest: health restoration happens only when a new wave begins and caps at five
+ok 187 - health restoration happens only when a new wave begins and caps at five
+  ---
+  duration_ms: 53.717622
+  type: 'test'
+  ...
+# Subtest: contact damage reaches lost once, with damage before defeat in the queue
+ok 188 - contact damage reaches lost once, with damage before defeat in the queue
+  ---
+  duration_ms: 1.731332
+  type: 'test'
+  ...
+# Subtest: zero health wins no races with wave clearance or intermission restoration
+ok 189 - zero health wins no races with wave clearance or intermission restoration
+  ---
+  duration_ms: 16.191226
+  type: 'test'
+  ...
+# Subtest: pause freezes actors, all cooldowns, combo, elapsed time, and pending events
+ok 190 - pause freezes actors, all cooldowns, combo, elapsed time, and pending events
+  ---
+  duration_ms: 1.807263
+  type: 'test'
+  ...
+# Subtest: pause preserves a partially elapsed intermission without respawning or restoring health
+ok 191 - pause preserves a partially elapsed intermission without respawning or restoring health
+  ---
+  duration_ms: 8.420109
+  type: 'test'
+  ...
+# Subtest: combat removes a converted contact threat before damage and starts only one intermission
+ok 192 - combat removes a converted contact threat before damage and starts only one intermission
+  ---
+  duration_ms: 7.004457
+  type: 'test'
+  ...
+# Subtest: the final conversion scores before immediate victory and cannot repeat
+ok 193 - the final conversion scores before immediate victory and cannot repeat
+  ---
+  duration_ms: 140.792939
+  type: 'test'
+  ...
+# Subtest: restart from every lifecycle state replaces all previous-run objects and timers
+ok 194 - restart from every lifecycle state replaces all previous-run objects and timers
+  ---
+  duration_ms: 19.645616
+  type: 'test'
+  ...
+# Subtest: contact and roses share one damage point and invulnerability advances only in updatePlayer
+ok 195 - contact and roses share one damage point and invulnerability advances only in updatePlayer
+  ---
+  duration_ms: 4.396352
+  type: 'test'
+  ...
+# Subtest: conversion disables movement, contact, and a ready ranged shot before enemy actions
+ok 196 - conversion disables movement, contact, and a ready ranged shot before enemy actions
+  ---
+  duration_ms: 5.558148
+  type: 'test'
+  ...
+# Subtest: windup and recovery hold navigation but keep valid contact checks
+ok 197 - windup and recovery hold navigation but keep valid contact checks
+  ---
+  duration_ms: 2.770734
+  type: 'test'
+  ...
+# Subtest: existing roses survive individual conversion, and new roses wait until the next tick to move
+ok 198 - existing roses survive individual conversion, and new roses wait until the next tick to move
+  ---
+  duration_ms: 1.685559
+  type: 'test'
+  ...
+# Subtest: rose sweep receives the player position before movement
+ok 199 - rose sweep receives the player position before movement
+  ---
+  duration_ms: 1.48508
+  type: 'test'
+  ...
+# Subtest: collect supplies after movement and before combat and contact damage
+ok 200 - collect supplies after movement and before combat and contact damage
+  ---
+  duration_ms: 2.853637
+  type: 'test'
+  ...
+# Subtest: moving into supplies restores health and armor before a crowd and multiple roses can damage
+ok 201 - moving into supplies restores health and armor before a crowd and multiple roses can damage
+  ---
+  duration_ms: 0.703172
+  type: 'test'
+  ...
+# Subtest: a full-resource pickup stays available until the tick after damage makes room
+ok 202 - a full-resource pickup stays available until the tick after damage makes room
+  ---
+  duration_ms: 1.070628
+  type: 'test'
+  ...
+# Subtest: wave completion clears all roses immediately, including after the final wave
+ok 203 - wave completion clears all roses immediately, including after the final wave
+  ---
+  duration_ms: 0.873175
+  type: 'test'
+  ...
+# Subtest: a lethal rose wins a same-tick final conversion race and cannot be revived
+ok 204 - a lethal rose wins a same-tick final conversion race and cannot be revived
+  ---
+  duration_ms: 0.611404
+  type: 'test'
+  ...
+# Subtest: lethal damage on the last intermission tick precedes healing and next-wave spawning
+ok 205 - lethal damage on the last intermission tick precedes healing and next-wave spawning
+  ---
+  duration_ms: 0.557034
+  type: 'test'
+  ...
+# Subtest: intermission allows movement, firing, and supply collection; next wave preserves armor and cooldown
+ok 206 - intermission allows movement, firing, and supply collection; next wave preserves armor and cooldown
+  ---
+  duration_ms: 1.064988
+  type: 'test'
+  ...
+# Subtest: pause freezes supplies, roses, and ranged timers along with the player
+ok 207 - pause freezes supplies, roses, and ranged timers along with the player
+  ---
+  duration_ms: 1.045171
+  type: 'test'
+  ...
+# Subtest: identical seeds and input histories reproduce maps, later waves, and events after restart
+ok 208 - identical seeds and input histories reproduce maps, later waves, and events after restart
+  ---
+  duration_ms: 616.199709
+  type: 'test'
+  ...
+# Subtest: seeded supply collection and ranged survival replay every entity and event batch on each tick
+ok 209 - seeded supply collection and ranged survival replay every entity and event batch on each tick
+  ---
+  duration_ms: 495.97982
+  type: 'test'
+  ...
+# Subtest: draining returns events once, preserves ordering, and isolates subsequent events
+ok 210 - draining returns events once, preserves ordering, and isolates subsequent events
+  ---
+  duration_ms: 0.790132
+  type: 'test'
+  ...
+# Subtest: drained survival and attack feedback contains scalar copies, never mutable entities
+ok 211 - drained survival and attack feedback contains scalar copies, never mutable entities
+  ---
+  duration_ms: 4.008007
+  type: 'test'
+  ...
+# Subtest: invalid time and seeds fail explicitly without changing a session
+ok 212 - invalid time and seeds fail explicitly without changing a session
+  ---
+  duration_ms: 1.862063
+  type: 'test'
+  ...
+# Subtest: combat chooses the nearest circle surface and cannot score a converted target twice
+ok 213 - combat chooses the nearest circle surface and cannot score a converted target twice
+  ---
+  duration_ms: 3.988051
+  type: 'test'
+  ...
+# Subtest: a hedge blocks scoring until removed; a cooldown-ready retry still converts exactly once
+ok 214 - a hedge blocks scoring until removed; a cooldown-ready retry still converts exactly once
+  ---
+  duration_ms: 1.829213
+  type: 'test'
+  ...
+# Subtest: ray-circle intersections include surface, tangent, and muzzle overlap, but exclude misses and rear targets
+ok 215 - ray-circle intersections include surface, tangent, and muzzle overlap, but exclude misses and rear targets
+  ---
+  duration_ms: 4.109745
+  type: 'test'
+  ...
+# Subtest: misses do not refresh combos; the inclusive two-second window caps at five then expires
+ok 216 - misses do not refresh combos; the inclusive two-second window caps at five then expires
+  ---
+  duration_ms: 1.176392
+  type: 'test'
+  ...
+# Subtest: three generated waves reach victory through 24 real conversions and replay identically after restart
+ok 217 - three generated waves reach victory through 24 real conversions and replay identically after restart
+  ---
+  duration_ms: 2191.830142
+  type: 'test'
+  ...
+# Subtest: ready and pause freeze simulation, including a live combo and a partially elapsed intermission
+ok 218 - ready and pause freeze simulation, including a live combo and a partially elapsed intermission
+  ---
+  duration_ms: 60.422349
+  type: 'test'
+  ...
+# Subtest: generated enemies cause defeat without firing; restart discards damage, timers, and queued events
+ok 219 - generated enemies cause defeat without firing; restart discards damage, timers, and queued events
+  ---
+  duration_ms: 32.095143
+  type: 'test'
+  ...
+# Subtest: HUD snapshots freeze health and armor scalars and expose independent resource caps
+ok 220 - HUD snapshots freeze health and armor scalars and expose independent resource caps
+  ---
+  duration_ms: 10.642334
+  type: 'test'
+  ...
+# Subtest: defeat depends on health even with remaining armor, and restart resets the HUD resources
+ok 221 - defeat depends on health even with remaining armor, and restart resets the HUD resources
+  ---
+  duration_ms: 6.943164
+  type: 'test'
+  ...
+# Subtest: fresh HUD snapshots stay detached across public pause, wave, victory, and restart transitions
+ok 222 - fresh HUD snapshots stay detached across public pause, wave, victory, and restart transitions
+  ---
+  duration_ms: 67.645638
+  type: 'test'
+  ...
+# Subtest: legacy normal unicorns keep their literal 0.95 height and ground-centered projection
+ok 223 - legacy normal unicorns keep their literal 0.95 height and ground-centered projection
+  ---
+  duration_ms: 1.879765
+  type: 'test'
+  ...
+# Subtest: cakes and charms are distinct ground billboards; roses use simulated height and position
+ok 224 - cakes and charms are distinct ground billboards; roses use simulated height and position
+  ---
+  duration_ms: 1.626721
+  type: 'test'
+  ...
+# Subtest: rear artwork and emitted rose share a pixel and depth at oblique camera angles and viewport sizes
+ok 225 - rear artwork and emitted rose share a pixel and depth at oblique camera angles and viewport sizes
+  ---
+  duration_ms: 2.69817
+  type: 'test'
+  ...
+# Subtest: one depth list orders every kind and deterministically breaks coincident ties
+ok 226 - one depth list orders every kind and deterministically breaks coincident ties
+  ---
+  duration_ms: 0.571891
+  type: 'test'
+  ...
+# Subtest: presentation accepts frozen state and never initializes or advances attacks
+ok 227 - presentation accepts frozen state and never initializes or advances attacks
+  ---
+  duration_ms: 0.547707
+  type: 'test'
+  ...
+# Subtest: dead unicorns, expired roses, and unknown decoration art do not participate
+ok 228 - dead unicorns, expired roses, and unknown decoration art do not participate
+  ---
+  duration_ms: 0.155566
+  type: 'test'
+  ...
+# Subtest: new survival states start with five health, no armor, and no cooldown
+ok 229 - new survival states start with five health, no armor, and no cooldown
+  ---
+  duration_ms: 1.66482
+  type: 'test'
+  ...
+# Subtest: the fifth accepted unarmored hit defeats the player with exact damage events
+ok 230 - the fifth accepted unarmored hit defeats the player with exact damage events
+  ---
+  duration_ms: 1.232697
+  type: 'test'
+  ...
+# Subtest: full health and armor absorb exactly ten accepted hits before defeat
+ok 231 - full health and armor absorb exactly ten accepted hits before defeat
+  ---
+  duration_ms: 0.331499
+  type: 'test'
+  ...
+# Subtest: contact and roses share invulnerability and blocked hits emit no duplicate events
+ok 232 - contact and roses share invulnerability and blocked hits emit no duplicate events
+  ---
+  duration_ms: 0.305732
+  type: 'test'
+  ...
+# Subtest: fractional cooldown steps expire at the intended boundary, never one tick late or early
+ok 233 - fractional cooldown steps expire at the intended boundary, never one tick late or early
+  ---
+  duration_ms: 0.353259
+  type: 'test'
+  ...
+# Subtest: pickups restore one point of only their resource, preserve cooldown, and cap at five
+ok 234 - pickups restore one point of only their resource, preserve cooldown, and cap at five
+  ---
+  duration_ms: 0.174832
+  type: 'test'
+  ...
+# Subtest: neither pickup nor damage revives a defeated player, even with armor remaining
+ok 235 - neither pickup nor damage revives a defeated player, even with armor remaining
+  ---
+  duration_ms: 0.203925
+  type: 'test'
+  ...
+# Subtest: damage and pickups keep every valid combination within independent resource bounds
+ok 236 - damage and pickups keep every valid combination within independent resource bounds
+  ---
+  duration_ms: 0.547095
+  type: 'test'
+  ...
+# Subtest: survival transitions do not mutate inputs or retain mutable damage metadata
+ok 237 - survival transitions do not mutate inputs or retain mutable damage metadata
+  ---
+  duration_ms: 0.340916
+  type: 'test'
+  ...
+# Subtest: invalid elapsed time fails explicitly without altering state
+ok 238 - invalid elapsed time fails explicitly without altering state
+  ---
+  duration_ms: 0.568124
+  type: 'test'
+  ...
+# Subtest: waves spawn their full counts safely and reproducibly over generated forests
+ok 239 - waves spawn their full counts safely and reproducibly over generated forests
+  ---
+  duration_ms: 803.306279
+  type: 'test'
+  ...
+# Subtest: wave one introduction follows heading when clear and safely falls back when blocked
+ok 240 - wave one introduction follows heading when clear and safely falls back when blocked
+  ---
+  duration_ms: 0.699837
+  type: 'test'
+  ...
+# Subtest: candidate exhaustion and unreachable pockets terminate without partial waves
+ok 241 - candidate exhaustion and unreachable pockets terminate without partial waves
+  ---
+  duration_ms: 0.869679
+  type: 'test'
+  ...
+# Subtest: unicorns route around a blocking hedge and corners using a shared distance field
+ok 242 - unicorns route around a blocking hedge and corners using a shared distance field
+  ---
+  duration_ms: 4.367389
+  type: 'test'
+  ...
+# Subtest: spawned unicorns reach the player across generated forests
+ok 243 - spawned unicorns reach the player across generated forests
+  ---
+  duration_ms: 634.076734
+  type: 'test'
+  ...
+# Subtest: navigation follows a moving target and handles long frames and unreachable actors
+ok 244 - navigation follows a moving target and handles long frames and unreachable actors
+  ---
+  duration_ms: 0.324837
+  type: 'test'
+  ...
+# Subtest: legacy navigation retains per-wave speed and exact straight time-step behavior
+ok 245 - legacy navigation retains per-wave speed and exact straight time-step behavior
+  ---
+  duration_ms: 5.383857
+  type: 'test'
+  ...
+# Subtest: movement profiles are fresh, seed/ID-derived, and preserve spawn and attack streams
+ok 246 - movement profiles are fresh, seed/ID-derived, and preserve spawn and attack streams
+  ---
+  duration_ms: 0.927314
+  type: 'test'
+  ...
+# Subtest: all three phases steer visibly, burst accelerates, and accepted steps obey geometry/speed/facing
+ok 247 - all three phases steer visibly, burst accelerates, and accepted steps obey geometry/speed/facing
+  ---
+  duration_ms: 82.600871
+  type: 'test'
+  ...
+# Subtest: herd separation uses living copies, spreads overlaps, and is independent of actor order
+ok 248 - herd separation uses living copies, spreads overlaps, and is independent of actor order
+  ---
+  duration_ms: 145.459899
+  type: 'test'
+  ...
+# Subtest: blocked steering is atomic and falls back on the same tick, including repeated corner fallback
+ok 249 - blocked steering is atomic and falls back on the same tick, including repeated corner fallback
+  ---
+  duration_ms: 30.00501
+  type: 'test'
+  ...
+# Subtest: close and occluded pursuit use the field, while zero time and attack phases freeze steering
+ok 250 - close and occluded pursuit use the field, while zero time and attack phases freeze steering
+  ---
+  duration_ms: 1.193814
+  type: 'test'
+  ...
+# Subtest: steering trajectories approximate different subdivisions within 0.12 tiles over five seconds
+ok 251 - steering trajectories approximate different subdivisions within 0.12 tiles over five seconds
+  ---
+  duration_ms: 148.651655
+  type: 'test'
+  ...
+# Subtest: generated herds follow moving players through detours and eventually contact every actor
+ok 252 - generated herds follow moving players through detours and eventually contact every actor
+  ---
+  duration_ms: 385.285263
+  type: 'test'
+  ...
+# Subtest: production spawn profiles retain per-ID trajectories when a moving-target herd is reordered each tick
+ok 253 - production spawn profiles retain per-ID trajectories when a moving-target herd is reordered each tick
+  ---
+  duration_ms: 413.340871
+  type: 'test'
+  ...
+# Subtest: restart exactly replays profiles, steering state, actor positions, and event batches; pause freezes all
+ok 254 - restart exactly replays profiles, steering state, actor positions, and event batches; pause freezes all
+  ---
+  duration_ms: 478.037997
+  type: 'test'
+  ...
+# Subtest: a group emits one damage event, shares invulnerability, and never drives health negative
+ok 255 - a group emits one damage event, shares invulnerability, and never drives health negative
+  ---
+  duration_ms: 0.475694
+  type: 'test'
+  ...
+# Subtest: dead unicorns cannot move or damage, and contact before movement still counts
+ok 256 - dead unicorns cannot move or damage, and contact before movement still counts
+  ---
+  duration_ms: 0.231225
+  type: 'test'
+  ...
+# Subtest: invalid configuration, elapsed time, and stale or incompatible fields fail explicitly
+ok 257 - invalid configuration, elapsed time, and stale or incompatible fields fail explicitly
+  ---
+  duration_ms: 0.682475
+  type: 'test'
+  ...
+# Subtest: seeded randomness and vector normalization handle zero and large values
+ok 258 - seeded randomness and vector normalization handle zero and large values
+  ---
+  duration_ms: 2.412665
+  type: 'test'
+  ...
+# Subtest: identical seeds reproduce the entire world and decoration layout
+ok 259 - identical seeds reproduce the entire world and decoration layout
+  ---
+  duration_ms: 34.705558
+  type: 'test'
+  ...
+# Subtest: generated forests are bounded, connected, and preserve the introduction corridor
+ok 260 - generated forests are bounded, connected, and preserve the introduction corridor
+  ---
+  duration_ms: 124.124089
+  type: 'test'
+  ...
+# Subtest: raycasts stop at the first hedge with normalized distances on every axis
+ok 261 - raycasts stop at the first hedge with normalized distances on every axis
+  ---
+  duration_ms: 0.433727
+  type: 'test'
+  ...
+# Subtest: raycasts handle ranges, zero directions, solid origins, boundaries, and corners
+ok 262 - raycasts handle ranges, zero directions, solid origins, boundaries, and corners
+  ---
+  duration_ms: 0.254819
+  type: 'test'
+  ...
+# Subtest: rays and visibility block corners despite accumulated floating-point rounding
+ok 263 - rays and visibility block corners despite accumulated floating-point rounding
+  ---
+  duration_ms: 0.183768
+  type: 'test'
+  ...
+# Subtest: circle collision respects edges, rounded corners, tangency, and passable decorations
+ok 264 - circle collision respects edges, rounded corners, tangency, and passable decorations
+  ---
+  duration_ms: 0.301514
+  type: 'test'
+  ...
+# Subtest: movement slides along walls in both axes and stops near contact
+ok 265 - movement slides along walls in both axes and stops near contact
+  ---
+  duration_ms: 0.939177
+  type: 'test'
+  ...
+# Subtest: movement cannot tunnel with large deltas, escape the map, or squeeze through hedge corners
+ok 266 - movement cannot tunnel with large deltas, escape the map, or squeeze through hedge corners
+  ---
+  duration_ms: 17.537149
+  type: 'test'
+  ...
+# Subtest: visibility shares raycast geometry, including blocked endpoints and corner occlusion
+ok 267 - visibility shares raycast geometry, including blocked endpoints and corner occlusion
+  ---
+  duration_ms: 0.503626
+  type: 'test'
+  ...
+# Subtest: navigation distances take the shortest cardinal detour around hedges
+ok 268 - navigation distances take the shortest cardinal detour around hedges
+  ---
+  duration_ms: 0.535555
+  type: 'test'
+  ...
+# Subtest: navigation reports unreachable cells and uses the navigating circle radius
+ok 269 - navigation reports unreachable cells and uses the navigating circle radius
+  ---
+  duration_ms: 0.941751
+  type: 'test'
+  ...
+1..269
+# tests 269
+# suites 0
+# pass 269
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4612.174823

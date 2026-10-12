@@ -1,0 +1,441 @@
+{
+  "tests": 87,
+  "failures": [],
+  "checks": [
+    {
+      "test": "app.spec.js / simulation uses 60 Hz steps, bounds delayed frames, and consumes mouse motion once",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "app.spec.js / a movement tick drains pickup-before-damage feedback once to effects and audio and updates the HUD",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "app.spec.js / Escape freezes play until explicit Resume and discards held input and elapsed time",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "app.spec.js / hidden tab freezes play until explicit Resume and discards held input and elapsed time",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "app.spec.js / focus loss freezes play until explicit Resume and discards held input and elapsed time",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "app.spec.js / pointer-lock loss freezes play until explicit Resume and discards held input and elapsed time",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "app.spec.js / ten restarts retain one loop and audio context, clear cosmetics, and preserve firing rate",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "app.spec.js / both results stop simulation, persist each new record once, and support another run",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "app.spec.js / access denied, rejected audio, and rejected pointer capture preserve keyboard play",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "app.spec.js / write denied, rejected audio, and rejected pointer capture preserve keyboard play",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "app.spec.js / numeric seed ?seed=0 produces a reproducible run",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "app.spec.js / numeric seed ?seed=-12.5 produces a reproducible run",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "app.spec.js / numeric seed ?seed=1e3 produces a reproducible run",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "app.spec.js / numeric seed ?seed=invalid produces a reproducible run",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "app.spec.js / numeric seed ?seed= produces a reproducible run",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "app.spec.js / numeric seed ?seed=Infinity produces a reproducible run",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "app.spec.js / startup reports missing canvas without uncaught errors or a leftover loop",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "app.spec.js / startup reports missing menus without uncaught errors or a leftover loop",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "app.spec.js / startup reports unavailable canvas without uncaught errors or a leftover loop",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "app.spec.js / startup reports failed initial render without uncaught errors or a leftover loop",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "art.spec.js / legacy artwork is cached, local, and uses transparent sprite surfaces",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "art.spec.js / legacy survival sprites keep their identifying colors and a visible rear attack anchor",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "art.spec.js / legacy fresh loads produce identical pixels for every asset",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "art.spec.js / legacy small unicorn keeps four separate legs and rainbow accents",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "art.spec.js / vector artwork is cached, local, and uses transparent sprite surfaces",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "art.spec.js / vector survival sprites keep their identifying colors and a visible rear attack anchor",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "art.spec.js / vector fresh loads produce identical pixels for every asset",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "art.spec.js / vector small unicorn keeps four separate legs and rainbow accents",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "audio.spec.js / all eight effects render non-silent, unclipped audio and produce audition clips",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "boot.spec.js / both boot paths export the same function without scheduling another loop",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "boot.spec.js / importing /src/app.js before main does not create a game",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "boot.spec.js / importing /src/bootstrap.js before main does not create a game",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "boot.spec.js / repeated main imports share one game and destroy cancels its only callback",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "effects.spec.js / the game gates audio on Start, drains a conversion, and freezes/silences on pause",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "effects.spec.js / muting stops current sources, persists on reload, and bounds real audio sources",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "effects.spec.js / live reduced-motion preference keeps conversions visible with six stars",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "effects.spec.js / real canvas stars expand, stay multicolored, and are fully clipped behind a hedge",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "effects.spec.js / unavailable Web Audio leaves a playable, silent game",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "effects.spec.js / wave, damage, victory, and defeat transitions reach both feedback consumers",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "hud.spec.js / the focused primary action stays inside the scrollable panel on a narrow screen",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "hud.spec.js / all menu actions work with keyboard focus and no pointer lock",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "hud.spec.js / frame updates preserve controls and focus and announce only meaningful transitions",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "hud.spec.js / victory and defeat announce final scores, focus restart, and begin a fresh game",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "hud.spec.js / silent mode reports unsupported audio and preserves mute preference",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "hud.spec.js / silent mode reports activation failure audio and preserves mute preference",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "hud.spec.js / blocked storage still supports best score and restart during this visit",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "input.spec.js / real keyboard input moves, normalizes diagonals, runs, strafes, fires, and invokes commands",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "input.spec.js / focus loss clears held keys and firing; auto-repeat cannot restore them",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "input.spec.js / rejected mouse capture never rejects globally and leaves keyboard play usable",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "input.spec.js / locked mouse movement consumes horizontal aim once, and lock loss pauses without keydown",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "input.spec.js / Escape pauses after a real pointer lock request",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "render-resolution.spec.js / the live application resizes with its stage and device pixel ratio",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "render-resolution.spec.js / responsive sizing is opt-in and the floor raster stays bounded after resizing",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "render-resolution.spec.js / native DPR 2 display / the live app handles odd CSS sizes and proportional caps without changing simulation state",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "renderer.spec.js / perpendicular wall depth keeps planar hedges straight while turning",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "renderer.spec.js / 70 degree projection and 0.65 tile eye height survive odd sizes and aspect changes",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "renderer.spec.js / hedges hide unicorns and clip partially visible billboard columns",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "renderer.spec.js / near unicorns and decorative props draw over farther billboards regardless of input order",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "renderer.spec.js / hedges fully hide cakes, charms, rear poses, and roses and clip their visible edge without leaks",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "renderer.spec.js / all entity arrays have stable pixels including coincident depth ties",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "renderer.spec.js / emitted rose aligns visibly with the rear rump at 640\u00d7360, camera 0",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "renderer.spec.js / emitted rose aligns visibly with the rear rump at 640\u00d7360, camera 0.25",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "renderer.spec.js / emitted rose aligns visibly with the rear rump at 640\u00d7360, camera -0.25",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "renderer.spec.js / emitted rose aligns visibly with the rear rump at 1001\u00d7563, camera 0",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "renderer.spec.js / emitted rose aligns visibly with the rear rump at 1001\u00d7563, camera 0.25",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "renderer.spec.js / emitted rose aligns visibly with the rear rump at 1001\u00d7563, camera -0.25",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "renderer.spec.js / emitted rose aligns visibly with the rear rump at 401\u00d7601, camera 0",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "renderer.spec.js / emitted rose aligns visibly with the rear rump at 401\u00d7601, camera 0.25",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "renderer.spec.js / emitted rose aligns visibly with the rear rump at 401\u00d7601, camera -0.25",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "renderer.spec.js / cached paper, trees, grass, and sprites stay still; walking and recoil change only the weapon",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "renderer.spec.js / the running game freezes walking on pause and observes live reduced motion",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "smoke.spec.js / startup renders a playable scene; conversion, pause, sound, restart, and denied capture work",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "smoke.spec.js / keyboard movement slides along a hedge, shots stop there, and a detour reaches its far side",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "smoke.spec.js / three generated waves are winnable through keyboard input without changing game state",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "smoke.spec.js / three generated waves are winnable through mouse input without changing game state",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "smoke.spec.js / generated unicorn contact causes defeat and keyboard Play again resets the round",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "smoke.spec.js / combined stress at DPR 1 / combined roses, supplies, and maximum glitter record frame times and reduced-motion presentation",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "smoke.spec.js / combined stress at DPR 2 / combined roses, supplies, and maximum glitter record frame times and reduced-motion presentation",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "survival.spec.js / walking over the visible cake and armor charm collects each once and updates the HUD",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "survival.spec.js / a complete rear windup emits a real rose; impacts consume armor before health and remove the rose",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "survival.spec.js / keyboard strafing after emission dodges the locked rose trajectory",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "survival.spec.js / pause freezes windup, recovery, cooldown, and airborne roses; keyboard restart clears the attack",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "survival.spec.js / reduced motion changes the canvas presentation while rose trajectories and impact ticks stay identical",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "vector-art.spec.js / production artwork at DPR 1 / normal survival artwork and rear emission",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "vector-art.spec.js / production artwork at DPR 1 / close survival artwork and rear emission",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "vector-art.spec.js / production artwork at DPR 2 / normal survival artwork and rear emission",
+      "browser": "154.0.8037.92",
+      "failures": []
+    },
+    {
+      "test": "vector-art.spec.js / production artwork at DPR 2 / close survival artwork and rear emission",
+      "browser": "154.0.8037.92",
+      "failures": []
+    }
+  ]
+}

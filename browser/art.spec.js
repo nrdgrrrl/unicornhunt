@@ -94,7 +94,8 @@ for (const vector of [false, true]) {
         };
       };
       const anchor = UNICORN_REAR_RUMP_ANCHOR;
-      const rump = art.unicornRear.getContext('2d').getImageData(anchor.x * scale - 3, anchor.y * scale - 3, 7, 7).data;
+      // Inspect physical pixels around the logical socket in either atlas.
+      const rump = art.unicornRear.getContext('2d').getImageData(anchor.x * scale - 2, anchor.y * scale - 2, 4, 4).data;
       return {
         cake: inspect('healthCake'), charm: inspect('armorCharm'), rose: inspect('rose'),
         smallCake: inspect('healthCake', 32, 40), smallCharm: inspect('armorCharm', 32, 40),

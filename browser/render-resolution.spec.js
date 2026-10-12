@@ -63,3 +63,40 @@ test('responsive sizing is opt-in and the floor raster stays bounded after resiz
   expect(result.smoothing).toBe(true);
   expect(result.quality).toBe('high');
 });
+
+test.describe('native DPR 2 display', () => {
+  test.use({ deviceScaleFactor: 2 });
+
+  test('the live app handles odd CSS sizes and proportional caps without changing simulation state', async ({ page }) => {
+    await controlledClock(page);
+    await page.setViewportSize({ width: 803, height: 601 });
+    await page.goto(origin);
+    const initial = await page.evaluate(async () => {
+      const { game } = await import('/main.js');
+      return JSON.stringify(game.session);
+    });
+    for (const [viewport, css, backing] of [
+      [{ width: 803, height: 601 }, [797, 448.3125], [1594, 897]],
+      [{ width: 2000, height: 1200 }, [1100, 618.75], [1920, 1080]],
+      [{ width: 401, height: 601 }, [395, 222.1875], [790, 444]],
+    ]) {
+      await page.setViewportSize(viewport);
+      await stepFrames(page);
+      const result = await page.evaluate(async () => {
+        const { game } = await import('/main.js');
+        const canvas = document.querySelector('#game');
+        const bounds = canvas.getBoundingClientRect();
+        const ctx = canvas.getContext('2d');
+        return { css: [bounds.width, bounds.height], backing: [canvas.width, canvas.height],
+          dpr: devicePixelRatio, state: JSON.stringify(game.session),
+          smoothing: ctx.imageSmoothingEnabled, quality: ctx.imageSmoothingQuality };
+      });
+      expect(result.dpr).toBe(2);
+      expect(result.css).toEqual(css);
+      expect(result.backing).toEqual(backing);
+      expect(result.state).toBe(initial);
+      expect(result.smoothing).toBe(true);
+      expect(result.quality).toBe('high');
+    }
+  });
+});
